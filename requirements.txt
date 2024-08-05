@@ -10,9 +10,9 @@ asgiref==3.8.1 \
     # via
     #   django
     #   django-htmx
-attrs==23.2.0 \
-    --hash=sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30 \
-    --hash=sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1
+attrs==24.1.0 \
+    --hash=sha256:377b47448cb61fea38533f671fba0d0f8a96fd58facd4dc518e3dac9dbea0905 \
+    --hash=sha256:adbdec84af72d38be7628e353a09b6a6790d15cd71819f6e9d7b0faa8a125745
     # via joshthomas-dev (pyproject.toml)
 certifi==2024.7.4 \
     --hash=sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b \
@@ -259,9 +259,9 @@ django-extensions==3.2.3 \
     --hash=sha256:44d27919d04e23b3f40231c4ab7af4e61ce832ef46d610cc650d53e68328410a \
     --hash=sha256:9600b7562f79a92cbf1fde6403c04fee314608fefbb595502e34383ae8203401
     # via joshthomas-dev (pyproject.toml)
-django-filter==24.2 \
-    --hash=sha256:48e5fc1da3ccd6ca0d5f9bb550973518ce977a4edde9d2a8a154a7f4f0b9f96e \
-    --hash=sha256:df2ee9857e18d38bed203c8745f62a803fa0f31688c9fe6f8e868120b1848e48
+django-filter==24.3 \
+    --hash=sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64 \
+    --hash=sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3
     # via
     #   joshthomas-dev (pyproject.toml)
     #   neapolitan
@@ -283,9 +283,9 @@ django-simple-history==3.7.0 \
     --hash=sha256:282cb2c4aa63f51547f17da7f2130abaa81ba01694676d19b88d52c94a57a52c \
     --hash=sha256:ac3b7ca8b0d33f7ea6be8fe7fc98cf43415efa500ff5dfe736fbd1ebc0cf39f9
     # via joshthomas-dev (pyproject.toml)
-django-simple-nav==0.9.0 \
-    --hash=sha256:b4c2520c6e31732598787ff14483be3e2a35dfb0d7deb386899f8ca92350d186 \
-    --hash=sha256:fae1a1b5b1c2ed95e7a98dba5220d5cb8eb9cb26f9560331b7392d5c64f7ae6a
+django-simple-nav==0.10.0 \
+    --hash=sha256:088eae6c7820c6e1d038ea410232a1be5d1009d8b6677d4fa71870704a377af6 \
+    --hash=sha256:36031397a763ab07dfd9d7d1a3aaf2fc2c1f08212543cfb72db6b57fffb09ce3
     # via joshthomas-dev (pyproject.toml)
 django-stubs-ext==5.0.4 \
     --hash=sha256:85da065224204774208be29c7d02b4482d5a69218a728465c2fbe41725fdc819 \
@@ -305,9 +305,9 @@ django-template-partials==24.2 \
     # via
     #   joshthomas-dev (pyproject.toml)
     #   django-twc-toolbox
-django-twc-toolbox==0.13.0 \
-    --hash=sha256:e7e25a611451d16a57c616ac8f45b74c32bd52b16911ab529d8148b99218180d \
-    --hash=sha256:ec85a93d22dc7cc53f0ce3f802cf0f006f33d555602cea2253e1fd2b9b53e1b4
+django-twc-toolbox==0.14.0 \
+    --hash=sha256:0d50bdafb14ca5a48196992a9749bdb8a434ef66f0c23710b59d72478c1970d3 \
+    --hash=sha256:aa7c149c496a0cebb368f15a91ef73610bd82921b4dd4e868d8b9199aa606ed8
     # via joshthomas-dev (pyproject.toml)
 django-typer==2.2.0 \
     --hash=sha256:187ddc804c0266e731da407040056a625676aee248e4f0a46f9b4097469a3fd9 \
@@ -366,9 +366,9 @@ mdurl==0.1.2 \
     --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
     --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
     # via markdown-it-py
-neapolitan==24.5 \
-    --hash=sha256:0048b5532901a4b292831b0de0e5931069d458e4fe4a70d83f07ecd66f152787 \
-    --hash=sha256:b5547db9466174ecd6931ac451e81bb3dda5d710f325822ba737dbe245309161
+neapolitan==24.6 \
+    --hash=sha256:0c84963a4b5cab2411952ee5bd939adbb8987ef27b3a53ca1399ab607b691cab \
+    --hash=sha256:2315b23fdfac09c380fd3e3899af237b77db702f60e6779e66dd9f133bce571b
     # via django-twc-toolbox
 oauthlib==3.2.2 \
     --hash=sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca \
@@ -531,9 +531,9 @@ pygments==2.18.0 \
     --hash=sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199 \
     --hash=sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a
     # via joshthomas-dev (pyproject.toml)
-pyjwt==2.8.0 \
-    --hash=sha256:57e28d156e3d5c10088e0c68abb90bfac3df82b40a71bd0daa20c65ccd5c23de \
-    --hash=sha256:59127c392cc44c2da5bb3192169a91f429924e17aff6534d70fdc02ab3e04320
+pyjwt==2.9.0 \
+    --hash=sha256:3b02fb0f44517787776cf48f2ae25d8e14f300e6d7545a4315cee571a415e850 \
+    --hash=sha256:7e1e5b56cc735432a7369cbfa0efe50fa113ebecdc04ae6922deba8b84582d0c
     # via django-allauth
 pyotp==2.9.0 \
     --hash=sha256:346b6642e0dbdde3b4ff5a930b664ca82abfa116356ed48cc42c7d6590d36f63 \
