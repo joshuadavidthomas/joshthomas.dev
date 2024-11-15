@@ -1,149 +1,152 @@
 # syntax=docker/dockerfile:1
+ARG DJANGO_PORT=8000
 ARG PYTHON_VERSION=3.12
 ARG NODE_VERSION=20
 ARG UID=1000
 ARG GID=1000
 
 FROM python:${PYTHON_VERSION}-slim as base
+
+SHELL ["/bin/sh", "-exc"]
+ARG NODE_VERSION
 ARG UID
 ARG GID
-ENV DEBUG False
 ENV DEBIAN_FRONTEND noninteractive
-ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV DEBUG False
 ENV PYTHONPATH /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV UV_SYSTEM_PYTHON true
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  echo 'deb http://deb.debian.org/debian/ bookworm main contrib' >> /etc/apt/sources.list \
-  && apt-get update --fix-missing \
-  && apt-get install -y --no-install-recommends \
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV UV_LINK_MODE copy
+ENV UV_COMPILE_BYTECODE 1
+ENV UV_PYTHON_DOWNLOADS never
+ENV UV_PYTHON python${PYTHON_VERSION}
+ENV UV_PROJECT_ENVIRONMENT /app
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get update -qy \
+  && apt-get install -qyy \
+  -o APT::Install-Recommends=false \
+  -o APT::Install-Suggests=false \
   build-essential \
   curl \
   git \
   jq \
-  # litefs
-  fuse3 \
-  gosu \
-  sqlite3 \
-  # cleanup
-  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
-  && mkdir -p /app \
-  && addgroup -gid "${GID}" --system django \
-  && adduser -uid "${UID}" -gid "${GID}" --home /home/django --system django
-WORKDIR /app
-
-
-FROM base as node-base
-ARG NODE_VERSION
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
-  && apt-get update --fix-missing \
-  && apt-get install -y --no-install-recommends nodejs \
+  && curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
+  && apt-get update -qy \
+  && apt-get install -qyy \
+  -o APT::Install-Recommends=false \
+  -o APT::Install-Suggests=false \
+  nodejs \
   && npm install -g npm@latest \
-  && apt-get autoremove -y \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
 
 
-FROM base as py
-COPY --link requirements.txt ./
-RUN --mount=type=cache,target=/root/.cache/pip --mount=type=cache,target=/root/.cache/uv \
-  python -m pip install --upgrade pip uv \
-  && uv pip install -r requirements.txt
+FROM base AS py-deps
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY pyproject.toml uv.lock /_lock/
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /_lock || exit
+uv sync \
+    --locked \
+    --no-dev \
+    --no-install-project
+EOT
 
 
-FROM py as py-dev
-COPY --from=py --link /usr/local /usr/local
-COPY --link pyproject.toml ./
-RUN --mount=type=cache,target=/root/.cache/pip --mount=type=cache,target=/root/.cache/uv \
-  uv pip install -c requirements.txt -r pyproject.toml --extra dev
+FROM py-deps AS py-dev
+
+COPY . /src
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /src || exit 1
+uv sync \
+    --locked \
+    --dev
+EOT
 
 
-FROM node-base as node
-COPY --from=py-dev --link /usr/local /usr/local
-COPY --link package*.json /app
-RUN --mount=type=cache,target=/root/.npm \
-  npm install
+FROM py-deps AS py-prod
+
+COPY . /src
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /src || exit
+uv sync \
+  --locked \
+  --no-dev \
+  --no-editable
+EOT
 
 
-FROM node as tailwind
+FROM py-deps as node-deps
+
 ARG UID
 ARG GID
 ARG BUILDARCH
 ARG BUILDVARIANT
-RUN case ${BUILDARCH} in \
-  arm64) \
-  case ${BUILDVARIANT} in \
-  v7) TAILWINDCSS_ARCH=armv7 ;; \
-  *)  TAILWINDCSS_ARCH=arm64 ;; \
-  esac ;; \
-  *) TAILWINDCSS_ARCH=x64 ;; \
-  esac \
-  && TAILWINDCSS_VERSION=$(jq -r '.dependencies.tailwindcss // .devDependencies.tailwindcss' package.json | sed 's/^[^0-9]*//') \
-  && curl -L https://github.com/tailwindlabs/tailwindcss/releases/download/v${TAILWINDCSS_VERSION}/tailwindcss-linux-${TAILWINDCSS_ARCH} -o /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION} \
-  && chmod 755 /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION} \
-  && chown ${UID}:${GID} /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION}
+COPY . /src
+RUN --mount=type=cache,target=/root/.npm <<EOT
+cd /src || exit
+npm install
+case ${BUILDARCH} in
+  arm64)
+    case ${BUILDVARIANT} in
+      v7) TAILWINDCSS_ARCH=armv7 ;;
+      *)  TAILWINDCSS_ARCH=arm64 ;;
+    esac ;;
+  *) TAILWINDCSS_ARCH=x64 ;;
+esac
+TAILWINDCSS_VERSION=$(jq -r '.dependencies.tailwindcss // .devDependencies.tailwindcss' package.json | sed 's/^[^0-9]*//')
+curl -L https://github.com/tailwindlabs/tailwindcss/releases/download/v${TAILWINDCSS_VERSION}/tailwindcss-linux-${TAILWINDCSS_ARCH} -o /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION}
+chmod 755 /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION}
+chown ${UID}:${GID} /usr/local/bin/tailwindcss-linux-${TAILWINDCSS_ARCH}-${TAILWINDCSS_VERSION}
+EOT
 
 
-FROM base as app
-COPY --link litefs.yml manage.py package.json redirects.json /app/
-COPY --link blog /app/blog
-COPY --link config /app/config
-COPY --link content /app/content
-COPY --link core /app/core
-COPY --link flyio /app/flyio
-COPY --link templates /app/templates
-COPY --link users /app/users
+FROM py-deps AS static
 
-
-FROM mcr.microsoft.com/playwright/python:v1.46.0 as dev
-ENV DEBIAN_FRONTEND noninteractive
-ENV UV_SYSTEM_PYTHON true
-COPY --from=py-dev --link /usr/local /usr/local
-COPY --from=app --link /app /app
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  apt-get update --fix-missing \
-  && apt-get install -y --no-install-recommends \
-  # timezone data missing from Ubuntu base image that Playwright uses
-  # (it's normally included in the Python based images)
-  tzdata \
-  # cleanup
-  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-
-FROM node as node-final
-ENV DATABASE_URL sqlite://:memory:
-COPY --from=tailwind --link /usr/local /usr/local
-COPY --from=app --link /app /app
-COPY --link static/src /app/static/src
-COPY --link postcss.config.mjs tailwind.config.mjs /app/
-RUN python manage.py tailwind --skip-checks build
-
-
-FROM app as static
-ENV DATABASE_URL sqlite://:memory:
-COPY --from=py-dev --link /usr/local /usr/local
 COPY --from=node-final --link /app/static/dist /app/static/dist
 COPY --from=node-final --link /app/package*.json /app/
-COPY --link static/public /app/static/public
-RUN python manage.py collectstatic --noinput --clear --skip-checks --no-default-ignore
+COPY --link . /app/
+RUN uv run manage.py tailwind --skip-checks build \
+  && uv run manage.py collectstatic --noinput --clear --skip-checks --no-default-ignore
 
 
-FROM base as final
+FROM python:${PYTHON_VERSION}-slim AS final
+
+SHELL ["/bin/sh", "-exc"]
+ARG DJANGO_PORT
 ARG UID
 ARG GID
-COPY --from=py --link /usr/local /usr/local
-COPY --from=app --chown=${UID}:${GID} --link /app /app
+ENV PATH=/app/bin:$PATH
+ENV PYTHONPATH /app
+ENV PYTHONUNBUFFERED 1
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get update -qy && \
+  apt-get install -qyy \
+  -o APT::Install-Recommends=false \
+  -o APT::Install-Suggests=false \
+  # litefs
+  fuse3 \
+  gosu \
+  sqlite3 \
+  && apt-get clean -y \
+  && rm -rf /var/lib/apt/lists/* \
+  && groupadd -g "${GID}" --system django \
+  && useradd -u "${UID}" -g "${GID}" --home /app --system django \
+  && mkdir -p /app \
+  && chown ${UID}:${GID} /app
+
+COPY --from=py-deps --chown=${UID}:${GID} --link /app /app
 COPY --from=static --chown=${UID}:${GID} --link /app/staticfiles /app/staticfiles
+COPY --chown=${UID}:${GID} --link . /app/
 COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
-RUN mkdir -p /app/.cache \
-  && chown ${UID}:${GID} /app/.cache \
-  && apt-get remove -y --purge \
-  build-essential \
-  curl \
-  git \
-  jq \
-  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-EXPOSE 8000
+
+USER django
+WORKDIR /app
+EXPOSE ${DJANGO_PORT}
 ENTRYPOINT litefs mount

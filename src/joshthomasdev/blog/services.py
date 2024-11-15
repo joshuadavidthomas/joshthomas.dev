@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from django.http import HttpRequest
 from django.utils import timezone
 
-from core.date_utils import get_range_between_dates
+from joshthomasdev.core.date_utils import get_range_between_dates
 
 from .models import Entry
 from .models import Link

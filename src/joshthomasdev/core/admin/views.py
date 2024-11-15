@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
-from users.models import OTPData
-from users.models import User
+from joshthomasdev.users.models import OTPData
+from joshthomasdev.users.models import User
 
 
 class AdminSetupTwoFactorAuthView(TemplateView):

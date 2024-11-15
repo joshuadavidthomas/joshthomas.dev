@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 
-from core.date_utils import get_range_between_dates
+from joshthomasdev.core.date_utils import get_range_between_dates
 
 
 @pytest.mark.parametrize(

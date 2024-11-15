@@ -10,7 +10,7 @@ from .machines import is_primary_instance
 
 class FlyioConfig(AppConfig):
     default_auto_field = "django.db.models.AutoField"
-    name = "flyio"
+    name = "joshthomasdev.flyio"
     label = "flyio"
     verbose_name = "Fly.io"
 

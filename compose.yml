@@ -2,24 +2,26 @@ x-app: &default-app
   build:
     context: .
     dockerfile: Dockerfile
-    target: dev
-  env_file: .env
+    target: py-dev
+  env_file:
+    - path: .env
+      required: false
   init: true
   user: "${UID:-1000}:${GID:-1000}"
   volumes:
-    - .:/app:cached
-  working_dir: /app
+    - .:/src:cached
+  working_dir: /src
 
 services:
   app:
     <<: *default-app
-    command: python manage.py runserver 0.0.0.0:8000 --skip-checks
+    command: uv run manage.py runserver 0.0.0.0:8000 --skip-checks
     ports:
       - "${DJANGO_PORT:-8000}:8000"
 
   tailwind:
     <<: *default-app
     build:
-      target: tailwind
-    command: python manage.py tailwind --skip-checks watch
+      target: node-deps
+    command: uv run manage.py tailwind --skip-checks watch
     tty: true

@@ -774,9 +774,9 @@ wheels = [
 ]
 
 [[package]]
-name = "joshthomas-dev"
-version = "0.0.0"
-source = { virtual = "." }
+name = "joshthomasdev"
+version = "2024.11.1"
+source = { editable = "." }
 dependencies = [
     { name = "attrs" },
     { name = "croniter" },
@@ -811,30 +811,6 @@ dependencies = [
     { name = "yamdl" },
 ]
 
-[package.optional-dependencies]
-dev = [
-    { name = "coverage" },
-    { name = "django-browser-reload" },
-    { name = "django-coverage-plugin" },
-    { name = "django-debug-toolbar" },
-    { name = "django-stubs" },
-    { name = "faker" },
-    { name = "ipython" },
-    { name = "model-bakery" },
-    { name = "mypy" },
-    { name = "playwright" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-django" },
-    { name = "pytest-is-running" },
-    { name = "pytest-playwright" },
-    { name = "pytest-randomly" },
-    { name = "pytest-xdist" },
-    { name = "ruff" },
-    { name = "types-pygments" },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "coverage" },
@@ -862,15 +838,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "attrs", specifier = ">=24.2.0" },
-    { name = "coverage", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=7.6.1" },
     { name = "croniter", specifier = ">=3.0.3" },
     { name = "django", specifier = "<5.2" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=64.2.1" },
-    { name = "django-browser-reload", marker = "extra == 'dev'", specifier = ">=1.15.0" },
     { name = "django-click", specifier = ">=2.4.0" },
     { name = "django-cotton", specifier = ">=0.9.40" },
-    { name = "django-coverage-plugin", marker = "extra == 'dev'", specifier = ">=3.1.0" },
-    { name = "django-debug-toolbar", marker = "extra == 'dev'", specifier = ">=4.4.6" },
     { name = "django-extensions", specifier = ">=3.2.3" },
     { name = "django-filter", specifier = ">=24.3" },
     { name = "django-flyio", specifier = ">=0.1.1" },
@@ -878,38 +850,22 @@ requires-dist = [
     { name = "django-htmx", specifier = ">=1.19.0" },
     { name = "django-simple-history", specifier = ">=3.7.0" },
     { name = "django-simple-nav", specifier = ">=0.11.0" },
-    { name = "django-stubs", marker = "extra == 'dev'", specifier = ">=5.0.4" },
     { name = "django-stubs-ext", specifier = ">=5.0.4" },
     { name = "django-tailwind-cli", specifier = ">=2.15.0" },
     { name = "django-template-partials", specifier = ">=24.4" },
     { name = "django-twc-toolbox", extras = ["crud"], specifier = ">=0.16.0" },
     { name = "djangorestframework", specifier = ">=3.15.2" },
     { name = "environs", extras = ["django"], specifier = ">=11.0.0" },
-    { name = "faker", marker = "extra == 'dev'", specifier = ">=28.4.1" },
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "heroicons", extras = ["django"], specifier = ">=2.8.0" },
     { name = "httpx", specifier = ">=0.27.2" },
-    { name = "ipython", marker = "extra == 'dev'", specifier = ">=8.27.0" },
     { name = "markdown-it-py", extras = ["plugins"], specifier = ">=3.0.0" },
-    { name = "model-bakery", marker = "extra == 'dev'", specifier = ">=1.19.5" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
     { name = "pillow", specifier = ">=10.4.0" },
-    { name = "playwright", marker = "extra == 'dev'", specifier = ">=1.47.0" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.8.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.1" },
     { name = "pygments", specifier = ">=2.18.0" },
     { name = "pyotp", specifier = ">=2.9.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0.0" },
-    { name = "pytest-django", marker = "extra == 'dev'", specifier = ">=4.9.0" },
-    { name = "pytest-is-running", marker = "extra == 'dev'", specifier = ">=1.5.1" },
-    { name = "pytest-playwright", marker = "extra == 'dev'", specifier = ">=0.5.2" },
-    { name = "pytest-randomly", marker = "extra == 'dev'", specifier = ">=3.15.0" },
-    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.6.1" },
     { name = "qrcode", extras = ["pil"], specifier = ">=7.4.2" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.5" },
     { name = "sentry-sdk", extras = ["django"], specifier = ">=2.14.0" },
-    { name = "types-pygments", marker = "extra == 'dev'", specifier = ">=2.18.0.20240506" },
     { name = "whitenoise", specifier = ">=6.7.0" },
     { name = "yamdl", specifier = ">=1.0.0" },
 ]

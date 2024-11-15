@@ -4,4 +4,4 @@ from django.contrib.admin.apps import AdminConfig
 
 
 class default(AdminConfig):
-    default_site = "core.admin.sites.AdminSite"
+    default_site = "joshthomasdev.core.admin.sites.AdminSite"

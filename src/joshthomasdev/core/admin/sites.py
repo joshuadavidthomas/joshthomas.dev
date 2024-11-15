@@ -6,8 +6,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.urls import path
 from django.urls import reverse
 
-from config import __version__
-from users.models import OTPData
+from joshthomasdev import __version__
+from joshthomasdev.users.models import OTPData
 
 from .views import AdminConfirmTwoFactorAuthView
 from .views import AdminSetupTwoFactorAuthView

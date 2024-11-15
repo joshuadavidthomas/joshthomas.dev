@@ -16,6 +16,7 @@
 !redirects.json
 !requirements*.txt
 !tailwind.config.mjs
+!uv.lock
 
 **/*~
 **/*.log

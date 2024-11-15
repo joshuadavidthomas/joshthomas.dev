@@ -6,7 +6,7 @@ from django.urls import include
 from django.urls import path
 from health_check.views import MainView
 
-from core import views as core_views
+from joshthomasdev.core import views as core_views
 
 urlpatterns = [
     path(".well-known/security.txt", core_views.security_txt),
@@ -19,8 +19,8 @@ urlpatterns = [
     path("", core_views.index, name="index"),
 ]
 
-handler404 = "core.views.custom_error_404"  # noqa: F811
-handler500 = "core.views.custom_error_500"  # noqa: F811
+handler404 = "joshthomasdev.core.views.custom_error_404"  # noqa: F811
+handler500 = "joshthomasdev.core.views.custom_error_500"  # noqa: F811
 
 
 if settings.DEBUG:

@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 from sentry_sdk import last_event_id
 
-from blog.models import Entry
+from joshthomasdev.blog.models import Entry
 
 from .raindrop import raindropio
 from .steam import get_recently_played_games

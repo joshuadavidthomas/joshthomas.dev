@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from core.models import TimeStamped
+from joshthomasdev.core.models import TimeStamped
 
 from .managers import OTPDataManager
 

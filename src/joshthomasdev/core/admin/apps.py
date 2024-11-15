@@ -4,7 +4,7 @@ from django.apps import AppConfig
 
 
 class AdminConfig(AppConfig):
-    name = "core.admin"
+    name = "joshthomasdev.core.admin"
     label = "core_admin"
     verbose_name = "joshthomas.dev Admin"
     default_site = "core.admin.sites.AdminSite"

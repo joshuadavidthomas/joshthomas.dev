@@ -5,8 +5,8 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
-from core.markdown import md
-from core.models import TimeStamped
+from joshthomasdev.core.markdown import md
+from joshthomasdev.core.models import TimeStamped
 
 from .managers import EntryQuerySet
 
