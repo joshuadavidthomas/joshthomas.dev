@@ -1,7 +1,9 @@
 {% load heroicons %}
 
 {% for item in items %}
-  <a href={{ item.url }}{% if item.title == "Mastodon" %} rel="me"{% endif %} hx-boost="false">
+  <a href="{{ item.url }}"
+     {% if item.title == "Mastodon" %}rel="me"{% endif %}
+     hx-boost="false">
     <span class="sr-only">{{ item.title }}</span>
     {% if item.title == "Mastodon" %}
       <c-icon.mastodon class="size-4 xs:size-6 hover:text-[#6364FF]" />
