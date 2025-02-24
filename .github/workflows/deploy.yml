@@ -78,7 +78,7 @@ jobs:
           SENTRY_AUTH_TOKEN: "op://GitHub Actions/sentry/RELEASE_TOKEN"
 
       - name: Create Sentry release
-        uses: getsentry/action-release@v1.10.4
+        uses: getsentry/action-release@v2.0.0
         env:
           SENTRY_ORG: "dunbrook-web"
           SENTRY_PROJECT: "joshthomasdev"
