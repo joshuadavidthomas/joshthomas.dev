@@ -1,0 +1,50 @@
+---js
+const eleventyNavigation = {
+	key: "Blog",
+	order: 2
+};
+const layout = "base.njk";
+---
+<h1 class="sr-only">Blog</h1>
+<div class="max-w-2xl mx-auto space-y-8">
+  {%- for post in collections.posts | reverse -%}
+    <article>
+      <time datetime="{{ post.date | htmlDateString }}" class="text-xs text-gray-500 dark:text-gray-400">{{ post.date | readableDate("LLLL d, yyyy") }}</time>
+      <div class="group relative">
+        <h3 class="mt-2 text-xl/6 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
+          <a href="{{ post.url }}">
+            <span class="absolute inset-0"></span>
+            {{ post.data.title }}
+          </a>
+        </h3>
+        <p class="mt-4 line-clamp-3 text-sm/6 text-gray-600 dark:text-gray-300">
+          {{ post.data.summary }}
+        </p>
+      </div>
+    </article>
+  {%- endfor -%}
+  {% if pagination.href.next or pagination.href.previous %}
+    <nav class="flex justify-between items-center mt-8">
+      <p class="text-sm text-gray-800 dark:text-gray-200">
+        Page
+        <span class="font-medium">{{ page_obj.number }}</span>
+        of
+        <span class="font-medium">{{ page_obj.paginator.num_pages }}</span>
+      </p>
+      <div class="flex mt-1 text-sm">
+        {% if pagination.href.previous %}
+          <span class="flex items-center space-x-2">
+            <a href="{{ pagination.href.first }}{{ paginationAnchor }}" data-direction="backwards" class="flex items-center hover:underline">first</a>
+            <a href="{{ pagination.href.previous }}{{ paginationAnchor }}" class="hover:underline">previous</a>
+          </span>
+        {% endif %}
+        {% if pagination.href.next %}
+          <span class="flex items-center ml-auto space-x-2">
+            <a href="{{ pagination.href.next }}{{ paginationAnchor }}" class="hover:underline">next</a>
+            <a href="#" class="flex items-center hover:underline">last</a>
+          </span>
+        {% endif %}
+      </div>
+    </nav>
+  {%- endif %}
+</div>
