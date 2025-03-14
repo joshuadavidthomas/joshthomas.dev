@@ -1,11 +1,39 @@
 import { DateTime } from "luxon";
-import eleventyNavigationPlugin from "@11ty/eleventy-navigation";
-import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import EleventyPluginNavigation from "@11ty/eleventy-navigation";
+import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
+import EleventyPluginSyntaxhighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import EleventyPluginVite from "@11ty/eleventy-plugin-vite";
 import MarkdownItGitHubAlerts from 'markdown-it-github-alerts';
-import { feedPlugin } from "@11ty/eleventy-plugin-rss";
+import markdownIt from "markdown-it";
+import tailwindcss from '@tailwindcss/vite'
+
+/** @type {import('vite').UserConfig} */
+const viteOptions = {
+  appType: "custom",
+  assetsInclude: ["**/*.xml", "**/*.txt"],
+  build: {
+    mode: "production",
+    sourcemap: "true",
+    manifest: true,
+    rollupOptions: {
+      output: {
+        assetFileNames: "assets/css/main.[hash].css",
+        chunkFileNames: "assets/js/[name].[hash].js",
+        entryFileNames: "assets/js/[name].[hash].js",
+      },
+      plugins: [],
+    },
+  },
+  clearScreen: false,
+  plugins: [
+    tailwindcss(),
+  ],
+  publicDir: "public",
+  server: { middlewareMode: true },
+};
 
 export default function (eleventyConfig) {
-  eleventyConfig.ignores.add("src/_assets/css/style.css");
+  eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
   eleventyConfig.addPassthroughCopy({ "src/_assets/fonts": "fonts" })
   eleventyConfig.addPassthroughCopy({ "src/_assets/images": "images" })
@@ -14,6 +42,39 @@ export default function (eleventyConfig) {
   eleventyConfig.addBundle("css");
   eleventyConfig.addBundle("html");
   eleventyConfig.addBundle("js");
+
+  eleventyConfig.addPlugin(EleventyPluginNavigation);
+  eleventyConfig.addPlugin(EleventyPluginRss, {
+    type: "rss",
+    outputPath: "/blog/feed.xml",
+    collection: {
+      name: "posts",
+      limit: 10,
+    },
+    metadata: {
+      language: "en-us",
+      title: "Josh Thomas",
+      subtitle: "Latest entries posted to Josh Thomas's blog.",
+      base: "https://joshthomas.dev/blog/",
+      author: {
+        name: "Josh Thomas",
+      }
+    }
+  });
+  eleventyConfig.addPlugin(EleventyPluginSyntaxhighlight);
+  eleventyConfig.addPlugin(EleventyPluginVite, {
+    tempFolderName: "_tmp",
+    viteOptions,
+  });
+
+  eleventyConfig.setLibrary(
+    "md",
+    markdownIt({
+      html: true,
+      breaks: true,
+      linkify: true
+    }).use(MarkdownItGitHubAlerts),
+  );
 
   eleventyConfig.setServerOptions({
     watch: [
@@ -31,29 +92,6 @@ export default function (eleventyConfig) {
     return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat('yyyy-LL-dd');
   });
 
-  eleventyConfig.addPlugin(eleventyNavigationPlugin);
-  eleventyConfig.addPlugin(feedPlugin, {
-    type: "rss",
-    outputPath: "/blog/feed.xml",
-    collection: {
-      name: "posts",
-      limit: 10,
-    },
-    metadata: {
-      language: "en-us",
-      title: "Josh Thomas",
-      subtitle: "Latest entries posted to Josh Thomas's blog.",
-      base: "https://joshthomas.dev/blog/",
-      author: {
-        name: "Josh Thomas",
-      }
-    }
-  });
-  eleventyConfig.addPlugin(syntaxHighlight);
-
-  eleventyConfig.amendLibrary("md", (mdLib) => {
-    mdLib.use(MarkdownItGitHubAlerts)
-  });
 
   eleventyConfig.addCollection("posts", function (collection) {
     return [...collection.getFilteredByGlob('./src/posts/**/*.md')].reverse();
@@ -67,6 +105,7 @@ export default function (eleventyConfig) {
     },
     htmlTemplateEngine: "njk",
     markdownTemplateEngine: "njk",
+    passthroughFileCopy: true,
     templateFormats: ["html", "njk", "md"],
   };
 };
