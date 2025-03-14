@@ -77,7 +77,9 @@ body {
     color: inherit;
     font-size: var(--text-sm);
     margin-bottom: calc(var(--spacing) * 4);
-    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    padding-bottom: calc(var(--spacing) * 4);
+    padding-left: calc(var(--spacing) * 6);
+    padding-top: calc(var(--spacing) * 2);
 
     >:first-child {
       margin-top: 0 !important;
@@ -200,6 +202,7 @@ body {
   pre[class*="language-"] {
     background-color: #e1e2e7 !important;
     color: #3760bf !important;
+    font-size: var(--text-sm) !important;
 
     .token.builtin,
     .token.prolog {
