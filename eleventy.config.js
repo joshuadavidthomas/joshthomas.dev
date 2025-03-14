@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
-import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
 import EleventyPluginSyntaxhighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import EleventyPluginVite from "@11ty/eleventy-plugin-vite";
+import { feedPlugin } from "@11ty/eleventy-plugin-rss";
 import MarkdownItGitHubAlerts from 'markdown-it-github-alerts';
 import markdownIt from "markdown-it";
 import tailwindcss from '@tailwindcss/vite'
@@ -44,7 +44,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addBundle("js");
 
   eleventyConfig.addPlugin(EleventyPluginNavigation);
-  eleventyConfig.addPlugin(EleventyPluginRss, {
+  eleventyConfig.addPlugin(feedPlugin, {
     type: "rss",
     outputPath: "/blog/feed.xml",
     collection: {
