@@ -35,9 +35,9 @@ const viteOptions = {
 export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
+  eleventyConfig.addPassthroughCopy({ "src/_assets/css": "css" })
   eleventyConfig.addPassthroughCopy({ "src/_assets/fonts": "fonts" })
   eleventyConfig.addPassthroughCopy({ "src/_assets/images": "images" })
-  eleventyConfig.addPassthroughCopy({ "src/_assets/css": "css" })
 
   eleventyConfig.addBundle("css");
   eleventyConfig.addBundle("html");

@@ -1,6 +1,5 @@
 .cache/
 dist/
-src/_assets/css/style.css
 test/
 .env*
 README.md

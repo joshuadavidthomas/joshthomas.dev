@@ -73,10 +73,11 @@ body {
 
 @layer components {
   .markdown-alert {
-    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
-    margin-bottom: calc(var(--spacing) * 4);
-    color: inherit;
     border-left: .25em solid #888;
+    color: inherit;
+    font-size: var(--text-sm);
+    margin-bottom: calc(var(--spacing) * 4);
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
 
     >:first-child {
       margin-top: 0 !important;
@@ -87,10 +88,11 @@ body {
     }
 
     .markdown-alert-title {
-      display: flex;
-      font-weight: 500;
       align-items: center;
-      line-height: 1;
+      display: flex;
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: var(--text-base--line-height);
 
       .octicon {
         margin-right: calc(var(--spacing) * 2);
