@@ -1,9 +1,12 @@
----js
-const eleventyNavigation = {
-	key: "Blog",
-	order: 2
-};
-const layout = "base.njk";
+---
+eleventyNavigation:
+  key: Blog
+  order: 2
+layout: base.njk
+pagination:
+  data: collections.posts
+  size: 10
+  alias: posts
 ---
 <h1 class="sr-only">Blog</h1>
 <div class="max-w-2xl mx-auto space-y-8">
@@ -31,7 +34,7 @@ const layout = "base.njk";
         of
         <span class="font-medium">{{ pagination.pages.length }}</span>
       </p>
-      <div class="flex mt-1 text-sm">
+      <div class="flex gap-4 mt-1 text-sm">
         {% if pagination.href.previous %}
           <span class="flex items-center space-x-2">
             <a href="{{ pagination.href.first }}" data-direction="backwards" class="flex items-center hover:underline">first</a>

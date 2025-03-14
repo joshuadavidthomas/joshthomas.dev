@@ -1,0 +1,36 @@
+{
+  "name": "eleventy-demo",
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-fetch": "^5.0.2",
+    "@11ty/eleventy-navigation": "^0.3.5",
+    "@11ty/eleventy-plugin-rss": "^2.0.3",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@tailwindcss/cli": "^4.0.11",
+    "@tailwindcss/typography": "^0.5.16",
+    "luxon": "^3.5.0",
+    "markdown-it-github-alerts": "^0.3.1",
+    "tailwindcss": "^4.0.10",
+    "vite": "^6.2.0"
+  },
+  "scripts": {
+    "dev": "bun .bin/runner.ts dev",
+    "dev:11ty": "eleventy --serve",
+    "dev:css": "tailwindcss -i src/_assets/css/style.css -o dist/css/style.css --watch",
+    "build": "bun .bin/runner.ts build",
+    "build:11ty": "eleventy",
+    "build:css": "tailwindcss -i src/_assets/css/style.css -o dist/css/style.css"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@parcel/watcher"
+  ]
+}
