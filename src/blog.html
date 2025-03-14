@@ -12,7 +12,7 @@ pagination:
 <div class="max-w-2xl mx-auto space-y-8">
   {%- for post in posts -%}
     <article>
-      <time datetime="{{ post.date | htmlDateString }}" class="text-xs text-gray-500 dark:text-gray-400">{{ post.date | readableDate("LLLL d, yyyy") }}</time>
+      <time datetime="{{ post.date | dateToHtmlString }}" class="text-xs text-gray-500 dark:text-gray-400">{{ post.date | dateToFormat("LLLL d, yyyy") }}</time>
       <div class="group relative">
         <h3 class="mt-2 text-xl/6 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
           <a href="{{ post.url }}">

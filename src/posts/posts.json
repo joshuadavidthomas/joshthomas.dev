@@ -1,4 +1,4 @@
 {
   "layout": "post.njk",
-  "permalink": "/blog/{{ date | readableDate('yyyy') }}/{{ title | slugify }}/"
+  "permalink": "/blog/{{ date | dateToFormat('yyyy') }}/{{ title | slugify }}/"
 }

@@ -19,9 +19,9 @@ layout: base.njk
     {% set latestPost = collections.posts | first %}
     <div>
       <h2 class="text-lg font-medium">Latest Post 📚</h2>
-      <time datetime="{{ latestPost.date | htmlDateString }}" class="block mb-2 text-xs text-gray-600
+      <time datetime="{{ latestPost.date | dateToHtmlString }}" class="block mb-2 text-xs text-gray-600
  dark:text-gray-300">
-       {{ latestPost.date | readableDate("LLLL d, yyyy") }}
+       {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
      </time>
       <a href="/blog/"
           class="text-sm font-medium tracking-tighter text-gray-600 sm:text-sm dark:text-gray-200 hover:text-blue-500 hover:underline">

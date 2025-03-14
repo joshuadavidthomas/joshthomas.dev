@@ -7,6 +7,9 @@ import MarkdownItGitHubAlerts from 'markdown-it-github-alerts';
 import markdownIt from "markdown-it";
 import tailwindcss from '@tailwindcss/vite'
 
+import collections from "./src/_utils/collections.js";
+import filters from "./src/_utils/filters.js";
+
 /** @type {import('vite').UserConfig} */
 const viteOptions = {
   appType: "custom",
@@ -74,25 +77,12 @@ export default function (eleventyConfig) {
     }).use(MarkdownItGitHubAlerts),
   );
 
-  eleventyConfig.setServerOptions({
-    watch: [
-      "dist/**/*.css",
-    ]
-  })
-
-  eleventyConfig.addFilter("readableDate", (dateObj, format, zone) => {
-    // Formatting tokens for Luxon: https://moment.github.io/luxon/#/formatting?id=table-of-tokens
-    return DateTime.fromJSDate(dateObj, { zone: zone || "utc" }).toFormat(format || "dd LLLL yyyy");
+  Object.keys(collections).forEach((collectionName) => {
+    eleventyConfig.addCollection(collectionName, collections[collectionName]);
   });
 
-  eleventyConfig.addFilter("htmlDateString", (dateObj) => {
-    // dateObj input: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string
-    return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat('yyyy-LL-dd');
-  });
-
-
-  eleventyConfig.addCollection("posts", function (collection) {
-    return [...collection.getFilteredByGlob('./src/posts/**/*.md')].reverse();
+  Object.keys(filters).forEach((filterName) => {
+    eleventyConfig.addFilter(filterName, filters[filterName]);
   });
 
   return {
