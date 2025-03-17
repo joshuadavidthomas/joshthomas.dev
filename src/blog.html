@@ -10,7 +10,7 @@ pagination:
 ---
 <h1 class="sr-only">Blog</h1>
 <div class="max-w-2xl mx-auto space-y-8">
-  {%- for post in posts -%}
+  {%- for post in posts | reverse -%}
     <article>
       <time datetime="{{ post.date | dateToHtmlString }}" class="text-xs text-gray-500 dark:text-gray-400">{{ post.date | dateToFormat("LLLL d, yyyy") }}</time>
       <div class="group relative">
