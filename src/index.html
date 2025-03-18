@@ -15,7 +15,7 @@ layout: base.njk
     <h1 class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</h1>
     <p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
   </div>
-  <section class="mt-24 flex flex-col gap-6">
+  <section class="mt-24">
     <div class="flex flex-col sm:flex-row justify-between">
       <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
       <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
@@ -35,7 +35,7 @@ layout: base.njk
       </div>
     </div>
     {% set latestPost = collections.posts | getNewestCollectionItem %}
-    <article class="group relative">
+    <article class="group relative mt-6">
       <time datetime="{{ latestPost.date | dateToHtmlString }}" class="block text-xs sm:text-sm text-gray-600
  dark:text-gray-300">
        {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}

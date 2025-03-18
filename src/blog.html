@@ -19,7 +19,7 @@ pagination:
     RSS Feed
   </a>
 </header>
-<div class="mt-4 max-w-2xl mx-auto space-y-12">
+<div class="mt-4 max-w-2xl mx-auto flex flex-col gap-12">
   {%- for post in posts | reverse -%}
     <article class="group relative">
       <time datetime="{{ post.date | dateToHtmlString }}" class="block text-xs sm:text-sm text-gray-600
