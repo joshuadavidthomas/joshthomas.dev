@@ -12,13 +12,13 @@ layout: base.njk
           alt="A picture of Josh"
           fetchpriority="high"
           class="mx-auto size-56 rounded-full sm:size-72 drop-shadow-md" />
-    <h1 class="mt-6 text-4xl/8 font-bold tracking-tight md:text-5xl/8">👋 Hi, my name is Josh</h1>
-    <p class="mt-2 text-base sm:mt-4 md:text-2xl">I'm a web developer living in Alabama</p>
+    <h1 class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</h1>
+    <p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
   </div>
-  <section class="mt-24 space-y-4">
-    <div class="flex flex-col xs:flex-row justify-between">
-      <h2 class="text-lg font-medium">Latest blog post</h2>
-      <div class="text-xs sm:text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
+  <section class="mt-24 space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between">
+      <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
+      <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
         <a href="/blog/feed/" class="flex items-center gap-1 group">
           <svg class="size-4 xs:size-6 p-0.5 text-[#FFA500] group-hover:text-blue-500" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" height='24' width='24'>
             <title>RSS</title>
@@ -35,23 +35,21 @@ layout: base.njk
       </div>
     </div>
     {% set latestPost = collections.posts | getNewestCollectionItem %}
-    <article>
-     <div class="group relative">
-      <time datetime="{{ latestPost.date | dateToHtmlString }}" class="block mb-2 text-xs text-gray-600
+    <article class="group relative">
+      <time datetime="{{ latestPost.date | dateToHtmlString }}" class="block text-xs sm:text-sm text-gray-600
  dark:text-gray-300">
        {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
      </time>
-       <h3 class="text-xl/6 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600
+       <h3 class="mt-1 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600
  dark:group-hover:text-gray-400">
          <a href="{{ latestPost.url }}">
            <span class="absolute inset-0"></span>
            {{ latestPost.data.title }}
          </a>
        </h3>
-       <p class="mt-4 text-sm/6 text-gray-600 dark:text-gray-300">
+       <p class="mt-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
          {{ latestPost.data.summary }}
        </p>
-     </div>
     </article>
   </section>
 </div>

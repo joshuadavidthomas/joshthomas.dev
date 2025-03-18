@@ -19,21 +19,23 @@ pagination:
     RSS Feed
   </a>
 </header>
-<div class="mt-4 max-w-2xl mx-auto space-y-8">
+<div class="mt-4 max-w-2xl mx-auto space-y-12">
   {%- for post in posts | reverse -%}
-    <article>
-      <time datetime="{{ post.date | dateToHtmlString }}" class="text-xs text-gray-500 dark:text-gray-400">{{ post.date | dateToFormat("LLLL d, yyyy") }}</time>
-      <div class="group relative">
-        <h3 class="mt-2 text-xl/6 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
-          <a href="{{ post.url }}">
-            <span class="absolute inset-0"></span>
-            {{ post.data.title }}
-          </a>
-        </h3>
-        <p class="mt-4 line-clamp-3 text-sm/6 text-gray-600 dark:text-gray-300">
-          {{ post.data.summary }}
-        </p>
-      </div>
+    <article class="group relative">
+      <time datetime="{{ post.date | dateToHtmlString }}" class="block text-xs sm:text-sm text-gray-600
+ dark:text-gray-300">
+       {{ post.date | dateToFormat("LLLL d, yyyy") }}
+     </time>
+       <h3 class="mt-1 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600
+ dark:group-hover:text-gray-400">
+         <a href="{{ post.url }}">
+           <span class="absolute inset-0"></span>
+           {{ post.data.title }}
+         </a>
+       </h3>
+       <p class="mt-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
+         {{ post.data.summary }}
+       </p>
     </article>
   {%- endfor -%}
   {% if pagination.href.next or pagination.href.previous %}
