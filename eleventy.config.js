@@ -13,12 +13,11 @@ const viteOptions = {
   appType: "custom",
   assetsInclude: ["**/*.xml", "**/*.txt"],
   build: {
-    mode: "production",
     sourcemap: "true",
     manifest: true,
     rollupOptions: {
       output: {
-        assetFileNames: "assets/css/[name].[hash].css",
+        assetFileNames: "assets/css/style.[hash].css",
         chunkFileNames: "assets/js/[name].[hash].js",
         entryFileNames: "assets/js/[name].[hash].js",
       },
@@ -26,15 +25,12 @@ const viteOptions = {
   },
   plugins: [tailwindcss()],
   publicDir: "public",
-  server: {
-    mode: "development",
-    middlewareMode: true,
-  },
 };
 
 export default function (eleventyConfig) {
+  eleventyConfig.setServerPassthroughCopyBehavior("copy");
+
   eleventyConfig.addPassthroughCopy("public");
-  eleventyConfig.addPassthroughCopy({ "src/_assets/css": "assets/css" });
 
   eleventyConfig.addBundle("css");
   eleventyConfig.addBundle("html");
@@ -61,6 +57,8 @@ export default function (eleventyConfig) {
   Object.keys(filters).forEach((filterName) => {
     eleventyConfig.addFilter(filterName, filters[filterName]);
   });
+
+  eleventyConfig.addPassthroughCopy({ "src/_assets/css": "assets/css" });
 
   return {
     dir: {

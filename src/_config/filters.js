@@ -41,6 +41,22 @@ export default {
   },
 
   /**
+   * Get the newest item from a collection based on date
+   * @param {Array} collection - Collection of items with date properties
+   * @param {*} [emptyFallback=null] - Fallback value if collection is empty
+   * @returns {Object|null} The newest item in the collection or fallback value
+   */
+  getNewestCollectionItem: (collection, emptyFallback) => {
+    if (!collection || !collection.length) {
+      return emptyFallback || null;
+    }
+
+    return collection.reduce((newest, item) => {
+      return !newest || item.date > newest.date ? item : newest;
+    }, null);
+  },
+
+  /**
    * Remove "public/" prefix from a URL
    * @param {string} url - URL potentially containing a public prefix
    * @returns {string} URL with public prefix removed

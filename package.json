@@ -27,7 +27,7 @@
   "scripts": {
     "build": "eleventy",
     "clean": "rm -rf .cache dist",
-    "dev": "eleventy --watch --port 3000 --incremental"
+    "dev": "eleventy --serve --port 3000 --incremental"
   },
   "trustedDependencies": ["@biomejs/biome", "@parcel/watcher"]
 }
