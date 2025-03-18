@@ -41,6 +41,25 @@ export default {
   },
 
   /**
+   * Check if a URL is the active URL or parent of the active URL
+   * @param {string} pageUrl - The current page URL
+   * @param {string} targetUrl - The URL to check against
+   * @returns {boolean} True if the targetUrl is active
+   */
+  isActiveUrl: (pageUrl, targetUrl) => {
+    // Ignore the home page
+    if (targetUrl === "/") {
+      return false;
+    }
+
+    if (pageUrl.startsWith(targetUrl)) {
+      return true;
+    }
+
+    return false;
+  },
+
+  /**
    * Get the newest item from a collection based on date
    * @param {Array} collection - Collection of items with date properties
    * @param {*} [emptyFallback=null] - Fallback value if collection is empty
