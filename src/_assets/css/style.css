@@ -81,6 +81,10 @@ body {
     padding-left: calc(var(--spacing) * 6);
     padding-top: calc(var(--spacing) * 2);
 
+    @variant xl {
+      font-size: var(--text-base) !important;
+    }
+
     >:first-child {
       margin-top: 0 !important;
     }
@@ -89,12 +93,25 @@ body {
       margin-bottom: 0 !important;
     }
 
+    code[class*="language-"],
+    pre[class*="language-"] {
+      font-size: var(--text-xs) !important;
+
+      @variant xl {
+        font-size: var(--text-sm) !important;
+      }
+    }
+
     .markdown-alert-title {
       align-items: center;
       display: flex;
       font-size: var(--text-base);
       font-weight: 500;
       line-height: var(--text-base--line-height);
+
+      @variant xl {
+        font-size: var(--text-lg) !important;
+      }
 
       .octicon {
         margin-right: calc(var(--spacing) * 2);
@@ -192,7 +209,7 @@ body {
       content: "" !important;
     }
 
-    @media (prefers-color-scheme: dark) {
+    @variant dark {
       background-color: #222436 !important;
       color: #c8d3f5 !important;
     }
@@ -202,7 +219,15 @@ body {
   pre[class*="language-"] {
     background-color: #e1e2e7 !important;
     color: #3760bf !important;
-    font-size: var(--text-sm) !important;
+    font-size: var(--text-xs) !important;
+
+    @variant sm {
+      font-size: var(--text-sm) !important;
+    }
+
+    @variant xl {
+      font-size: var(--text-base) !important;
+    }
 
     .token.builtin,
     .token.prolog {
