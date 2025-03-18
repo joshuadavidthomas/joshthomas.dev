@@ -55,13 +55,4 @@ export default {
       return !newest || item.date > newest.date ? item : newest;
     }, null);
   },
-
-  /**
-   * Remove "public/" prefix from a URL
-   * @param {string} url - URL potentially containing a public prefix
-   * @returns {string} URL with public prefix removed
-   */
-  stripPublicPrefix: (url) => {
-    return url.replace(/^(\/?)public\//, "$1");
-  },
 };
