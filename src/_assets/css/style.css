@@ -279,25 +279,22 @@ body {
       color: rgb(241, 250, 140);
     }
 
-    .token.deleted,
-    .token.inserted {
-      color: #e1e2e7;
-    }
-
     .token.deleted:not(.prefix) {
-      background-color: var(--color-red-900);
+      color: var(--color-red-600);
     }
 
     .token.deleted:not(.prefix) *::selection {
-      background-color: var(--color-red-700);
+      background-color: var(--color-red-600);
+      color: var(--color-red-50);
     }
 
     .token.inserted:not(.prefix) {
-      background-color: var(--color-green-900);
+      color: var(--color-green-600);
     }
 
     .token.inserted:not(.prefix) *::selection {
       background-color: var(--color-green-700);
+      color: var(--color-green-50);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -354,9 +351,22 @@ body {
         color: rgb(241, 250, 140);
       }
 
-      .token.deleted,
-      .token.inserted {
-        color: #c8d3f5;
+      .token.deleted:not(.prefix) {
+        color: var(--color-red-400);
+      }
+
+      .token.deleted:not(.prefix) *::selection {
+        background-color: var(--color-red-700);
+        color: var(--color-red-50);
+      }
+
+      .token.inserted:not(.prefix) {
+        color: var(--color-green-400);
+      }
+
+      .token.inserted:not(.prefix) *::selection {
+        background-color: var(--color-green-700);
+        color: var(--color-green-50);
       }
     }
   }
