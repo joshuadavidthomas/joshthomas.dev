@@ -1,1 +1,6 @@
-/blog/feed/ /blog/feed/atom.xml 200
+# https://developers.cloudflare.com/pages/configuration/redirects/
+#
+#source       destination                           code
+#-------------------------------------------------------
+/blog/feed/   /blog/feed/atom.xml                    200
+/@josh        https://social.joshthomas.dev/@josh    307

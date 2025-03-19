@@ -27,6 +27,10 @@
           }
       }, 100)
     {% endjs %}
+    <link href="mailto:josh@joshthomas.dev" rel="me">
+		<link href="https://github.com/joshuadavidthomas" rel="me">
+		<link href="https://joshthomas.dev/@josh" rel="me">
+		<link href="https://social.joshthomas.dev/@josh" rel="me">
 	</head>
 	<body class="px-2">
     <header class="flex justify-between items-baseline max-w-2xl mx-auto w-full">
@@ -46,7 +50,7 @@
       </div>
       <div class="flex items-center gap-2">
         {%- for item in site.social %}
-          <a href={{ item.url }}{% if item.title == "Mastodon" %} rel="me"{% endif %}>
+          <a href={{ item.url }}>
             <span class="sr-only">{{ item.title }}</span>
             {{ item.icon | safe }}
           </a>
