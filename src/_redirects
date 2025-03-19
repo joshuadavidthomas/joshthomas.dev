@@ -1,6 +1,11 @@
 # https://developers.cloudflare.com/pages/configuration/redirects/
 #
-#source       destination                           code
-#-------------------------------------------------------
-/blog/feed/   /blog/feed/atom.xml                    200
-/@josh        https://social.joshthomas.dev/@josh    307
+#source                   destination                                            code
+#------------------------------------------------------------------------------------
+/blog/feed/               /blog/feed/atom.xml                                     200
+
+# mastodon
+/@josh                    https://social.joshthomas.dev/@josh                     307
+/.well-known/host-meta    https://social.joshthomas.dev/.well-known/host-meta     307
+/.well-known/nodeinfo     https://social.joshthomas.dev/.well-known/nodeinfo      307
+/.well-known/webfinger    https://social.joshthomas.dev/.well-known/webfinger     307
