@@ -1,12 +1,12 @@
 {
-  "name": "eleventy-demo",
+  "name": "joshthomas.dev",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "@types/bun": "latest",
+    "typescript": "^5"
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
@@ -26,7 +26,11 @@
     "clean": "rm -rf .cache dist",
     "dev": "bun .bin/runner.ts dev",
     "dev:11ty": "eleventy --serve --incremental",
-    "dev:tailwind": "tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css --watch"
+    "dev:tailwind": "tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css --watch",
+    "format": "biome check --write",
+    "lint": "biome check",
+    "lock": "bun install --lockfile-only",
+    "typecheck": "tsc"
   },
   "trustedDependencies": ["@biomejs/biome", "@parcel/watcher"]
 }

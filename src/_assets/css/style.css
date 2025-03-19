@@ -14,9 +14,12 @@
   --color-gray-800: var(--color-zinc-800);
   --color-gray-900: var(--color-zinc-900);
   --color-gray-950: var(--color-zinc-950);
-  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 body {
@@ -85,11 +88,11 @@ body {
       font-size: var(--text-base) !important;
     }
 
-    >:first-child {
+    > :first-child {
       margin-top: 0 !important;
     }
 
-    >:last-child {
+    > :last-child {
       margin-bottom: 0 !important;
     }
 
@@ -202,7 +205,7 @@ body {
     background-color: #e1e2e7 !important;
     border-radius: var(--radius-sm);
     color: #3760bf !important;
-    padding: calc(var(--spacing) * .5) calc(var(--spacing) * 1);
+    padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1);
 
     &::before,
     &::after {
@@ -373,7 +376,7 @@ body {
 }
 
 @utility grid-container-* {
-  grid-template-columns: 1fr min(--value(--container-*), 100%) 1fr;
+  grid-template-columns: 1fr min(--value(--container-\*), 100%) 1fr;
 
   > * {
     grid-column: 2;
@@ -384,6 +387,6 @@ body {
   grid-column: 1 / 4;
   margin-left: auto;
   margin-right: auto;
-  max-width: --value(--container-*);
+  max-width: --value(--container-\*);
   width: 100%;
 }

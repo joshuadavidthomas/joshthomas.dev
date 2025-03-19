@@ -1,0 +1,32 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.6.1
+    hooks:
+      - id: biome-check
+        additional_dependencies:
+          - "@biomejs/biome@1.9.4"
+
+  # - repo: local
+  #   hooks:
+  #     - id: tsc
+  #       additional_dependencies:
+  #         - typescript@^5
+  #       args: [--noEmit]
+  #       entry: tsc
+  #       language: node
+  #       name: tsc
+  #       types: [ts]

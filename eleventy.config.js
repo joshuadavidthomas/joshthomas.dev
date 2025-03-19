@@ -12,7 +12,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(
     { "src/_assets": "assets" },
     {
-      filter: (path) => path.endsWith("style.css") == false,
+      filter: (path) => path.endsWith("style.css") === false,
     },
   );
   eleventyConfig.addPassthroughCopy("src/_redirects");
@@ -34,13 +34,13 @@ export default function (eleventyConfig) {
     }).use(MarkdownItGitHubAlerts),
   );
 
-  Object.keys(collections).forEach((collectionName) => {
+  for (const collectionName of Object.keys(collections)) {
     eleventyConfig.addCollection(collectionName, collections[collectionName]);
-  });
+  }
 
-  Object.keys(filters).forEach((filterName) => {
+  for (const filterName of Object.keys(filters)) {
     eleventyConfig.addFilter(filterName, filters[filterName]);
-  });
+  }
 
   return {
     dir: {
