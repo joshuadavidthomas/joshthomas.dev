@@ -1,6 +1,7 @@
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
 import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
 import EleventyPluginSyntaxhighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import EleventyPluginFontAwesome from "@11ty/font-awesome";
 import markdownIt from "markdown-it";
 import MarkdownItGitHubAlerts from "markdown-it-github-alerts";
 import collections from "./src/_config/collections.js";
@@ -21,6 +22,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addBundle("html");
   eleventyConfig.addBundle("js");
 
+  eleventyConfig.addPlugin(EleventyPluginFontAwesome);
   eleventyConfig.addPlugin(EleventyPluginNavigation);
   eleventyConfig.addPlugin(EleventyPluginRss);
   eleventyConfig.addPlugin(EleventyPluginSyntaxhighlight);

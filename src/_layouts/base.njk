@@ -52,6 +52,7 @@
 		<main id="skip" class="w-full">
       {{ content | safe }}
 		</main>
+    {% getBundle "fontawesome" %}
 		<script type="module" src="{% getBundleFileUrl "js" %}"></script>
 	</body>
 </html>

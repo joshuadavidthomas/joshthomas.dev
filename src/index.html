@@ -20,25 +20,20 @@ layout: base.njk
       <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
       <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
         <a href="/blog/feed/" class="flex items-center gap-1 group">
-          <svg class="size-4 xs:size-6 p-0.5 text-[#FFA500] group-hover:text-blue-500" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" height='24' width='24'>
-            <title>RSS</title>
-            <path fill="currentColor" d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/>
-          </svg>
+          <i class="fa-solid fa-rss size-4 xs:size-6 text-[#FFA500] group-hover:text-blue-500"></i>
           RSS Feed
         </a>
         <a href="/blog/" class="group flex items-center gap-1 order-first xs:order-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 xs:size-6 group-hover:text-blue-500">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-          </svg>
+          <i class="fa-solid fa-newspaper size-4 xs:size-6 group-hover:text-blue-500"></i>
           View all posts
         </a>
       </div>
     </div>
     {% set latestPost = collections.posts | getNewestCollectionItem %}
     <article class="group relative mt-6">
-      <time datetime="{{ latestPost.date | dateToHtmlString }}" class="block text-xs sm:text-sm text-gray-600
- dark:text-gray-300">
-       {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
+      <time datetime="{{ latestPost.date | dateToHtmlString }}" class="flex gap-2 items-baseline text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+        <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
+        {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
      </time>
        <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600
  dark:group-hover:text-gray-400">
