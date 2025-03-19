@@ -7,6 +7,7 @@
 		<meta name="description" content="{{ description or site.description }}">
     <meta name="author" content="{{ author or site.author }}">
 		<meta name="generator" content="{{ eleventy.generator }}">
+    <link rel="canonical" href="{{ page.url | htmlBaseUrl(site.url) }}">
 		<link rel="alternate" href="/blog/feed/atom.xml" type="application/atom+xml" title="{{ site.title }}">
     {%- getBundle "html", "preload" %}
 		<style>{% getBundle "css" %}</style>
