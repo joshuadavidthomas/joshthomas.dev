@@ -21,17 +21,17 @@
           type="application/atom+xml"
           title="{{ site.title }}">
     <link rel="preload"
-          href="/assets/fonts/BricolageGrotesque.woff2"
+          href="/static/fonts/BricolageGrotesque.woff2"
           as="font"
           type="font/woff2"
           crossorigin>
     <link rel="preload"
-          href="/assets/fonts/InterVariable.woff2"
+          href="/static/fonts/InterVariable.woff2"
           as="font"
           type="font/woff2"
           crossorigin>
     <link rel="preload"
-          href="/assets/fonts/InterVariable-Italic.woff2"
+          href="/static/fonts/InterVariable-Italic.woff2"
           as="font"
           type="font/woff2"
           crossorigin>
@@ -40,15 +40,12 @@
     <style>{% getBundle "css" %}</style>
     {# djlint: on #}
     {%- css %}
-      {% include "../_assets/css/fonts.css" %}
+      {% include "../_static/css/fonts.css" %}
     {% endcss %}
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <script data-goatcounter="https://joshthomasdev.goatcounter.com/count"
             async
             src="//gc.zgo.at/count.js"></script>
-    {%- js %}
-      {% include "../_assets/js/goatcounter.js" %}
-    {% endjs %}
     <link href="mailto:josh@joshthomas.dev" rel="me">
     <link href="https://github.com/joshuadavidthomas" rel="me">
     <link href="https://joshthomas.dev/@josh" rel="me">
@@ -89,6 +86,9 @@
       {{ content | safe }}
     </main>
     {% getBundle "fontawesome" %}
+    {%- js %}
+      {% include "../_static/js/goatcounter.js" %}
+    {% endjs %}
     <script type="module" src="{% getBundleFileUrl "js" %}"></script>
     {% getBundle "js", "modules" %}
   </body>

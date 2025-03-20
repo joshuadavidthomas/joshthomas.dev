@@ -11,6 +11,7 @@
   "dependencies": {
     "@11ty/eleventy": "^3.0.1-alpha.4",
     "@11ty/eleventy-fetch": "^5.0.2",
+    "@11ty/eleventy-img": "^6.0.1",
     "@11ty/eleventy-navigation": "^0.3.5",
     "@11ty/eleventy-plugin-rss": "^2.0.3",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
@@ -26,11 +27,11 @@
     "tailwindcss": "^4.0.10"
   },
   "scripts": {
-    "build": "bunx tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css && bunx eleventy",
+    "build": "bunx tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css && bunx eleventy",
     "clean": "rm -rf .cache dist",
     "dev": "bun .bin/runner.ts dev",
     "dev:11ty": "eleventy --serve",
-    "dev:tailwind": "tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css --watch",
+    "dev:tailwind": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --watch",
     "format": "biome check --write",
     "lint": "biome check",
     "lock": "bun install --lockfile-only",

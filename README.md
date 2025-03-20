@@ -37,11 +37,11 @@ bun run format       # applies fixes if available
 
 ```
 src/
-├── _assets/          # CSS, fonts, images
 ├── _components/      # Reusable components
 ├── _config/          # Collections and filters
 ├── _data/            # Global data (site info, Raindrop integration)
 ├── _layouts/         # Base templates
+├── _static/          # CSS, fonts, images
 ├── feeds/            # RSS feed templates
 ├── posts/            # Blog posts in Markdown
 └── _redirects        # Cloudflare Pages redirects

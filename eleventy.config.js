@@ -1,3 +1,4 @@
+import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
 import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
 import EleventyPluginSyntaxhighlight from "@11ty/eleventy-plugin-syntaxhighlight";
@@ -14,19 +15,9 @@ export default function (eleventyConfig) {
 
   eleventyConfig
     .addPassthroughCopy("src/_redirects")
-    .addPassthroughCopy(
-      { "src/_assets": "assets" },
-      {
-        filter: (path) => {
-          const ignoredExtensions = [".css", ".js"];
-          return !ignoredExtensions.some((extension) =>
-            path.endsWith(extension),
-          );
-        },
-      },
-    )
+    .addPassthroughCopy({ "src/_static/fonts": "static/fonts" })
     .addPassthroughCopy({
-      "node_modules/@zachleat/heading-anchors/heading-anchors.js": `assets/js/heading-anchors.js`,
+      "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
     });
 
   eleventyConfig.addBundle("css");
@@ -37,6 +28,10 @@ export default function (eleventyConfig) {
   eleventyConfig.addPlugin(EleventyPluginNavigation);
   eleventyConfig.addPlugin(EleventyPluginRss);
   eleventyConfig.addPlugin(EleventyPluginSyntaxhighlight);
+  eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+    urlPath: "/static/img/",
+    outputDir: "./dist/static/img/",
+  });
 
   if (process.env.PRODUCTION_BUILD) {
     eleventyConfig.addPlugin(EleventyPluginAssetHash, {

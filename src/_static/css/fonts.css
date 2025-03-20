@@ -3,27 +3,27 @@
   font-family: BricolageGrotesque;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  src: url("/static/fonts/BricolageGrotesque.woff2") format("woff2");
 }
 @font-face {
   font-display: block;
   font-family: InterVariable;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/InterVariable.woff2") format("woff2");
+  src: url("/static/fonts/InterVariable.woff2") format("woff2");
 }
 @font-face {
   font-display: swap;
   font-family: InterVariable;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/InterVariable-Italic.woff2") format("woff2");
+  src: url("/static/fonts/InterVariable-Italic.woff2") format("woff2");
 }
 @font-face {
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/0-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/0-normal.woff2") format("woff2");
   unicode-range: U+0020-007F;
 }
 
@@ -31,7 +31,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/1-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/1-italic.woff2") format("woff2");
   unicode-range: U+0020-007F;
 }
 
@@ -39,7 +39,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/2-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/2-normal.woff2") format("woff2");
   unicode-range: U+0080-00FF;
 }
 
@@ -47,7 +47,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/3-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/3-italic.woff2") format("woff2");
   unicode-range: U+0080-00FF;
 }
 
@@ -55,7 +55,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/4-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/4-normal.woff2") format("woff2");
   unicode-range: U+0100-017F;
 }
 
@@ -63,7 +63,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/5-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/5-italic.woff2") format("woff2");
   unicode-range: U+0100-017F;
 }
 
@@ -71,7 +71,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/6-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/6-normal.woff2") format("woff2");
   unicode-range: U+1E00-1EFF;
 }
 
@@ -79,7 +79,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/7-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/7-italic.woff2") format("woff2");
   unicode-range: U+1E00-1EFF;
 }
 
@@ -87,7 +87,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/8-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/8-normal.woff2") format("woff2");
   unicode-range: U+0180-024F;
 }
 
@@ -95,7 +95,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/9-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/9-italic.woff2") format("woff2");
   unicode-range: U+0180-024F;
 }
 
@@ -103,7 +103,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/10-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/10-normal.woff2") format("woff2");
   unicode-range: U+2C60-2C7F;
 }
 
@@ -111,7 +111,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/11-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/11-italic.woff2") format("woff2");
   unicode-range: U+2C60-2C7F;
 }
 
@@ -119,7 +119,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/12-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/12-normal.woff2") format("woff2");
   unicode-range: U+A720-A7FF;
 }
 
@@ -127,7 +127,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/13-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/13-italic.woff2") format("woff2");
   unicode-range: U+A720-A7FF;
 }
 
@@ -135,7 +135,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/14-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/14-normal.woff2") format("woff2");
   unicode-range: U+0250-02AF;
 }
 
@@ -143,7 +143,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/15-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/15-italic.woff2") format("woff2");
   unicode-range: U+0250-02AF;
 }
 
@@ -151,7 +151,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/16-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/16-normal.woff2") format("woff2");
   unicode-range: U+0400-04FF;
 }
 
@@ -159,7 +159,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/17-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/17-italic.woff2") format("woff2");
   unicode-range: U+0400-04FF;
 }
 
@@ -167,7 +167,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/18-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/18-normal.woff2") format("woff2");
   unicode-range: U+0500-052F;
 }
 
@@ -175,7 +175,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/19-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/19-italic.woff2") format("woff2");
   unicode-range: U+0500-052F;
 }
 
@@ -183,7 +183,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/20-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/20-normal.woff2") format("woff2");
   unicode-range: U+0370-03FF;
 }
 
@@ -191,7 +191,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/21-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/21-italic.woff2") format("woff2");
   unicode-range: U+0370-03FF;
 }
 
@@ -199,7 +199,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/22-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/22-normal.woff2") format("woff2");
   unicode-range: U+2000-206F;
 }
 
@@ -207,7 +207,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/23-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/23-italic.woff2") format("woff2");
   unicode-range: U+2000-206F;
 }
 
@@ -215,7 +215,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/24-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/24-normal.woff2") format("woff2");
   unicode-range: U+2070-209F;
 }
 
@@ -223,7 +223,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/25-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/25-italic.woff2") format("woff2");
   unicode-range: U+2070-209F;
 }
 
@@ -231,7 +231,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/26-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/26-normal.woff2") format("woff2");
   unicode-range: U+3000-303F;
 }
 
@@ -239,7 +239,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/27-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/27-italic.woff2") format("woff2");
   unicode-range: U+3000-303F;
 }
 
@@ -247,7 +247,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/28-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/28-normal.woff2") format("woff2");
   unicode-range: U+0530-058F;
 }
 
@@ -255,7 +255,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/29-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/29-italic.woff2") format("woff2");
   unicode-range: U+0530-058F;
 }
 
@@ -263,7 +263,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/30-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/30-normal.woff2") format("woff2");
   unicode-range: U+0980-09FF;
 }
 
@@ -271,7 +271,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/31-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/31-italic.woff2") format("woff2");
   unicode-range: U+0980-09FF;
 }
 
@@ -279,7 +279,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/32-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/32-normal.woff2") format("woff2");
   unicode-range: U+1780-17FF;
 }
 
@@ -287,7 +287,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/33-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/33-italic.woff2") format("woff2");
   unicode-range: U+1780-17FF;
 }
 
@@ -295,7 +295,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/34-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/34-normal.woff2") format("woff2");
   unicode-range: U+0E00-0E7F;
 }
 
@@ -303,7 +303,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/35-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/35-italic.woff2") format("woff2");
   unicode-range: U+0E00-0E7F;
 }
 
@@ -311,7 +311,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/36-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/36-normal.woff2") format("woff2");
   unicode-range: U+2600-26FF;
 }
 
@@ -319,7 +319,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/37-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/37-italic.woff2") format("woff2");
   unicode-range: U+2600-26FF;
 }
 
@@ -327,7 +327,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/38-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/38-normal.woff2") format("woff2");
   unicode-range: U+2700-27BF;
 }
 
@@ -335,7 +335,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/39-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/39-italic.woff2") format("woff2");
   unicode-range: U+2700-27BF;
 }
 
@@ -343,7 +343,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/40-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/40-normal.woff2") format("woff2");
   unicode-range: U+2300-23FF;
 }
 
@@ -351,7 +351,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/41-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/41-italic.woff2") format("woff2");
   unicode-range: U+2300-23FF;
 }
 
@@ -359,7 +359,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/42-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/42-normal.woff2") format("woff2");
   unicode-range: U+2100-214F;
 }
 
@@ -367,7 +367,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/43-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/43-italic.woff2") format("woff2");
   unicode-range: U+2100-214F;
 }
 
@@ -375,7 +375,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/44-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/44-normal.woff2") format("woff2");
   unicode-range: U+2190-21FF;
 }
 
@@ -383,7 +383,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/45-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/45-italic.woff2") format("woff2");
   unicode-range: U+2190-21FF;
 }
 
@@ -391,7 +391,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/46-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/46-normal.woff2") format("woff2");
   unicode-range: U+2B00-2BFF;
 }
 
@@ -399,7 +399,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/47-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/47-italic.woff2") format("woff2");
   unicode-range: U+2B00-2BFF;
 }
 
@@ -407,7 +407,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/48-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/48-normal.woff2") format("woff2");
   unicode-range: U+20A0-20CF;
 }
 
@@ -415,7 +415,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/49-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/49-italic.woff2") format("woff2");
   unicode-range: U+20A0-20CF;
 }
 
@@ -423,7 +423,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/50-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/50-normal.woff2") format("woff2");
   unicode-range: U+2200-22FF;
 }
 
@@ -431,7 +431,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/51-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/51-italic.woff2") format("woff2");
   unicode-range: U+2200-22FF;
 }
 
@@ -439,7 +439,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/52-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/52-normal.woff2") format("woff2");
   unicode-range: U+2580-259F;
 }
 
@@ -447,7 +447,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/53-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/53-italic.woff2") format("woff2");
   unicode-range: U+2580-259F;
 }
 
@@ -455,7 +455,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/54-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/54-normal.woff2") format("woff2");
   unicode-range: U+25A0-25FF;
 }
 
@@ -463,7 +463,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/55-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/55-italic.woff2") format("woff2");
   unicode-range: U+25A0-25FF;
 }
 
@@ -471,7 +471,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/56-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/56-normal.woff2") format("woff2");
   unicode-range: U+2500-257F;
 }
 
@@ -479,7 +479,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/57-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/57-italic.woff2") format("woff2");
   unicode-range: U+2500-257F;
 }
 
@@ -487,7 +487,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/58-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/58-normal.woff2") format("woff2");
   unicode-range: U+0300-036F;
 }
 
@@ -495,7 +495,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/59-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/59-italic.woff2") format("woff2");
   unicode-range: U+0300-036F;
 }
 
@@ -503,7 +503,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/60-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/60-normal.woff2") format("woff2");
   unicode-range: U+02B0-02FF;
 }
 
@@ -511,7 +511,7 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/61-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/61-italic.woff2") format("woff2");
   unicode-range: U+02B0-02FF;
 }
 
@@ -519,7 +519,7 @@
   font-family: MonoLisa;
   font-style: normal;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/62-normal.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/62-normal.woff2") format("woff2");
   unicode-range: U+E000-F8FF;
 }
 
@@ -527,6 +527,6 @@
   font-family: MonoLisa;
   font-style: italic;
   font-weight: 100 900;
-  src: url("/assets/fonts/monolisa-v2.015/63-italic.woff2") format("woff2");
+  src: url("/static/fonts/monolisa-v2.015/63-italic.woff2") format("woff2");
   unicode-range: U+E000-F8FF;
 }
