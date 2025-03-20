@@ -64,7 +64,7 @@
     <link href="https://social.joshthomas.dev/@josh" rel="me">
   </head>
   <body class="px-2">
-    <header class="flex justify-between items-baseline max-w-2xl mx-auto w-full">
+    <header class="flex justify-between items-baseline w-full">
       <div>
         <h1 class="text-2xl font-bold font-brico">
           <a href="/" preload="mouseover">Josh Thomas</a>
@@ -88,7 +88,7 @@
         {%- endfor %}
       </div>
     </header>
-    <main id="skip" class="w-full">
+    <main id="skip"{%- if class.main -%}class="{{ class.main }}"{%- endif -%}>
       {{ content | safe }}
     </main>
     {% getBundle "fontawesome" %}

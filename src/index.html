@@ -5,46 +5,44 @@ eleventyNavigation:
 layout: base
 ---
 
-<div class="max-w-2xl mx-auto">
-  <div class="mt-10 text-center sm:mt-16 font-brico">
-    <img src="/assets/images/me.png"
-         width="250"
-         height="250"
-         alt="A picture of Josh"
-         fetchpriority="high"
-         class="mx-auto size-56 rounded-full sm:size-72 drop-shadow-md" />
-    <h1 class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</h1>
-    <p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
-  </div>
-  <section class="mt-24">
-    <div class="flex flex-col sm:flex-row justify-between">
-      <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
-      <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
-        <a href="/blog/feed/" class="flex items-center gap-1 group">
-          <i class="fa-solid fa-rss size-4 xs:size-6 text-[#FFA500] group-hover:text-blue-500"></i>
-          RSS Feed
-        </a>
-        <a href="/blog/"
-           class="group flex items-center gap-1 order-first xs:order-none">
-          <i class="fa-solid fa-newspaper size-4 xs:size-6 group-hover:text-blue-500"></i>
-          View all posts
-        </a>
-      </div>
-    </div>
-    {% set latestPost = collections.posts | getNewestCollectionItem %}
-    <article class="group relative mt-6">
-      <time datetime="{{ latestPost.date | dateToHtmlString }}"
-            class="flex gap-2 items-baseline text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-        <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
-        {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
-      </time>
-      <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
-        <a href="{{ latestPost.url }}">
-          <span class="absolute inset-0"></span>
-          {{ latestPost.data.title }}
-        </a>
-      </h3>
-      <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ latestPost.data.summary }}</p>
-    </article>
-  </section>
+<div class="mt-10 text-center sm:mt-16 font-brico">
+  <img src="/assets/images/me.png"
+       width="250"
+       height="250"
+       alt="A picture of Josh"
+       fetchpriority="high"
+       class="mx-auto size-56 rounded-full sm:size-72 drop-shadow-md" />
+  <h1 class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</h1>
+  <p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
 </div>
+<section class="mt-24">
+  <div class="flex flex-col sm:flex-row justify-between">
+    <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
+    <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
+      <a href="/blog/feed/" class="flex items-center gap-1 group">
+        <i class="fa-solid fa-rss size-4 xs:size-6 text-[#FFA500] group-hover:text-blue-500"></i>
+        RSS
+      </a>
+      <a href="/blog/"
+         class="group flex items-center gap-1 order-first xs:order-none">
+        <i class="fa-solid fa-newspaper size-4 xs:size-6 group-hover:text-blue-500"></i>
+        View all posts
+      </a>
+    </div>
+  </div>
+  {% set latestPost = collections.posts | getNewestCollectionItem %}
+  <article class="group relative mt-6">
+    <time datetime="{{ latestPost.date | dateToHtmlString }}"
+          class="flex gap-2 items-baseline text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+      <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
+      {{ latestPost.date | dateToFormat("LLLL d, yyyy") }}
+    </time>
+    <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
+      <a href="{{ latestPost.url }}">
+        <span class="absolute inset-0"></span>
+        {{ latestPost.data.title }}
+      </a>
+    </h3>
+    <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ latestPost.data.summary }}</p>
+  </article>
+</section>

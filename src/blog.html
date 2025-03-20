@@ -9,16 +9,16 @@ pagination:
   alias: posts
 ---
 
-<header class="max-w-2xl mx-auto flex">
+<header class="flex">
   <h1 class="sr-only">Blog</h1>
   <a href="/blog/feed/" class="ml-auto flex items-center gap-1 group">
     <i class="fa-solid fa-rss size-4 xs:size-6 text-[#FFA500] group-hover:text-blue-500"></i>
-    RSS Feed
+    RSS
   </a>
 </header>
-<div class="mt-4 max-w-2xl mx-auto">
+<div class="mt-4 space-y-12">
   {%- for post in posts | reverse -%}
-    <article class="group relative{% if not loop.first %} mt-12{% endif %}">
+    <article class="group relative">
       <time datetime="{{ post.date | dateToHtmlString }}"
             class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
         <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>

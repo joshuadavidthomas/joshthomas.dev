@@ -3,6 +3,13 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  --font-brico: BricolageGrotesque, ui-serif, Georgia, Cambria,
+    "Times New Roman", Times, serif;
+  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
   --color-gray-50: var(--color-zinc-50);
   --color-gray-100: var(--color-zinc-100);
   --color-gray-200: var(--color-zinc-200);
@@ -14,36 +21,37 @@
   --color-gray-800: var(--color-zinc-800);
   --color-gray-900: var(--color-zinc-900);
   --color-gray-950: var(--color-zinc-950);
-  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
-  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
-body {
-  display: grid;
-  grid-template:
-    "header header header"
-    "r-aside main l-aside"
-    "footer footer footer";
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: min-content minmax(0, 1fr) min-content;
-  min-height: 100vh;
-  row-gap: calc(var(--spacing) * 6);
-
-  > header {
-    grid-area: header;
-    max-width: var(--container-2xl);
-  }
-
-  > main {
-    grid-area: main;
-  }
 }
 
 @layer base {
+  body {
+    display: grid;
+    grid-template:
+      "header header header"
+      "r-aside main l-aside"
+      "footer footer footer";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: min-content minmax(0, 1fr) min-content;
+    min-height: 100vh;
+    row-gap: calc(var(--spacing) * 6);
+
+    > header {
+      grid-area: header;
+      margin: 0 auto;
+      max-width: var(--container-2xl);
+    }
+
+    > main {
+      grid-area: main;
+      margin: 0 auto;
+      max-width: var(--container-2xl);
+
+      &.full {
+        max-width: 100%;
+      }
+    }
+  }
+
   h1,
   h2,
   h3,
