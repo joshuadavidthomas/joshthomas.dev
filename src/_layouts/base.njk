@@ -47,16 +47,7 @@
             async
             src="//gc.zgo.at/count.js"></script>
     {%- js %}
-      <script>
-        var t = setInterval(function() {
-          if (window.goatcounter && window.goatcounter.visit_count) {
-            clearInterval(t)
-            window.goatcounter.visit_count({
-              append: '#pageStats'
-            })
-          }
-        }, 100)
-      </script>
+      {% include "../_assets/js/goatcounter.js" %}
     {% endjs %}
     <link href="mailto:josh@joshthomas.dev" rel="me">
     <link href="https://github.com/joshuadavidthomas" rel="me">

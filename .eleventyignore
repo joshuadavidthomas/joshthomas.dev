@@ -3,4 +3,3 @@ dist/
 test/
 .env*
 README.md
-node_modules
