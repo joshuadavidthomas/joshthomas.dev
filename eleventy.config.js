@@ -32,7 +32,9 @@ export default function (eleventyConfig) {
           // Other assets
           "**/*.pdf",
           "**/*.mp4",
-          "**/*.mp3"
+          "**/*.mp3",
+          // CSS files that should be copied directly (not processed by bundler)
+          "**/vendor/**/*.css"
         ];
         
         // Check if the path matches any of our patterns
