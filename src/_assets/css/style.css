@@ -1,6 +1,7 @@
 @import "tailwindcss";
-
 @plugin "@tailwindcss/typography";
+
+@import "./code.css";
 
 @theme {
   --font-brico: BricolageGrotesque, ui-serif, Georgia, Cambria,
@@ -104,15 +105,6 @@
       margin-bottom: 0 !important;
     }
 
-    code[class*="language-"],
-    pre[class*="language-"] {
-      font-size: var(--text-xs) !important;
-
-      @variant xl {
-        font-size: var(--text-sm) !important;
-      }
-    }
-
     .markdown-alert-title {
       align-items: center;
       display: flex;
@@ -205,179 +197,6 @@
         @variant dark {
           color: var(--color-red-400);
         }
-      }
-    }
-  }
-
-  p code {
-    background-color: #e1e2e7 !important;
-    border-radius: var(--radius-sm);
-    color: #3760bf !important;
-    padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1);
-
-    &::before,
-    &::after {
-      content: "" !important;
-    }
-
-    @variant dark {
-      background-color: #222436 !important;
-      color: #c8d3f5 !important;
-    }
-  }
-
-  code[class*="language-"],
-  pre[class*="language-"] {
-    background-color: #e1e2e7 !important;
-    color: #3760bf !important;
-    font-size: var(--text-xs) !important;
-
-    @variant sm {
-      font-size: var(--text-sm) !important;
-    }
-
-    @variant xl {
-      font-size: var(--text-base) !important;
-    }
-
-    .token.builtin,
-    .token.prolog {
-      color: #f52a65;
-    }
-
-    .token.function {
-      color: #2e7de9;
-    }
-
-    .token.punctuation {
-      color: #9854f1;
-    }
-
-    .token.symbol {
-      color: #188092;
-    }
-
-    .token.string,
-    .token.char,
-    .token.tag,
-    .token.selector {
-      color: #587539;
-    }
-
-    .token.keyword {
-      color: #7847bd;
-    }
-
-    .token.operator {
-      color: #006a83;
-    }
-
-    .token.constant,
-    .token.boolean {
-      color: #b15c00;
-    }
-
-    .token.variable {
-      color: #3760bf;
-    }
-
-    .token.comment {
-      color: #848cb5;
-      font-style: italic;
-    }
-
-    .token.attr-name {
-      color: rgb(241, 250, 140);
-    }
-
-    .token.deleted:not(.prefix) {
-      color: var(--color-red-600);
-    }
-
-    .token.deleted:not(.prefix) *::selection {
-      background-color: var(--color-red-600);
-      color: var(--color-red-50);
-    }
-
-    .token.inserted:not(.prefix) {
-      color: var(--color-green-600);
-    }
-
-    .token.inserted:not(.prefix) *::selection {
-      background-color: var(--color-green-700);
-      color: var(--color-green-50);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      background-color: #222436 !important;
-      color: #c8d3f5 !important;
-
-      .token.builtin,
-      .token.prolog {
-        color: #ff757f;
-      }
-
-      .token.function {
-        color: #82aaff;
-      }
-
-      .token.punctuation {
-        color: #c099ff;
-      }
-
-      .token.symbol {
-        color: #65bcff;
-      }
-
-      .token.string,
-      .token.char,
-      .token.tag,
-      .token.selector {
-        color: #c3e88d;
-      }
-
-      .token.keyword {
-        color: #fca7ea;
-      }
-
-      .token.operator {
-        color: #89ddff;
-      }
-
-      .token.constant,
-      .token.boolean {
-        color: #ff966c;
-      }
-
-      .token.variable {
-        color: #c8d3f5;
-      }
-
-      .token.comment {
-        color: #636da6;
-        font-style: italic;
-      }
-
-      .token.attr-name {
-        color: rgb(241, 250, 140);
-      }
-
-      .token.deleted:not(.prefix) {
-        color: var(--color-red-400);
-      }
-
-      .token.deleted:not(.prefix) *::selection {
-        background-color: var(--color-red-700);
-        color: var(--color-red-50);
-      }
-
-      .token.inserted:not(.prefix) {
-        color: var(--color-green-400);
-      }
-
-      .token.inserted:not(.prefix) *::selection {
-        background-color: var(--color-green-700);
-        color: var(--color-green-50);
       }
     }
   }
