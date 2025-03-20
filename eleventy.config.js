@@ -42,7 +42,28 @@ export default function (eleventyConfig) {
       html: true,
       breaks: true,
       linkify: true,
-    }).use(MarkdownItGitHubAlerts),
+    })
+      .use(MarkdownItGitHubAlerts)
+      .use((md) => {
+        md.core.ruler.push("shift_headings", (state) => {
+          // Only run on Markdown files within src/posts
+          if (
+            state.env?.page?.inputPath &&
+            state.env.page.inputPath.includes("/src/posts/")
+          ) {
+            // Shift h2 -> h3
+            state.tokens.forEach((token, i) => {
+              if (token.type === "heading_open" && token.tag === "h2") {
+                token.tag = "h3";
+                const closing = state.tokens[i + 1];
+                if (closing && closing.type === "heading_close") {
+                  closing.tag = "h3";
+                }
+              }
+            });
+          }
+        });
+      }),
   );
 
   for (const collectionName of Object.keys(collections)) {
