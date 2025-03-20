@@ -5,7 +5,7 @@ eleventyNavigation:
 layout: base
 ---
 
-<div class="mt-10 text-center sm:mt-16 font-brico">
+<section class="mt-10 text-center sm:mt-16 font-brico">
   <img src="/assets/images/me.png"
        width="250"
        height="250"
@@ -14,9 +14,9 @@ layout: base
        class="mx-auto size-56 rounded-full sm:size-72 drop-shadow-md" />
   <h1 class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</h1>
   <p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
-</div>
+</section>
 <section class="mt-24">
-  <div class="flex flex-col sm:flex-row justify-between">
+  <header class="flex flex-col sm:flex-row justify-between">
     <h2 class="text-lg sm:text-xl font-medium">Latest blog post</h2>
     <div class="text-sm font-medium tracking-tighter flex items-center gap-4 text-gray-600 dark:text-gray-200">
       <a href="/blog/feed/" class="flex items-center gap-1 group">
@@ -29,7 +29,7 @@ layout: base
         View all posts
       </a>
     </div>
-  </div>
+  </header>
   {% set latestPost = collections.posts | getNewestCollectionItem %}
   <article class="group relative mt-6">
     <time datetime="{{ latestPost.date | dateToHtmlString }}"

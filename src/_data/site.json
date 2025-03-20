@@ -5,22 +5,22 @@
     {
       "title": "Mastodon",
       "url": "https://joshthomas.dev/@josh",
-      "icon": "<i class='fa-brands fa-mastodon size-4 xs:size-6 hover:text-[#6364FF]'></i>"
+      "icon": "<i class='fa-brands fa-mastodon size-4 xs:size-6 hover:text-[#6364FF]' aria-hidden='true'></i>"
     },
     {
       "title": "Bluesky",
       "url": "https://bsky.app/profile/joshthomas.dev",
-      "icon": "<i class='fa-brands fa-bluesky size-4 xs:size-6 hover:text-[#0285FF]'></i>"
+      "icon": "<i class='fa-brands fa-bluesky size-4 xs:size-6 hover:text-[#0285FF]' aria-hidden='true'></i>"
     },
     {
       "title": "GitHub",
       "url": "https://github.com/joshuadavidthomas",
-      "icon": "<i class='fa-brands fa-github size-4 xs:size-6 hover:text-[#6e5494]'></i>"
+      "icon": "<i class='fa-brands fa-github size-4 xs:size-6 hover:text-[#6e5494]' aria-hidden='true'></i>"
     },
     {
       "title": "LinkedIn",
       "url": "https://www.linkedin.com/in/joshua-thomas-b1745a16/",
-      "icon": "<i class='fa-brands fa-linkedin size-4 xs:size-6 hover:text-[#0077b5]'></i>"
+      "icon": "<i class='fa-brands fa-linkedin size-4 xs:size-6 hover:text-[#0077b5]' aria-hidden='true'></i>"
     }
   ],
   "title": "joshthomas.dev",
