@@ -18,21 +18,20 @@ pagination:
 </header>
 <div class="mt-4 max-w-2xl mx-auto">
   {%- for post in posts | reverse -%}
-  <article class="group relative{% if not loop.first %} mt-12{% endif %}">
-      <time datetime="{{ post.date | dateToHtmlString }}" class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
+    <article class="group relative{% if not loop.first %} mt-12{% endif %}">
+      <time datetime="{{ post.date | dateToHtmlString }}"
+            class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
         <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
         {{ post.date | dateToFormat("LLLL d, yyyy") }}
-     </time>
-    <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
-         <a href="{{ post.url }}">
-           <span class="absolute inset-0"></span>
-           {{ post.data.title }}
-         </a>
-       </h3>
-       <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">
-         {{ post.data.summary }}
-       </p>
-  </article>
+      </time>
+      <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
+        <a href="{{ post.url }}">
+          <span class="absolute inset-0"></span>
+          {{ post.data.title }}
+        </a>
+      </h3>
+      <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ post.data.summary }}</p>
+    </article>
   {%- endfor -%}
   {% if pagination.href.next or pagination.href.previous %}
     <nav class="flex justify-between items-center mt-8">
@@ -45,14 +44,17 @@ pagination:
       <div class="flex gap-4 mt-1 text-sm">
         {% if pagination.href.previous %}
           <span class="flex items-center space-x-2">
-            <a href="{{ pagination.href.first }}" data-direction="backwards" class="flex items-center hover:underline">first</a>
+            <a href="{{ pagination.href.first }}"
+               data-direction="backwards"
+               class="flex items-center hover:underline">first</a>
             <a href="{{ pagination.href.previous }}" class="hover:underline">previous</a>
           </span>
         {% endif %}
         {% if pagination.href.next %}
           <span class="flex items-center ml-auto space-x-2">
             <a href="{{ pagination.href.next }}" class="hover:underline">next</a>
-            <a href="{{ pagination.href.last }}" class="flex items-center hover:underline">last</a>
+            <a href="{{ pagination.href.last }}"
+               class="flex items-center hover:underline">last</a>
           </span>
         {% endif %}
       </div>

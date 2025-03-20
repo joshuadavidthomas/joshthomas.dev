@@ -1,16 +1,23 @@
 ---
 layout: base.njk
 ---
-{%- html "preload" %}
-  <link rel="preload" href="/assets/fonts/monolisa-v2.015/0-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/assets/fonts/monolisa-v2.015/1-italic.woff2" as="font" type="font/woff2" crossorigin>
-{%- endhtml %}
 
+{%- html "preload" %}
+<link rel="preload"
+      href="/assets/fonts/monolisa-v2.015/0-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin>
+<link rel="preload"
+      href="/assets/fonts/monolisa-v2.015/1-italic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin>
+{%- endhtml %}
 <header class="max-w-2xl mx-auto">
-  <h2 class="text-3xl tracking-tight text-gray-800 sm:text-4xl dark:text-gray-100">
-    {{ title }}
-  </h2>
-  <time datetime="{{ date | dateToHtmlString }}" class="flex items-baseline gap-2 mt-4 text-sm font-medium text-gray-700 dark:text-gray-200">
+  <h2 class="text-3xl tracking-tight text-gray-800 sm:text-4xl dark:text-gray-100">{{ title }}</h2>
+  <time datetime="{{ date | dateToHtmlString }}"
+        class="flex items-baseline gap-2 mt-4 text-sm font-medium text-gray-700 dark:text-gray-200">
     <i class="fa-solid fa-calendar-day size-4 text-gray-700 dark:text-gray-300"></i>
     {{ date | dateToFormat("LLLL d, yyyy") }}
   </time>
@@ -18,4 +25,3 @@ layout: base.njk
 <div class="max-w-none mt-6 prose xl:prose-xl dark:prose-invert grid grid-container-2xl prose-pre:grid-bleed-7xl prose-a:hover:text-blue-500">
   {{ content | safe }}
 </div>
-

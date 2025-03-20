@@ -7,6 +7,7 @@ Personal site built with [Eleventy](https://www.11ty.dev/).
 Features include blog with Markdown support, RSS feed, and Raindrop.io integration for bookmarks.
 
 Built with:
+
 - [Eleventy](https://www.11ty.dev/) - Static site generator
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Nunjucks](https://mozilla.github.io/nunjucks/) - Templating engine

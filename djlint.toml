@@ -1,0 +1,16 @@
+blank_line_after_tag = ""
+blank_line_before_tag = ""
+custom_blocks = "css,js"
+custom_html = "author,content,entry,feed,url"
+format_css = true
+format_js = true
+ignore = "H031"  # Don't require `meta` tag keywords
+ignore_blocks = "getBundle,getBundleFileUrl,set"
+indent = 2
+profile = "nunjucks"
+
+[css]
+indent_size = 2
+
+[js]
+indent_size = 2

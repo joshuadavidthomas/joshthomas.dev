@@ -11,31 +11,37 @@ metadata:
   title: Josh Thomas
 permalink: /blog/feed/atom.xml
 ---
+
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ metadata.language or page.lang }}">
-    <title>{{ metadata.title }}</title>
-    <subtitle>{{ metadata.description | safe }}</subtitle>
-    <link href="{{ permalink | htmlBaseUrl(metadata.base) }}" rel="self" type="application/atom+xml" />
-    <link href="{{ metadata.base | addPathPrefixToFullUrl }}" rel="alternate" type="text/html"/>
-    <author>
-        {%- for field_name, field_value in metadata.author %}
-          <{{ field_name }}>{{ field_value }}</{{ field_name}}>
-        {%- endfor %}
-    </author>
-    {%- if collections.posts %}
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xml:lang="{{ metadata.language or page.lang }}">
+  <title>{{ metadata.title }}</title>
+  <subtitle>{{ metadata.description | safe }}</subtitle>
+  <link href="{{ permalink | htmlBaseUrl(metadata.base) }}"
+        rel="self"
+        type="application/atom+xml" />
+  <link href="{{ metadata.base | addPathPrefixToFullUrl }}"
+        rel="alternate"
+        type="text/html" />
+  <author>
+    {%- for field_name, field_value in metadata.author %}
+      <{{ field_name }}>{{ field_value }}</{{ field_name }}>
+    {%- endfor %}
+  </author>
+  {%- if collections.posts %}
     <updated>{{ collections.posts | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
-    {%- endif %}
-    <id>{{ metadata.base | addPathPrefixToFullUrl }}</id>
-    {%- for post in collections.posts | reverse -%}
+  {%- endif %}
+  <id>{{ metadata.base | addPathPrefixToFullUrl }}</id>
+  {%- for post in collections.posts | reverse -%}
     {%- set absolutePostUrl %}{{ post.url | htmlBaseUrl(metadata.base) }}{% endset %}
-        <entry>
-            <title>{{ post.data.title | safe }}</title>
-            <link href="{{ absolutePostUrl }}"/>
-            <updated>{{ post.date | dateToRfc3339 }}</updated>
-            <id>{{ absolutePostUrl }}</id>
-            <content type="html"><![CDATA[
-                {{ post.templateContent | htmlToAbsoluteUrls(absolutePostUrl) | safe }}
-            ]]></content>
-        </entry>
-    {%- endfor -%}
+    <entry>
+      <title>{{ post.data.title | safe }}</title>
+      <link href="{{ absolutePostUrl }}" />
+      <updated>{{ post.date | dateToRfc3339 }}</updated>
+      <id>{{ absolutePostUrl }}</id>
+      <content type="html">
+        <![CDATA[{{ post.templateContent | htmlToAbsoluteUrls(absolutePostUrl) | safe }}]]>
+      </content>
+    </entry>
+  {%- endfor -%}
 </feed>
