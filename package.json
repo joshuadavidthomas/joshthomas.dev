@@ -24,7 +24,7 @@
     "tailwindcss": "^4.0.10"
   },
   "scripts": {
-    "build": "tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css && eleventy",
+    "build": "bunx tailwindcss --input src/_assets/css/style.css --output dist/assets/css/style.css && bunx eleventy",
     "clean": "rm -rf .cache dist",
     "dev": "bun .bin/runner.ts dev",
     "dev:11ty": "eleventy --serve",
