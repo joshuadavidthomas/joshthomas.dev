@@ -15,40 +15,8 @@ export default function (eleventyConfig) {
     { "src/_assets": "assets" },
     {
       filter: (path) => {
-        const includedPatterns = [
-          // Fonts
-          "**/*.woff2",
-          "**/*.woff",
-          "**/*.ttf",
-          "**/*.eot",
-          // Images
-          "**/*.png",
-          "**/*.jpg",
-          "**/*.jpeg",
-          "**/*.svg",
-          "**/*.gif",
-          "**/*.webp",
-          "**/*.ico",
-          // Other assets
-          "**/*.pdf",
-          "**/*.mp4",
-          "**/*.mp3",
-          // CSS files that should be copied directly (not processed by bundler)
-          "**/vendor/**/*.css"
-        ];
-        
-        // Check if the path matches any of our patterns
-        return includedPatterns.some(pattern => {
-          if (pattern.includes("*")) {
-            // For wildcard patterns, convert to regex
-            const regexPattern = pattern
-              .replace(/\./g, "\\.")
-              .replace(/\*/g, ".*");
-            return new RegExp(regexPattern).test(path);
-          }
-          // For exact matches
-          return path.endsWith(pattern);
-        });
+        const ignoredExtensions = [".css", ".js"];
+        return ignoredExtensions.some((extension) => !path.endsWith(extension));
       },
     },
   );
