@@ -16,7 +16,7 @@ export default function (eleventyConfig) {
     {
       filter: (path) => {
         const ignoredExtensions = [".css", ".js"];
-        return ignoredExtensions.some((extension) => !path.endsWith(extension));
+        return !ignoredExtensions.some((extension) => path.endsWith(extension));
       },
     },
   );
