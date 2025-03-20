@@ -13,8 +13,10 @@
         "@tailwindcss/cli": "^4.0.11",
         "@tailwindcss/typography": "^0.5.16",
         "@vrugtehagel/eleventy-asset-hash": "npm:@jsr/vrugtehagel__eleventy-asset-hash",
+        "@zachleat/heading-anchors": "^1.0.3",
         "luxon": "^3.5.0",
         "markdown-it": "^14.1.0",
+        "markdown-it-anchor": "^9.2.0",
         "markdown-it-github-alerts": "^0.3.1",
         "tailwindcss": "^4.0.10",
       },
@@ -160,11 +162,19 @@
 
     "@types/bun": ["@types/bun@1.2.5", "", { "dependencies": { "bun-types": "1.2.5" } }, "sha512-w2OZTzrZTVtbnJew1pdFmgV99H0/L+Pvw+z1P67HaR18MHOzYnTYOi6qzErhK8HyT+DB782ADVPPE92Xu2/Opg=="],
 
+    "@types/linkify-it": ["@types/linkify-it@5.0.0", "", {}, "sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q=="],
+
+    "@types/markdown-it": ["@types/markdown-it@14.1.2", "", { "dependencies": { "@types/linkify-it": "^5", "@types/mdurl": "^2" } }, "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog=="],
+
+    "@types/mdurl": ["@types/mdurl@2.0.0", "", {}, "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="],
+
     "@types/node": ["@types/node@22.13.10", "", { "dependencies": { "undici-types": "~6.20.0" } }, "sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw=="],
 
     "@types/ws": ["@types/ws@8.5.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw=="],
 
     "@vrugtehagel/eleventy-asset-hash": ["@jsr/vrugtehagel__eleventy-asset-hash@0.2.5", "https://npm.jsr.io/~/11/@jsr/vrugtehagel__eleventy-asset-hash/0.2.5.tgz", { "dependencies": { "fast-glob": "^3.3.2", "micromatch": "^4.0.5" } }, "sha512-90DG5ijoRgm8smx8rZ1kY7JK3Tc+iaAabf1X4z3pxbwF9airGlgUVpk7uv71ubSUMDMnHskvUtxGUr2zBso20g=="],
+
+    "@zachleat/heading-anchors": ["@zachleat/heading-anchors@1.0.3", "", {}, "sha512-PJPy09KrJK//1MQLMcfe7i5QFGdlseZ1a+oy1Y0nlcVHbupnnZjFBj25dAGnYEbJ4OMXe3c8c9dyJoWWbXr2iA=="],
 
     "a-sync-waterfall": ["a-sync-waterfall@1.0.1", "", {}, "sha512-RYTOHHdWipFUliRFMCS4X2Yn2X8M87V/OpSqWzKKOGhzqyUxzyVmhHDH9sAvG+ZuQf/TAOFsLCpMw09I1ufUnA=="],
 
@@ -369,6 +379,8 @@
     "luxon": ["luxon@3.5.0", "", {}, "sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ=="],
 
     "markdown-it": ["markdown-it@14.1.0", "", { "dependencies": { "argparse": "^2.0.1", "entities": "^4.4.0", "linkify-it": "^5.0.0", "mdurl": "^2.0.0", "punycode.js": "^2.3.1", "uc.micro": "^2.1.0" }, "bin": { "markdown-it": "bin/markdown-it.mjs" } }, "sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg=="],
+
+    "markdown-it-anchor": ["markdown-it-anchor@9.2.0", "", { "peerDependencies": { "@types/markdown-it": "*", "markdown-it": "*" } }, "sha512-sa2ErMQ6kKOA4l31gLGYliFQrMKkqSO0ZJgGhDHKijPf0pNFM9vghjAh3gn26pS4JDRs7Iwa9S36gxm3vgZTzg=="],
 
     "markdown-it-github-alerts": ["markdown-it-github-alerts@0.3.1", "", { "peerDependencies": { "markdown-it": ">= 13.0.0" } }, "sha512-WUzfxjr8E4Fh9LTVOIneYT8qQHydkV8cRLXX5/HPpKhRzRQFUuYmNEt7KNBA12V9ZepIIRqQ2lj3haKms2/9Pw=="],
 

@@ -5,8 +5,8 @@
 @import "./layout.css";
 
 @theme {
-  --font-brico: BricolageGrotesque, ui-serif, Georgia, Cambria,
-    "Times New Roman", Times, serif;
+  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
@@ -172,5 +172,24 @@
         }
       }
     }
+  }
+}
+
+heading-anchors:not(:defined) :is(h2, h3, h4, h5, h6):after {
+  content: "#";
+  padding: 0 .25em;
+  opacity: 0;
+}
+
+heading-anchors .ha-placeholder,
+heading-anchors .ha {
+  padding-left: calc(var(--spacing) * 2);
+}
+
+heading-anchors .ha-placeholder {
+  color: var(--color-gray-950) !important;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-50) !important;
   }
 }
