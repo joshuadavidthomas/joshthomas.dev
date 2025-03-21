@@ -91,17 +91,20 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addTransform("htmlmin", function (content) {
     if ((this.page.outputPath || "").endsWith(".html")) {
-      const minified = htmlmin.minify(content, {
+      return htmlmin.minify(content, {
         collapseWhitespace: true,
         minifyCSS: true,
         removeComments: true,
         useShortDoctype: true,
       });
-
-      return minified;
     }
+    return content;
+  });
 
-    // If not an HTML output, return content as-is
+  eleventyConfig.addTransform("xml-whitespace", function (content) {
+    if ((this.page.outputPath || "").endsWith(".xml")) {
+      return content.trim();
+    }
     return content;
   });
 
