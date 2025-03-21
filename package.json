@@ -20,6 +20,8 @@
     "@tailwindcss/typography": "^0.5.16",
     "@vrugtehagel/eleventy-asset-hash": "npm:@jsr/vrugtehagel__eleventy-asset-hash",
     "@zachleat/heading-anchors": "^1.0.3",
+    "html-minifier-terser": "^7.2.0",
+    "linkedom": "^0.18.9",
     "luxon": "^3.5.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",

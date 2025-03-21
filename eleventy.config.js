@@ -4,11 +4,13 @@ import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
 import EleventyPluginSyntaxhighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import EleventyPluginFontAwesome from "@11ty/font-awesome";
 import EleventyPluginAssetHash from "@vrugtehagel/eleventy-asset-hash";
+import htmlmin from "html-minifier-terser";
 import markdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 import MarkdownItGitHubAlerts from "markdown-it-github-alerts";
 import collections from "./src/_config/collections.js";
 import filters from "./src/_config/filters.js";
+import EleventyPluginAutoPreload from "./src/_plugins/autoPreloadPlugin.js";
 
 export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
@@ -24,6 +26,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addBundle("html");
   eleventyConfig.addBundle("js");
 
+  eleventyConfig.addPlugin(EleventyPluginAutoPreload);
   eleventyConfig.addPlugin(EleventyPluginFontAwesome);
   eleventyConfig.addPlugin(EleventyPluginNavigation);
   eleventyConfig.addPlugin(EleventyPluginRss);
@@ -85,6 +88,22 @@ export default function (eleventyConfig) {
   for (const filterName of Object.keys(filters)) {
     eleventyConfig.addFilter(filterName, filters[filterName]);
   }
+
+  eleventyConfig.addTransform("htmlmin", function (content) {
+    if ((this.page.outputPath || "").endsWith(".html")) {
+      const minified = htmlmin.minify(content, {
+        collapseWhitespace: true,
+        minifyCSS: true,
+        removeComments: true,
+        useShortDoctype: true,
+      });
+
+      return minified;
+    }
+
+    // If not an HTML output, return content as-is
+    return content;
+  });
 
   return {
     dir: {
