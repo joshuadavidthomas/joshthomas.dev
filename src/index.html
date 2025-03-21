@@ -2,7 +2,7 @@
 eleventyNavigation:
   key: Home
   order: 1
-layout: base
+layout: default
 ---
 
 <section class="mt-10 text-center sm:mt-16 font-brico">
@@ -40,7 +40,7 @@ layout: base
     <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold text-gray-900 dark:text-gray-50 group-hover:text-gray-600 dark:group-hover:text-gray-400">
       <a href="{{ latestPost.url }}">
         <span class="absolute inset-0"></span>
-        {{ latestPost.data.title }}
+        {{ latestPost.data.title | markdownify | safe }}
       </a>
     </h3>
     <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ latestPost.data.summary }}</p>

@@ -2,7 +2,7 @@
 eleventyNavigation:
   key: Blog
   order: 2
-layout: base
+layout: default
 pagination:
   data: collections.posts
   size: 10
@@ -27,7 +27,7 @@ pagination:
       <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
         <a href="{{ post.url }}">
           <span class="absolute inset-0"></span>
-          {{ post.data.title }}
+          {{ post.data.title | markdownify | safe }}
         </a>
       </h3>
       <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ post.data.summary }}</p>

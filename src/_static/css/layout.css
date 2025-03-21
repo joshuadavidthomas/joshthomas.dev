@@ -1,6 +1,5 @@
 @layer base {
   body {
-    display: grid;
     grid-template:
       "header header header"
       "r-aside main l-aside"
@@ -24,6 +23,12 @@
       &.full {
         max-width: 100%;
       }
+    }
+
+    > footer {
+      grid-area: footer;
+      margin: 0 auto;
+      max-width: var(--container-2xl);
     }
   }
 }

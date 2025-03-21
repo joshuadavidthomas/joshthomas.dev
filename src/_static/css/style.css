@@ -33,6 +33,11 @@
   h5,
   h6 {
     font-family: var(--font-brico);
+
+    code {
+      font-size: inherit;
+      letter-spacing: var(--tracking-tighter);
+    }
   }
 
   h1 {

@@ -1,0 +1,39 @@
+---
+class:
+  body: grid px-2
+layout: base
+---
+
+<header class="flex justify-between items-baseline w-full">
+  <div>
+    <h1 class="text-2xl font-bold font-brico">
+      <a href="/">Josh Thomas</a>
+    </h1>
+    {% set navPages = collections.all | eleventyNavigation %}
+    <nav class="flex gap-4 items-center text-sm" aria-labelledby="site-nav">
+      <h2 id="site-nav" class="sr-only">Site navigation</h2>
+      {%- for entry in navPages %}
+        <a href="{{ entry.url }}"
+           class="uppercase hover:text-blue-500 hover:underline underline-offset-4 decoration-1{% if page.url | isActiveUrl(entry.url) %} text-blue-800 dark:text-blue-300 font-semibold underline{% endif %}">
+          {{ entry.title }}
+        </a>
+      {%- endfor %}
+    </nav>
+  </div>
+  <nav class="flex items-center gap-2" aria-labelledby="social-nav">
+    <h2 id="social-nav" class="sr-only">Social media</h2>
+    {%- for item in site.social %}
+      {%- set socialId = item.title | slugify -%}
+      <a href="{{ item.url }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-labelledby="{{ socialId }}-link">
+        <span id="{{ socialId }}-link" class="sr-only">{{ item.title }}</span>
+        {{ item.icon | safe }}
+      </a>
+    {%- endfor %}
+  </nav>
+</header>
+<main id="skip"{%- if class.main -%} class="{{ class.main }}"{%- endif -%}>
+  {{ content | safe }}
+</main>

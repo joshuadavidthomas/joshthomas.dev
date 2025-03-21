@@ -4,6 +4,7 @@
  */
 
 import { DateTime } from "luxon";
+import md from "./markdown.js";
 
 export default {
   /**
@@ -74,4 +75,11 @@ export default {
       return !newest || item.date > newest.date ? item : newest;
     }, null);
   },
+
+  /**
+   * Render a string with our markdown-it config
+   * @param string content - The string content to render
+   * @returns string The rendered content
+   */
+  markdownify: (content) => md.renderInline(content),
 };
