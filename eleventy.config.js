@@ -34,7 +34,8 @@ export default function (eleventyConfig) {
     outputDir: "./dist/static/img/",
   });
 
-  if (process.env.PRODUCTION_BUILD) {
+  // only use asset hashing if building in Cloudflare Pages
+  if (process.env.CF_PAGES) {
     eleventyConfig.addPlugin(EleventyPluginAssetHash, {
       algorithm: "SHA-256",
       include: ["**/*.html"],
