@@ -101,12 +101,7 @@ export default function (eleventyConfig) {
     return content;
   });
 
-  eleventyConfig.addTransform("xml-whitespace", function (content) {
-    if ((this.page.outputPath || "").endsWith(".xml")) {
-      return content.trim();
-    }
-    return content;
-  });
+  eleventyConfig.addTransform("trim-whitespace", (content) => content.trim());
 
   return {
     dir: {
