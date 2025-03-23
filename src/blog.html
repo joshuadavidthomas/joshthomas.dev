@@ -6,7 +6,8 @@ layout: default
 pagination:
   data: collections.posts
   size: 10
-  alias: posts
+tags:
+  - main-nav
 ---
 
 <header class="flex">
@@ -17,7 +18,7 @@ pagination:
   </a>
 </header>
 <div class="mt-4 space-y-12">
-  {%- for post in posts | reverse -%}
+  {%- for post in collections.posts | reverse -%}
     <article class="group relative">
       <time datetime="{{ post.date | dateToHtmlString }}"
             class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">

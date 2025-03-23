@@ -1,0 +1,24 @@
+---
+eleventyComputed:
+  sourceUrl: "{{ site.url }}/{{ post.url }}"
+layout: base
+pagination:
+  data: collections.posts
+  size: 1
+  alias: post
+permalink: "/og/{{ post.url }}"
+---
+
+<div class="flex flex-col gap-6 py-4 px-8 relative min-h-screen">
+  <h1 class="text-8xl">{{ post.data.title | markdownify | safe }}</h1>
+  <time datetime="{{ post.date | dateToHtmlString }}" class="text-4xl">
+    {{ post.date | dateToFormat("LLLL d, yyyy") }}
+  </time>
+  <p class="mt-auto text-5xl font-medium font-brico">{{ site.title }}</p>
+  <img src="/_static/images/me.png"
+       width="250"
+       height="250"
+       alt="A picture of Josh"
+       fetchpriority="high"
+       class="absolute right-8 bottom-10 size-84 rounded-full drop-shadow-md" />
+</div>

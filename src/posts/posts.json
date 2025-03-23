@@ -1,4 +1,5 @@
 {
   "layout": "post",
-  "permalink": "/blog/{{ date | dateToFormat('yyyy') }}/{{ title | slugify }}/"
+  "permalink": "/blog/{{ date | dateToFormat('yyyy') }}/{{ title | slugify }}/",
+  "tags": "posts"
 }

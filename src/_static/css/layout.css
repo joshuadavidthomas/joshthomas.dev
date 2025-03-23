@@ -1,5 +1,6 @@
 @layer base {
-  body {
+  .grid-layout {
+    display: grid;
     grid-template:
       "header header header"
       "r-aside main l-aside"
@@ -19,16 +20,20 @@
       grid-area: main;
       margin: 0 auto;
       max-width: var(--container-2xl);
-
-      &.full {
-        max-width: 100%;
-      }
     }
 
     > footer {
       grid-area: footer;
       margin: 0 auto;
       max-width: var(--container-2xl);
+    }
+
+    > * {
+      width: 100%;
+    }
+
+    > .w-full {
+      max-width: 100%;
     }
   }
 }
@@ -42,9 +47,15 @@
 }
 
 @utility grid-bleed-* {
-  grid-column: 1 / 4;
+  grid-column: 1 / 4 !important;
   margin-left: auto;
   margin-right: auto;
   max-width: --value(--container-\*);
+  width: 100%;
+}
+
+@utility grid-bleed-full {
+  grid-column: 1 / 4 !important;
+  max-width: 100%;
   width: 100%;
 }
