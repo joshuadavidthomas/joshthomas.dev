@@ -24,7 +24,7 @@
   --code-token-inserted-bg: var(--tokyonight-day-diff-add);
   --code-token-inserted-fg: var(--tokyonight-moon-diff-add);
 
-  @media (prefers-color-scheme: dark) {
+  @variant dark {
     --code-background-color: var(--tokyonight-moon-bg);
     --code-color: var(--tokyonight-moon-fg);
     --code-token-boolean: var(--tokyonight-moon-orange);
@@ -59,7 +59,6 @@
   :not(pre) > code {
     border-radius: var(--radius-sm);
     padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 1);
-    text-box: trim-both ex text;
   }
 
   /* tailwind-typography plugin adds backticks here, let's remove them */
@@ -127,7 +126,7 @@
       &.deleted:not(.prefix) *::selection {
         background-color: var(--color-red-700);
 
-        @media (prefers-color-scheme: dark) {
+        @variant dark {
           background-color: var(--color-red-500);
         }
       }
@@ -141,7 +140,7 @@
       &.inserted:not(.prefix) *::selection {
         background-color: var(--color-green-700);
 
-        @media (prefers-color-scheme: dark) {
+        @variant dark {
           background-color: var(--color-green-600);
         }
       }
