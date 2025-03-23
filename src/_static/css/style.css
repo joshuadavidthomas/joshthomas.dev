@@ -169,6 +169,14 @@
       }
     }
   }
+
+  .prose {
+    table caption {
+      caption-side: bottom;
+      padding: 10px;
+      font-weight: bold;
+    }
+  }
 }
 
 heading-anchors:not(:defined) :is(h2, h3, h4, h5, h6):after {

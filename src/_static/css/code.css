@@ -58,7 +58,7 @@
 
   :not(pre) > code {
     border-radius: var(--radius-sm);
-    padding: 0 calc(var(--spacing) * 1);
+    padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 1);
     text-box: trim-both ex text;
   }
 
@@ -71,8 +71,11 @@
   }
 
   :is(h1, h2, h3, h4, h5, h6) code {
-    padding-left: calc(var(--spacing) * 1);
     padding-right: calc(var(--spacing) * 2);
+  }
+
+  :is(h4, h5, h6) code {
+    padding-right: calc(var(--spacing) * 1.5);
   }
 
   .markdown-alert {

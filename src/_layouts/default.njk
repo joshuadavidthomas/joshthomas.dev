@@ -13,7 +13,7 @@ layout: base
       </h1>
       {% set mainNavPages = collections['main-nav'] | eleventyNavigation %}
       <nav class="flex gap-4 items-center text-sm" aria-labelledby="site-nav">
-        <h2 id="site-nav" class="sr-only">Main site navigation</h2>
+        <h2 id="site-nav" class="sr-only" data-ha-exclude>Main site navigation</h2>
         {%- for entry in mainNavPages %}
           <a href="{{ entry.url }}"
              class="uppercase hover:text-blue-500 hover:underline underline-offset-4 decoration-1{% if page.url | isActiveUrl(entry.url) %} text-blue-800 dark:text-blue-300 font-semibold underline{% endif %}">
@@ -23,7 +23,7 @@ layout: base
       </nav>
     </div>
     <nav class="flex items-center gap-2" aria-labelledby="social-nav">
-      <h2 id="social-nav" class="sr-only">Social media</h2>
+      <h2 id="social-nav" class="sr-only" data-ha-exclude>Social media</h2>
       {%- for item in site.social %}
         {%- set socialId = item.title | slugify -%}
         <a href="{{ item.url }}"

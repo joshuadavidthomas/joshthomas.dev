@@ -85,12 +85,12 @@ Cold-pressed venmo vegan cronut art party adaptogen. Selvage crucifix yuccie, cu
 
 Plaid butcher grailed hell of `poutine`, tote bag DSA gluten-free locavore JOMO af `forage raclette`. Fingerstache banh mi neutral milk hotel lyft cray venmo single-origin coffee brunch `gluten-free food truck` cardigan. Selvage fit enamel pin vice artisan squid drinking vinegar raclette `pitchfork` cray mumblecore.
 
-# In a `heading` 1
-## In a `heading` 2
-### In a `heading` 3
-#### In a `heading` 4
-##### In a `heading` 5
-###### In a `heading` 6
+# `Heading 1`
+## `Heading 2`
+### `Heading 3`
+#### `Heading 4`
+##### `Heading 5`
+###### `Heading 6`
 
 ### Blocks
 
@@ -194,7 +194,7 @@ return M
 
 #### Full bleed width
 
-<div class="grid-bleed-full">
+<div class="w-full">
 
 ```python
 def is_dead_parrot(parrot_state):
@@ -216,6 +216,8 @@ def is_dead_parrot(parrot_state):
 | "You're not the Messiah, you're a very naughty boy!" | Crowd |
 | "I fart in your general direction!" | The Brits |
 
+: Classic Monty Python insults
+
 ### Breakout widths
 
 <div class="grid-bleed-3xl">
@@ -227,6 +229,8 @@ def is_dead_parrot(parrot_state):
 | Argument Clinic | 1972 | "No it isn't." "Yes it is!" |
 | Upper Class Twit | 1970 | "The crowd are going wild!" |
 
+: Memorable Monty Python sketches
+
 </div>
 <div class="grid-bleed-5xl">
 
@@ -236,6 +240,8 @@ def is_dead_parrot(parrot_state):
 | Sir Lancelot | John Cleese | Sword | Holy Grail | Red... No, Blue! |
 | Sir Robin | Eric Idle | Chicken | Ran Away | Yellow |
 | Tim | John Cleese | Explosions | Being an Enchanter | Black |
+
+: Monty Python and the Holy Grail characters
 
 </div>
 <div class="grid-bleed-7xl">
@@ -247,11 +253,12 @@ def is_dead_parrot(parrot_state):
 | Reg | John Cleese | PFJ Meeting | "What have the Romans ever done for us?" | ✝️✝️✝️ |
 | Biggus Dickus | Graham Chapman | Palace | "He has a wife, you know..." | ✝️✝️✝️✝️ |
 
+: Life of Brian characters
 </div>
 
 ### Full bleed width
 
-<div class="grid-bleed-full">
+<div class="w-full">
 
 | Film | Year | Budget | Box Office | Director | Runtime | Swear Count | Coconut Usage |
 |------|------|--------|------------|----------|---------|-------------|--------------|
@@ -259,6 +266,8 @@ def is_dead_parrot(parrot_state):
 | Life of Brian | 1979 | $4M | $20M | Terry Jones | 94 min | 28 | None |
 | Meaning of Life | 1983 | $9M | $14M | Terry Jones | 107 min | 35 | Minimal |
 | And Now For Something... | 1971 | $250K | $1.1M | Ian MacNaughton | 88 min | 8 | Moderate |
+
+: Monty Python filmography
 
 </div>
 

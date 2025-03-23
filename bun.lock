@@ -23,6 +23,7 @@
         "markdown-it-attrs": "^4.3.1",
         "markdown-it-footnote": "^4.0.0",
         "markdown-it-github-alerts": "^0.3.1",
+        "markdown-it-table-captions": "^1.0.4",
         "tailwindcss": "^4.0.10",
       },
       "devDependencies": {
@@ -486,6 +487,8 @@
     "markdown-it-footnote": ["markdown-it-footnote@4.0.0", "", {}, "sha512-WYJ7urf+khJYl3DqofQpYfEYkZKbmXmwxQV8c8mO/hGIhgZ1wOe7R4HLFNwqx7TjILbnC98fuyeSsin19JdFcQ=="],
 
     "markdown-it-github-alerts": ["markdown-it-github-alerts@0.3.1", "", { "peerDependencies": { "markdown-it": ">= 13.0.0" } }, "sha512-WUzfxjr8E4Fh9LTVOIneYT8qQHydkV8cRLXX5/HPpKhRzRQFUuYmNEt7KNBA12V9ZepIIRqQ2lj3haKms2/9Pw=="],
+
+    "markdown-it-table-captions": ["markdown-it-table-captions@1.0.4", "", {}, "sha512-EpUN5GJLdDbpWSSl0Qf51kwT1e4mUMDB60mitr8JH4Sciyzny7x80BcSG9vKk6MOmeYjmGJ4aBTQCnCf7Y1iZw=="],
 
     "maximatch": ["maximatch@0.1.0", "", { "dependencies": { "array-differ": "^1.0.0", "array-union": "^1.0.1", "arrify": "^1.0.0", "minimatch": "^3.0.0" } }, "sha512-9ORVtDUFk4u/NFfo0vG/ND/z7UQCVZBL539YW0+U1I7H1BkZwizcPx5foFv7LCPcBnm2U6RjFnQOsIvN4/Vm2A=="],
 

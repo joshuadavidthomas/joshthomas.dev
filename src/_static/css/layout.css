@@ -44,6 +44,12 @@
   > * {
     grid-column: 2;
   }
+
+  > .w-full {
+    grid-column: 1 / 4 !important;
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 @utility grid-bleed-* {
