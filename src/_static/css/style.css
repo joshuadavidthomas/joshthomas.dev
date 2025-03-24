@@ -59,8 +59,8 @@
     font-size: var(--text-sm);
     margin-bottom: calc(var(--spacing) * 4);
     padding-bottom: calc(var(--spacing) * 4);
-    padding-left: calc(var(--spacing) * 6);
-    padding-top: calc(var(--spacing) * 2);
+    padding-top: calc(var(--spacing) * 3);
+    padding-inline-start: calc(var(--spacing) * 6);
 
     @variant xl {
       font-size: var(--text-base) !important;
@@ -95,76 +95,76 @@
     }
 
     &.markdown-alert-note {
-      border-left-color: var(--tokyonight-day-info);
+      border-left-color: var(--color-tokyonight-day-info);
       color: var(--color-blue-950);
       @variant dark {
-        border-left-color: var(--tokyonight-moon-info);
+        border-left-color: var(--color-tokyonight-moon-info);
         color: var(--color-blue-50);
       }
       .markdown-alert-title {
-        color: var(--tokyonight-day-info);
+        color: var(--color-tokyonight-day-info);
         @variant dark {
-          color: var(--tokyonight-moon-info);
+          color: var(--color-tokyonight-moon-info);
         }
       }
     }
 
     &.markdown-alert-important {
-      border-left-color: var(--tokyonight-day-magenta);
+      border-left-color: var(--color-tokyonight-day-magenta);
       color: var(--color-purple-950);
       @variant dark {
-        border-left-color: var(--tokyonight-moon-magenta);
+        border-left-color: var(--color-tokyonight-moon-magenta);
         color: var(--color-purple-50);
       }
       .markdown-alert-title {
-        color: var(--tokyonight-day-magenta);
+        color: var(--color-tokyonight-day-magenta);
         @variant dark {
-          color: var(--tokyonight-moon-magenta);
+          color: var(--color-tokyonight-moon-magenta);
         }
       }
     }
 
     &.markdown-alert-warning {
-      border-left-color: var(--tokyonight-day-warning);
+      border-left-color: var(--color-tokyonight-day-warning);
       color: var(--color-yellow-950);
       @variant dark {
-        border-left-color: var(--tokyonight-moon-warning);
+        border-left-color: var(--color-tokyonight-moon-warning);
         color: var(--color-yellow-50);
       }
       .markdown-alert-title {
-        color: var(--tokyonight-day-warning);
+        color: var(--color-tokyonight-day-warning);
         @variant dark {
-          color: var(--tokyonight-moon-warning);
+          color: var(--color-tokyonight-moon-warning);
         }
       }
     }
 
     &.markdown-alert-tip {
-      border-left-color: var(--tokyonight-day-hint);
+      border-left-color: var(--color-tokyonight-day-hint);
       color: var(--color-green-950);
       @variant dark {
-        border-left-color: var(--tokyonight-moon-hint);
+        border-left-color: var(--color-tokyonight-moon-hint);
         color: var(--color-green-50);
       }
       .markdown-alert-title {
-        color: var(--tokyonight-day-hint);
+        color: var(--color-tokyonight-day-hint);
         @variant dark {
-          color: var(--tokyonight-moon-hint);
+          color: var(--color-tokyonight-moon-hint);
         }
       }
     }
 
     &.markdown-alert-caution {
-      border-left-color: var(--tokyonight-day-error);
+      border-left-color: var(--color-tokyonight-day-error);
       color: var(--color-red-950);
       @variant dark {
-        border-left-color: var(--tokyonight-moon-error);
+        border-left-color: var(--color-tokyonight-moon-error);
         color: var(--color-red-50);
       }
       .markdown-alert-title {
-        color: var(--tokyonight-day-error);
+        color: var(--color-tokyonight-day-error);
         @variant dark {
-          color: var(--tokyonight-moon-error);
+          color: var(--color-tokyonight-moon-error);
         }
       }
     }

@@ -1,52 +1,52 @@
 :root {
   --code-token-attr-name: rgb(241, 250, 140);
 
-  --code-background-color: var(--tokyonight-day-bg);
-  --code-color: var(--tokyonight-day-fg);
-  --code-token-boolean: var(--tokyonight-day-orange);
-  --code-token-builtin: var(--tokyonight-day-red);
-  --code-token-char: var(--tokyonight-day-green);
-  --code-token-comment: var(--tokyonight-day-comment);
-  --code-token-constant: var(--tokyonight-day-orange);
-  --code-token-function: var(--tokyonight-day-blue);
-  --code-token-keyword: var(--tokyonight-day-purple);
-  --code-token-operator: var(--tokyonight-day-blue5);
-  --code-token-prolog: var(--tokyonight-day-red);
-  --code-token-punctuation: var(--tokyonight-day-magenta);
-  --code-token-selector: var(--tokyonight-day-green);
-  --code-token-string: var(--tokyonight-day-green);
-  --code-token-symbol: var(--tokyonight-day-blue1);
-  --code-token-tag: var(--tokyonight-day-green);
-  --code-token-variable: var(--tokyonight-day-fg);
+  --code-background-color: var(--color-tokyonight-bg);
+  --code-color: var(--color-tokyonight-fg);
+  --code-token-boolean: var(--color-tokyonight-orange);
+  --code-token-builtin: var(--color-tokyonight-red);
+  --code-token-char: var(--color-tokyonight-green);
+  --code-token-comment: var(--color-tokyonight-comment);
+  --code-token-constant: var(--color-tokyonight-orange);
+  --code-token-function: var(--color-tokyonight-blue);
+  --code-token-keyword: var(--color-tokyonight-purple);
+  --code-token-operator: var(--color-tokyonight-blue5);
+  --code-token-prolog: var(--color-tokyonight-red);
+  --code-token-punctuation: var(--color-tokyonight-magenta);
+  --code-token-selector: var(--color-tokyonight-green);
+  --code-token-string: var(--color-tokyonight-green);
+  --code-token-symbol: var(--color-tokyonight-blue1);
+  --code-token-tag: var(--color-tokyonight-green);
+  --code-token-variable: var(--color-tokyonight-fg);
 
-  --code-token-deleted-bg: var(--tokyonight-day-diff-delete);
-  --code-token-deleted-fg: var(--tokyonight-moon-diff-delete);
-  --code-token-inserted-bg: var(--tokyonight-day-diff-add);
-  --code-token-inserted-fg: var(--tokyonight-moon-diff-add);
+  --code-token-deleted-bg: var(--color-tokyonight-day-diff-delete);
+  --code-token-deleted-fg: var(--color-tokyonight-moon-diff-delete);
+  --code-token-inserted-bg: var(--color-tokyonight-day-diff-add);
+  --code-token-inserted-fg: var(--color-tokyonight-moon-diff-add);
 
   @variant dark {
-    --code-background-color: var(--tokyonight-moon-bg);
-    --code-color: var(--tokyonight-moon-fg);
-    --code-token-boolean: var(--tokyonight-moon-orange);
-    --code-token-builtin: var(--tokyonight-moon-red);
-    --code-token-char: var(--tokyonight-moon-green);
-    --code-token-comment: var(--tokyonight-moon-comment);
-    --code-token-constant: var(--tokyonight-moon-orange);
-    --code-token-function: var(--tokyonight-moon-blue);
-    --code-token-keyword: var(--tokyonight-moon-purple);
-    --code-token-operator: var(--tokyonight-moon-blue5);
-    --code-token-prolog: var(--tokyonight-moon-red);
-    --code-token-punctuation: var(--tokyonight-moon-magenta);
-    --code-token-selector: var(--tokyonight-moon-green);
-    --code-token-string: var(--tokyonight-moon-green);
-    --code-token-symbol: var(--tokyonight-moon-blue1);
-    --code-token-tag: var(--tokyonight-moon-green);
-    --code-token-variable: var(--tokyonight-moon-fg);
+    --code-background-color: var(--color-tokyonight-bg);
+    --code-color: var(--color-tokyonight-fg);
+    --code-token-boolean: var(--color-tokyonight-orange);
+    --code-token-builtin: var(--color-tokyonight-red);
+    --code-token-char: var(--color-tokyonight-green);
+    --code-token-comment: var(--color-tokyonight-comment);
+    --code-token-constant: var(--color-tokyonight-orange);
+    --code-token-function: var(--color-tokyonight-blue);
+    --code-token-keyword: var(--color-tokyonight-purple);
+    --code-token-operator: var(--color-tokyonight-blue5);
+    --code-token-prolog: var(--color-tokyonight-red);
+    --code-token-punctuation: var(--color-tokyonight-magenta);
+    --code-token-selector: var(--color-tokyonight-green);
+    --code-token-string: var(--color-tokyonight-green);
+    --code-token-symbol: var(--color-tokyonight-blue1);
+    --code-token-tag: var(--color-tokyonight-green);
+    --code-token-variable: var(--color-tokyonight-fg);
 
-    --code-token-deleted-bg: var(--tokyonight-moon-diff-delete);
-    --code-token-deleted-fg: var(--tokyonight-day-diff-delete);
-    --code-token-inserted-bg: var(--tokyonight-moon-diff-add);
-    --code-token-inserted-fg: var(--tokyonight-day-diff-add);
+    --code-token-deleted-bg: var(--color-tokyonight-moon-diff-delete);
+    --code-token-deleted-fg: var(--color-tokyonight-day-diff-delete);
+    --code-token-inserted-bg: var(--color-tokyonight-moon-diff-add);
+    --code-token-inserted-fg: var(--color-tokyonight-day-diff-add);
   }
 }
 
