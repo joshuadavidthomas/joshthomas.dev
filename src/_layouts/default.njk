@@ -16,7 +16,7 @@ layout: base
         <h2 id="site-nav" class="sr-only" data-ha-exclude>Main site navigation</h2>
         {%- for entry in mainNavPages %}
           <a href="{{ entry.url }}"
-             class="uppercase hover:text-blue-500 hover:underline underline-offset-4 decoration-1{% if page.url | isActiveUrl(entry.url) %} text-blue-800 dark:text-blue-300 font-semibold underline{% endif %}">
+             class="uppercase underline-offset-4 hover:text-primary hover:decoration-primary hover:underline{% if page.url | isActiveUrl(entry.url) %} text-active decoration-active font-semibold underline{% endif %}">
             {{ entry.title }}
           </a>
         {%- endfor %}
@@ -39,20 +39,25 @@ layout: base
   <main id="skip"{%- if class.main -%} class="{{ class.main }}"{%- endif -%}>
     {{ content | safe }}
   </main>
-  <footer class="mt-24 pb-4">
-    <hr class="mb-4 border-gray-400 dark:border-gray-600 border-t-px w-16 mx-auto" />
-    {% set footerNavPages = collections['footer-nav'] | eleventyNavigation %}
-    <nav class="flex gap-4 items-center text-xs italic"
-         aria-labelledby="site-nav">
-      <h2 id="site-nav" class="sr-only">Secondary site navigation</h2>
-      <span>Built with <a href="https://11ty.dev">{{ eleventy.generator }}</a></span>
-      <span>·</span>
-      {%- for entry in footerNavPages %}
-        <a href="{{ entry.url }}"
-           class="hover:text-blue-500 hover:underline underline-offset-4 decoration-1{% if page.url | isActiveUrl(entry.url) %} text-blue-800 dark:text-blue-300 font-semibold underline{% endif %}">
-          {{ entry.title }}
-        </a>
-      {%- endfor %}
-    </nav>
+  <footer class="mt-24 pb-4 text-xs">
+    <hr class="mb-4 border-gray-400 dark:border-gray-600 border-t-px w-24 mx-auto" />
+    <div class="flex items-center justify-between">
+      {% set footerNavPages = collections['footer-nav'] | eleventyNavigation %}
+      <nav class="flex gap-2 items-center uppercase" aria-labelledby="site-nav">
+        <h2 id="site-nav" class="sr-only" data-ha-exclude>Secondary site navigation</h2>
+        {%- for entry in footerNavPages %}
+          <a href="{{ entry.url }}"
+             class="underline-offset-4 hover:underline hover:text-primary hover:decoration-primary{% if page.url | isActiveUrl(entry.url) %} text-active decoration-active font-semibold underline{% endif %}">
+            {{ entry.title }}
+          </a>
+        {%- endfor %}
+      </nav>
+      <div class="italic flex items-center gap-2">
+        <span>Built with <a href="https://11ty.dev" class="underline-offset-4">{{ eleventy.generator }}</a></span>
+        <span>·</span>
+        <a href="{{ site.source }}/tree/main/{{ page.inputPath }}"
+           class="underline-offset-4">Source</a>
+      </div>
+    </div>
   </footer>
 </heading-anchors>

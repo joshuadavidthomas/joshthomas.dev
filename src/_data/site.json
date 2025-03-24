@@ -23,6 +23,7 @@
       "icon": "<i class='fa-brands fa-linkedin size-4 xs:size-6 hover:text-[#0077b5]' aria-hidden='true'></i>"
     }
   ],
+  "source": "https://github.com/joshuadavidthomas/joshthomas.dev",
   "title": "joshthomas.dev",
   "url": "https://joshthomas.dev"
 }

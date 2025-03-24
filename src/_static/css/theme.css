@@ -1,0 +1,60 @@
+@theme {
+  --color-primary: var(--color-tokyonight-blue);
+  --color-active: var(--color-tokyonight-red);
+
+  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --tracking-tightest: -0.1em;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-brico);
+
+    code {
+      font-size: inherit;
+      letter-spacing: var(--tracking-tightest);
+    }
+  }
+
+  h1 {
+    font-weight: 900;
+  }
+
+  h2,
+  h3,
+  h4 {
+    font-weight: 800;
+  }
+
+  h5,
+  h6 {
+    font-weight: 700;
+  }
+
+  a {
+    text-decoration-color: var(--color-primary);
+    text-decoration-thickness: from-font;
+    text-underline-offset: calc(var(--spacing) * 1);
+
+    &:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-decoration-color: var(--color-primary);
+    }
+  }
+
+  :is(h1, h2, h3, h4, h5, h6) a:hover {
+    text-decoration: none;
+  }
+}

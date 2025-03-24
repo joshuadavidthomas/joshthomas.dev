@@ -4,179 +4,10 @@
 @import "./code.css";
 @import "./colors.css";
 @import "./layout.css";
+@import "./theme.css";
 
-@theme {
-  --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
-  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  --tracking-tightest: -0.1em;
-}
-
-@layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-brico);
-
-    code {
-      font-size: inherit;
-      letter-spacing: var(--tracking-tightest);
-    }
-  }
-
-  h1 {
-    font-weight: 900;
-  }
-
-  h2,
-  h3,
-  h4 {
-    font-weight: 800;
-  }
-
-  h5,
-  h6 {
-    font-weight: 700;
-  }
-
-  a:hover {
-    color: var(--color-blue-500);
-    text-decoration: underline;
-  }
-}
-
-@layer components {
-  .markdown-alert {
-    border-left: .25em solid #888;
-    color: inherit;
-    font-size: var(--text-sm);
-    margin-bottom: calc(var(--spacing) * 4);
-    padding-bottom: calc(var(--spacing) * 4);
-    padding-top: calc(var(--spacing) * 3);
-    padding-inline-start: calc(var(--spacing) * 6);
-
-    @variant xl {
-      font-size: var(--text-base) !important;
-    }
-
-    > :first-child {
-      margin-top: 0 !important;
-    }
-
-    > :last-child {
-      margin-bottom: 0 !important;
-    }
-
-    .markdown-alert-title {
-      align-items: center;
-      display: flex;
-      font-size: var(--text-base);
-      font-weight: 500;
-      line-height: var(--text-base--line-height);
-
-      @variant xl {
-        font-size: var(--text-lg) !important;
-      }
-
-      .octicon {
-        margin-right: calc(var(--spacing) * 2);
-        display: inline-block;
-        overflow: visible !important;
-        vertical-align: text-bottom;
-        fill: currentColor;
-      }
-    }
-
-    &.markdown-alert-note {
-      border-left-color: var(--color-tokyonight-day-info);
-      color: var(--color-blue-950);
-      @variant dark {
-        border-left-color: var(--color-tokyonight-moon-info);
-        color: var(--color-blue-50);
-      }
-      .markdown-alert-title {
-        color: var(--color-tokyonight-day-info);
-        @variant dark {
-          color: var(--color-tokyonight-moon-info);
-        }
-      }
-    }
-
-    &.markdown-alert-important {
-      border-left-color: var(--color-tokyonight-day-magenta);
-      color: var(--color-purple-950);
-      @variant dark {
-        border-left-color: var(--color-tokyonight-moon-magenta);
-        color: var(--color-purple-50);
-      }
-      .markdown-alert-title {
-        color: var(--color-tokyonight-day-magenta);
-        @variant dark {
-          color: var(--color-tokyonight-moon-magenta);
-        }
-      }
-    }
-
-    &.markdown-alert-warning {
-      border-left-color: var(--color-tokyonight-day-warning);
-      color: var(--color-yellow-950);
-      @variant dark {
-        border-left-color: var(--color-tokyonight-moon-warning);
-        color: var(--color-yellow-50);
-      }
-      .markdown-alert-title {
-        color: var(--color-tokyonight-day-warning);
-        @variant dark {
-          color: var(--color-tokyonight-moon-warning);
-        }
-      }
-    }
-
-    &.markdown-alert-tip {
-      border-left-color: var(--color-tokyonight-day-hint);
-      color: var(--color-green-950);
-      @variant dark {
-        border-left-color: var(--color-tokyonight-moon-hint);
-        color: var(--color-green-50);
-      }
-      .markdown-alert-title {
-        color: var(--color-tokyonight-day-hint);
-        @variant dark {
-          color: var(--color-tokyonight-moon-hint);
-        }
-      }
-    }
-
-    &.markdown-alert-caution {
-      border-left-color: var(--color-tokyonight-day-error);
-      color: var(--color-red-950);
-      @variant dark {
-        border-left-color: var(--color-tokyonight-moon-error);
-        color: var(--color-red-50);
-      }
-      .markdown-alert-title {
-        color: var(--color-tokyonight-day-error);
-        @variant dark {
-          color: var(--color-tokyonight-moon-error);
-        }
-      }
-    }
-  }
-
-  .prose {
-    table caption {
-      caption-side: bottom;
-      padding: 10px;
-      font-weight: bold;
-    }
-  }
+.prose {
+  @import "./prose.css";
 }
 
 heading-anchors:not(:defined) :is(h2, h3, h4, h5, h6):after {
@@ -195,5 +26,113 @@ heading-anchors .ha-placeholder {
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-50) !important;
+  }
+}
+
+.markdown-alert {
+  border-left: .25em solid var(--color-gray-500);
+  color: inherit;
+  font-size: var(--text-sm);
+  margin-bottom: calc(var(--spacing) * 4);
+  padding-bottom: calc(var(--spacing) * 4);
+  padding-top: calc(var(--spacing) * 3);
+  padding-inline-start: calc(var(--spacing) * 4);
+
+  @variant xl {
+    font-size: var(--text-base);
+    padding-inline-start: calc(var(--spacing) * 6);
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  .markdown-alert-title {
+    align-items: center;
+    display: flex;
+    font-size: var(--text-base);
+    font-weight: 500;
+    line-height: var(--text-base--line-height);
+
+    @variant xl {
+      font-size: var(--text-lg);
+    }
+
+    .octicon {
+      margin-right: calc(var(--spacing) * 2);
+      display: inline-block;
+      overflow: visible;
+      vertical-align: text-bottom;
+      fill: currentColor;
+    }
+  }
+
+  &.markdown-alert-note {
+    --color: var(--color-tokyonight-blue2);
+
+    border-left-color: var(--color);
+    color: var(--color-blue-950);
+    @variant dark {
+      color: var(--color-blue-50);
+    }
+    .markdown-alert-title {
+      color: var(--color);
+    }
+  }
+
+  &.markdown-alert-important {
+    --color: var(--color-tokyonight-magenta);
+
+    border-left-color: var(--color);
+    color: var(--color-purple-950);
+    @variant dark {
+      color: var(--color-purple-50);
+    }
+    .markdown-alert-title {
+      color: var(--color);
+    }
+  }
+
+  &.markdown-alert-warning {
+    --color: var(--color-tokyonight-yellow);
+
+    border-left-color: var(--color);
+    color: var(--color-yellow-950);
+    @variant dark {
+      color: var(--color-yellow-50);
+    }
+    .markdown-alert-title {
+      color: var(--color);
+    }
+  }
+
+  &.markdown-alert-tip {
+    --color: var(--color-tokyonight-teal);
+
+    border-left-color: var(--color);
+    color: var(--color-green-950);
+    @variant dark {
+      color: var(--color-green-50);
+    }
+    .markdown-alert-title {
+      border-left-color: var(--color);
+    }
+  }
+
+  &.markdown-alert-caution {
+    --color: var(--color-tokyonight-red1);
+
+    border-left-color: var(--color);
+    color: var(--color-red-950);
+    @variant dark {
+      color: var(--color-red-50);
+    }
+    .markdown-alert-title {
+      color: var(--color);
+    }
   }
 }

@@ -16,6 +16,16 @@ This page documents the typography, layout elements, and visual styles used thro
 
 As this page primarily exists to test visual styling, I'm certain it's a nightmare for screen reader users. While I've done my best to incorporate accessibility considerations like ARIA attributes where possible and designed my styles with accessibility principles in mind, this remains at heart a visual testing ground rather than a fully accessible page.
 
+## Colors
+
+<!-- color-swatches-start -->
+<div class="text-center p-4 bg-gray-100 dark:bg-gray-800 rounded-md">
+  <p>Color swatches will appear here after build.</p>
+  <p class="text-sm text-gray-500">If you're seeing this message, the build process hasn't completed
+yet.</p>
+</div>
+<!-- color-swatches-end -->
+
 ## Headings
 
 # Heading 1
@@ -42,6 +52,8 @@ Cold-pressed venmo vegan cronut art party adaptogen. Selvage crucifix yuccie, cu
 [External link](https://example.com)
 
 [GitHub link](https://github.com/joshuadavidthomas/joshthomas.dev)
+
+Tilde [vexillologist](https://example.com) plaid cornhole fit. Prism pabst kombucha, gentrify chia brunch etsy ennui. Intelligentsia fashion axe skateboard, [direct trade JOMO](https://example.com) flannel plaid offal deep v. Ethical glossier poke salvia street art distillery man braid franzen. Affogato before they sold out austin bushwick schlitz keffiyeh edison bulb seitan. [Gluten-free cray wolf cornhole, slow-carb food truck](https://example.com) DSA YOLO kickstarter cardigan church-key pinterest affogato.
 
 ## Lists
 
@@ -85,12 +97,12 @@ Cold-pressed venmo vegan cronut art party adaptogen. Selvage crucifix yuccie, cu
 
 Plaid butcher grailed hell of `poutine`, tote bag DSA gluten-free locavore JOMO af `forage raclette`. Fingerstache banh mi neutral milk hotel lyft cray venmo single-origin coffee brunch `gluten-free food truck` cardigan. Selvage fit enamel pin vice artisan squid drinking vinegar raclette `pitchfork` cray mumblecore.
 
-# `Heading 1`
-## `Heading 2`
-### `Heading 3`
-#### `Heading 4`
-##### `Heading 5`
-###### `Heading 6`
+# This `Heading 1` has code
+## This `Heading 2` has code
+### This `Heading 3` has code
+#### This `Heading 4` has code
+##### This `Heading 5` has code
+###### This `Heading 6` has code
 
 ### Blocks
 
@@ -293,7 +305,9 @@ def is_dead_parrot(parrot_state):
 > Readymade gorpcore you probably haven't heard of them venmo photo booth. 
 
 > [!NOTE] Note with a custom title
-> Vaporware same mixtape activated charcoal gastropub blackbird spyplane venmo shabby chic helvetica la croix slow-carb portland gentrify. Fashion axe jean shorts direct trade DIY drinking vinegar. Thundercats meh normcore mixtape retro, sriracha fanny pack organic man braid hell of four loko pabst chicharrones big mood. Helvetica banjo bruh, plaid roof party sriracha scenester fam jawn church-key hot chicken 8-bit. Mlkshk schlitz poutine 8-bit la croix Brooklyn kombucha chia occupy YOLO mumblecore squid crucifix. Single-origin coffee prism fam copper mug lyft blue bottle kale chips bodega boys synth.
+> Vaporware same mixtape activated charcoal gastropub blackbird spyplane venmo shabby chic helvetica la croix slow-carb portland gentrify. 
+> 
+> Fashion axe jean shorts direct trade DIY drinking vinegar. Thundercats meh normcore mixtape retro, sriracha fanny pack organic man braid hell of four loko pabst chicharrones big mood. Helvetica banjo bruh, plaid roof party sriracha scenester fam jawn church-key hot chicken 8-bit. Mlkshk schlitz poutine 8-bit la croix Brooklyn kombucha chia occupy YOLO mumblecore squid crucifix. Single-origin coffee prism fam copper mug lyft blue bottle kale chips bodega boys synth.
 
 ## Footnotes
 
