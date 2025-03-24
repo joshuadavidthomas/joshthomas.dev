@@ -124,7 +124,7 @@ heading-anchors .ha-placeholder {
   }
 
   &.markdown-alert-caution {
-    --color: var(--color-tokyonight-red1);
+    --color: var(--color-tokyonight-red);
 
     border-left-color: var(--color);
     color: var(--color-red-950);

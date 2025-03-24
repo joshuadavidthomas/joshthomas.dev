@@ -6,7 +6,7 @@
   --code-token-boolean: var(--color-tokyonight-orange);
   --code-token-builtin: var(--color-tokyonight-red);
   --code-token-char: var(--color-tokyonight-green);
-  --code-token-comment: var(--color-tokyonight-comment);
+  --code-token-comment: var(--color-tokyonight-fg-dark);
   --code-token-constant: var(--color-tokyonight-orange);
   --code-token-function: var(--color-tokyonight-blue);
   --code-token-keyword: var(--color-tokyonight-purple);
