@@ -1,18 +1,32 @@
 a {
+  --color-hover: var(--color-tokyonight-day-red);
+
+  @variant dark {
+    --color-hover: var(--color-tokyonight-moon-red);
+  }
+
   color: inherit;
   font-weight: inherit;
-  text-decoration-color: var(--color-primary);
-  text-decoration-thickness: from-font;
-  text-underline-offset: calc(var(--spacing) * 1);
+  text-decoration-color: var(--color);
+  text-underline-offset: calc(var(--spacing) * 1.75);
 
-  &:hover,
-  &.ha:hover {
-    color: var(--color-active);
-    text-decoration: underline;
-    text-decoration-color: var(--color-active);
+  &.footnote-backref {
+    color: var(--color);
+    text-decoration: none;
+    text-underline-offset: calc(var(--spacing) * 1);
+  }
+
+  &:hover {
+    color: var(--color-hover);
+    text-decoration-color: var(--color-hover);
 
     > code {
       color: inherit;
+    }
+
+    &,
+    &.ha {
+      text-decoration: underline;
     }
   }
 }
@@ -29,7 +43,7 @@ sup {
   margin-left: calc(var(--spacing) * 1);
 
   > a {
-    color: var(--color-tokyonight-fg);
+    color: var(--color);
     text-decoration: none;
 
     &:hover {

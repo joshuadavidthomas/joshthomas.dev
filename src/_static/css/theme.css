@@ -1,7 +1,4 @@
 @theme {
-  --color-primary: var(--color-tokyonight-blue);
-  --color-active: var(--color-tokyonight-red);
-
   --font-brico: BricolageGrotesque, ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -43,14 +40,22 @@
   }
 
   a {
-    text-decoration-color: var(--color-primary);
+    --color: var(--color-tokyonight-day-blue);
+    --color-hover: var(--color-tokyonight-day-blue);
+
+    @variant dark {
+      --color: var(--color-tokyonight-moon-blue);
+      --color-hover: var(--color-tokyonight-moon-blue);
+    }
+
+    text-decoration-color: var(--color);
     text-decoration-thickness: from-font;
     text-underline-offset: calc(var(--spacing) * 1);
 
     &:hover {
-      color: var(--color-primary);
+      color: var(--color-hover);
       text-decoration: underline;
-      text-decoration-color: var(--color-primary);
+      text-decoration-color: var(--color-hover);
     }
   }
 
