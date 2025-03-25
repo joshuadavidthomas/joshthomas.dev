@@ -311,7 +311,7 @@ def is_dead_parrot(parrot_state):
 
 ## Footnotes
 
-I'm baby listicle bitters typewriter chia man braid iceland umami, pinterest food truck tofu twee synth raw denim.[^1]
+I'm baby listicle bitters typewriter chia man braid iceland umami, pinterest food truck tofu twee synth raw denim.[^1] Vibecession beard lo-fi pop-up actually, knausgaard offal readymade aesthetic schlitz hashtag.
 
 Dreamcatcher jean shorts everyday carry, farm-to-table gorpcore cred forage Brooklyn 90's artisan whatever tumeric blackbird spyplane woke vice.[^semiotics]
 

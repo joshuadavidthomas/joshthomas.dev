@@ -40,7 +40,7 @@ code {
 }
 
 sup {
-  margin-left: calc(var(--spacing) * 1);
+  margin: auto calc(var(--spacing) * 0.5);
 
   > a {
     color: var(--color);
@@ -48,6 +48,7 @@ sup {
 
     &:hover {
       text-decoration: underline;
+      text-underline-offset: calc(var(--spacing) * 1);
     }
   }
 }
