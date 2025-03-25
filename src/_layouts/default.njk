@@ -2,6 +2,15 @@
 layout: base
 ---
 
+{# djlint: off #}
+{%- css %}
+@media screen and (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto
+    }
+}
+{%- endcss %}
+{# djlint: on #}
 {%- js "modules" %}
   <script src="/static/js/heading-anchors.js" type="module"></script>
 {%- endjs %}
