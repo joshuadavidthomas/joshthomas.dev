@@ -20,7 +20,8 @@ tags:
 </header>
 <div class="mt-4 space-y-12">
   {%- for post in collections.posts | reverse -%}
-    <article class="group relative">
+    <article class="group relative"
+             style="view-transition-name: post-{{ post.data.title | slugify }}">
       <time datetime="{{ post.date | dateToHtmlString }}"
             class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
         <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>

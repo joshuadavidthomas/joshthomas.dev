@@ -9,6 +9,30 @@ layout: base
         navigation: auto
     }
 }
+/* Old stuff going out */
+{%- for post in collections.posts | reverse -%}
+::view-transition-old(post-{{ post.data.title | slugify }}){% if not loop.last %},{% else %} { {%- endif %}
+{%- endfor %}
+  animation: fade 0.1s ease-out forwards;
+  height: 100%;
+}
+
+/* New stuff coming in */
+{%- for post in collections.posts | reverse -%}
+::view-transition-new(post-{{ post.data.title | slugify }}) {% if not loop.last %},{% else %} { {%- endif %}
+{% endfor %}
+  animation: fade 0.2s ease-in reverse;
+  height: 100%;
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 {%- endcss %}
 {# djlint: on #}
 {%- js "modules" %}
