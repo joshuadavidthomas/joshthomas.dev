@@ -39,6 +39,8 @@
 }
 
 @utility grid-container-* {
+  grid-template-columns: 1fr --value([*]) 1fr;
+  grid-template-columns: 1fr min(calc(var(--spacing) * --value(integer)), 100%) 1fr;
   grid-template-columns: 1fr min(--value(--container-\*), 100%) 1fr;
 
   > * {
