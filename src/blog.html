@@ -4,7 +4,7 @@ eleventyNavigation:
   order: 2
 layout: default
 pagination:
-  data: collections.posts
+  data: collections.blog
   size: 10
 tags:
   - main-nav
@@ -19,21 +19,30 @@ tags:
   </a>
 </header>
 <div class="mt-4 space-y-12">
-  {%- for post in collections.posts | reverse -%}
+  {%- for entry in collections.blog | reverse -%}
+    {%- set isPost = entry | hasTag("post") -%}
+    {%- set isTIL = entry | hasTag("til") -%}
+    {%- set entryType %}{%- if isPost -%}post{%- elif isTIL -%}til{%- else -%}unknown{%- endif -%}{% endset -%}
     <article class="group relative"
-             style="view-transition-name: post-{{ post.data.title | slugify }}">
-      <time datetime="{{ post.date | dateToHtmlString }}"
-            class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
-        <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
-        {{ post.date | dateToFormat("LLLL d, yyyy") }}
-      </time>
-      <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
-        <a href="{{ post.url }}">
+             style="view-transition-name: entry-{{ entry.data.title | slugify }}"
+             data-entry="{{ entryType }}">
+      <div class="flex items-baseline justify-between">
+        <time datetime="{{ entry.date | dateToHtmlString }}"
+              class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
+          <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
+          {{ entry.date | dateToFormat("LLLL d, yyyy") }}
+        </time>
+        {%- if isTIL %}
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">TIL</span>
+        {%- endif %}
+      </div>
+      <h3 class="mt-2 font-semibold {%- if isTIL -%}text-lg/6 sm:text-xl{%- else -%}text-xl/6 sm:text-2xl/7{%- endif -%}">
+        <a href="{{ entry.url }}">
           <span class="absolute inset-0"></span>
-          {{ post.data.title | markdownify | safe }}
+          {{ entry.data.title | markdownify | safe }}
         </a>
       </h3>
-      <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ post.data.summary }}</p>
+      <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ entry.data.summary }}</p>
     </article>
   {%- endfor -%}
   {% if pagination.href.next or pagination.href.previous %}
