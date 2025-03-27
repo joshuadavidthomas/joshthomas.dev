@@ -289,22 +289,175 @@ def is_dead_parrot(parrot_state):
 
 ## Callouts
 
-> [!NOTE]
-> I'm baby single-origin coffee thundercats chartreuse blue bottle distillery vaporware 3 wolf moon swag trust fund butcher bicycle rights mixtape. Ennui poke iPhone etsy waistcoat Brooklyn, deep v VHS. 
+> [!CAUTION]
+> Edison bulb woke disrupt fit 3 wolf [moon kale chips banh mi](https://example.com) hexagon selvage succulents JOMO vice hammock cardigan. Cray shoreditch meh, waistcoat wolf cornhole marxism tilde bruh iPhone readymade authentic forage mixtape. Affogato `church-key` deep v vibecession keffiyeh iceland meh vape air plant, butcher mixtape VHS.
 
-> [!TIP]
-> Edison bulb woke disrupt fit 3 wolf moon kale chips banh mi hexagon selvage succulents JOMO vice hammock cardigan. Cray shoreditch meh, waistcoat wolf cornhole marxism tilde bruh iPhone readymade authentic forage mixtape. Affogato church-key deep v vibecession keffiyeh iceland meh vape air plant, butcher mixtape VHS.
+> [!DOCUMENTATION]
+> Mixtape franzen fixie try-hard. [Photo booth](https://example.com) offal neutra, +1 af farm-to-table umami vaporware ugh master cleanse VHS chambray prism. 8-bit `street art` schlitz readymade. Tonx chia chillwave celiac, iceland selvage slow-carb.
 
 > [!IMPORTANT]
-> Keffiyeh live-edge trust fund flannel. Disrupt listicle cred hammock fanny pack vexillologist celiac. 
+> Keffiyeh live-edge `trust fund` flannel. [Disrupt listicle cred hammock fanny pack](https://example.com) vexillologist celiac. 
+
+> [!NOTE]
+> I'm baby single-origin coffee [thundercats](https://example.com) chartreuse blue bottle distillery vaporware 3 wolf moon swag trust fund butcher `bicycle rights` mixtape. Ennui poke iPhone etsy waistcoat Brooklyn, deep v VHS. 
+
+> [!TIP]
+> Readymade [gorpcore](https://example.com) you probably haven't `heard of them` venmo photo booth. 
+
+> [!TL;DR]
+> Poke sartorial vexillologist, trust fund [pabst jawn pour-over `quinoa aesthetic pork belly` lyft banjo pug cliche. Heirloom vinyl pinterest pok pok pabst](https://example.com) woke farm-to-table jean shorts tattooed semiotics church-key vaporware. Kale chips everyday carry slow-carb, pabst +1 viral small batch taiyaki man braid edison bulb tumblr seitan. Cronut keffiyeh +1 pour-over, tote bag intelligentsia kale chips locavore DIY. Glossier fingerstache umami, cardigan vape yuccie four dollar toast mustache bushwick pinterest la croix photo booth. Hella chartreuse green juice, taxidermy edison bulb semiotics shabby chic humblebrag chicharrones.
+>
+> ```css
+> /* Ministry of Silly Walks - Animation Collection
+>    For the Department of Silly Walks, established 1970
+>    Level of silliness must meet or exceed 83% to qualify for a grant */
+> 
+> .silly-walker {
+>   width: 8px;
+>   height: 30px;
+>   background-color: #222;
+>   position: relative;
+>   margin: 50px auto;
+> }
+> 
+> /* Head */
+> .silly-walker::before {
+>   content: "";
+>   position: absolute;
+>   top: -8px;
+>   left: -2px;
+>   width: 12px;
+>   height: 12px;
+>   background-color: #222;
+>   border-radius: 50%;
+> }
+> 
+> /* Arms (like a bowler-hatted civil servant) */
+> .silly-walker::after {
+>   content: "";
+>   position: absolute;
+>   top: 5px;
+>   left: -7px;
+>   width: 22px;
+>   height: 2px;
+>   background-color: #222;
+> }
+> 
+> /* The Classic Cleese - the iconic high-stepping, jerky walk */
+> @keyframes classic-cleese {
+>   0% { transform: translateX(0) rotate(0); }
+>   10% { transform: translateX(10px) rotate(5deg); }
+>   20% { transform: translateX(20px) scaleY(1.2) rotate(0); }
+>   30% { transform: translateX(30px) scaleY(1.4) rotate(-5deg); }
+>   40% { transform: translateX(40px) scaleY(1) rotate(0); }
+>   50% { transform: translateX(50px) scaleY(0.9) rotate(5deg); }
+>   60% { transform: translateX(60px) scaleY(1.4) rotate(0); }
+>   70% { transform: translateX(70px) scaleY(1.2) rotate(-5deg); }
+>   80% { transform: translateX(80px) scaleY(1) rotate(0); }
+>   90% { transform: translateX(90px) scaleY(0.9) rotate(5deg); }
+>   100% { transform: translateX(100px) rotate(0); }
+> }
+> 
+> /* The Civil Servant Shuffle - subtle but just odd enough to be rejected */
+> @keyframes civil-servant {
+>   0% { transform: translateX(0) rotate(0); }
+>   20% { transform: translateX(20px) rotate(3deg); }
+>   40% { transform: translateX(40px) rotate(-2deg); }
+>   50% { transform: translateX(50px) skewX(10deg); }
+>   60% { transform: translateX(60px) rotate(2deg); }
+>   80% { transform: translateX(80px) rotate(-3deg); }
+>   100% { transform: translateX(100px) rotate(0); }
+> }
+> 
+> /* The La Marche Futile - overly elaborate but going nowhere */
+> @keyframes la-marche-futile {
+>   0% { transform: translateX(0) rotate(0); }
+>   15% { transform: translateX(0) rotate(10deg); }
+>   30% { transform: translateX(10px) rotate(-5deg); }
+>   45% { transform: translateX(10px) rotate(15deg); }
+>   60% { transform: translateX(20px) rotate(-10deg); }
+>   75% { transform: translateX(20px) rotate(5deg); }
+>   90% { transform: translateX(30px) rotate(-15deg); }
+>   100% { transform: translateX(30px) rotate(0); }
+> }
+> 
+> /* The Ministry Approved - exaggerated and absurd */
+> @keyframes ministry-approved {
+>   0% { transform: translateX(0) translateY(0) rotate(0); }
+>   10% { transform: translateX(10px) translateY(-5px) rotate(15deg); }
+>   20% { transform: translateX(20px) translateY(0) rotate(0); }
+>   30% { transform: translateX(30px) translateY(-15px) rotate(-10deg); }
+>   40% { transform: translateX(40px) translateY(0) scaleY(1.3); }
+>   50% { transform: translateX(50px) translateY(-10px) rotate(20deg); }
+>   60% { transform: translateX(60px) translateY(0) scaleY(0.8); }
+>   70% { transform: translateX(70px) translateY(-20px) rotate(-15deg); }
+>   80% { transform: translateX(80px) translateY(0) rotate(0); }
+>   90% { transform: translateX(90px) translateY(-5px) rotate(10deg); }
+>   100% { transform: translateX(100px) translateY(0) rotate(0); }
+> }
+> 
+> /* The Grant Application - starts normal, becomes increasingly silly */
+> @keyframes grant-application {
+>   0% { transform: translateX(0) rotate(0); }
+>   20% { transform: translateX(20px) rotate(0); }
+>   30% { transform: translateX(30px) rotate(5deg); }
+>   40% { transform: translateX(40px) rotate(-5deg) scaleY(1.1); }
+>   50% { transform: translateX(50px) rotate(10deg) scaleY(1.2); }
+>   60% { transform: translateX(60px) rotate(-10deg) scaleY(1.3); }
+>   70% { transform: translateX(70px) rotate(15deg) scaleY(1.4); }
+>   80% { transform: translateX(80px) rotate(-15deg) scaleY(1.5); }
+>   90% { transform: translateX(90px) rotate(20deg) scaleY(1.6); }
+>   100% { transform: translateX(100px) rotate(-20deg) scaleY(1.7); }
+> }
+> 
+> /* Apply animations to walker classes */
+> .silly-walker.classic-cleese {
+>   animation: classic-cleese 4s linear forwards;
+> }
+> 
+> .silly-walker.civil-servant {
+>   animation: civil-servant 3s linear forwards;
+> }
+> 
+> .silly-walker.la-marche-futile {
+>   animation: la-marche-futile 5s linear forwards;
+> }
+> 
+> .silly-walker.ministry-approved {
+>   animation: ministry-approved 6s linear forwards;
+> }
+> 
+> .silly-walker.grant-application {
+>   animation: grant-application 8s linear forwards;
+> }
+> 
+> /* Speed modifiers that can be added to any walk */
+> .silly-walker.hastened {
+>   animation-duration: 2s !important;
+> }
+> 
+> .silly-walker.government-speed {
+>   animation-duration: 10s !important;
+> }
+> 
+> /* Walker with briefcase - add this class for the full civil servant look */
+> .silly-walker.with-briefcase::before {
+>   content: "";
+>   position: absolute;
+>   bottom: 5px;
+>   right: -10px;
+>   width: 8px;
+>   height: 12px;
+>   background-color: #222;
+> }
+> ```
+>
+> Mixtape glossier live-edge waistcoat, narwhal tofu vegan heirloom quinoa irony venmo hoodie woke fingerstache letterpress. Pour-over beard fit normcore gatekeep. Farm-to-table wolf vegan hot chicken celiac af ugh. Keytar direct trade skateboard fingerstache kombucha, health goth mustache schlitz drinking vinegar praxis. Fashion axe gastropub letterpress, migas gentrify bushwick tote bag prism master cleanse cray.
 
 > [!WARNING]
-> Migas health goth neutral milk hotel bushwick. Street art DSA fixie retro dreamcatcher, franzen messenger bag aesthetic hexagon praxis flexitarian cred. Helvetica shabby chic kickstarter vinyl. Grailed offal fixie jianbing +1, bicycle rights poke enamel pin small batch marxism. 
+> Migas health goth [neutral milk hotel](https://example.com) bushwick. Street art DSA fixie retro dreamcatcher, franzen messenger bag aesthetic hexagon praxis flexitarian cred. Helvetica shabby chic kickstarter vinyl. Grailed `offal fixie jianbing +1`, bicycle rights poke enamel pin small batch marxism. 
 
-> [!CAUTION]
-> Readymade gorpcore you probably haven't heard of them venmo photo booth. 
-
-> [!NOTE] Note with a custom title
+> [!NOTE] With Custom Title
 > Vaporware same mixtape activated charcoal gastropub blackbird spyplane venmo shabby chic helvetica la croix slow-carb portland gentrify. 
 > 
 > Fashion axe jean shorts direct trade DIY drinking vinegar. Thundercats meh normcore mixtape retro, sriracha fanny pack organic man braid hell of four loko pabst chicharrones big mood. Helvetica banjo bruh, plaid roof party sriracha scenester fam jawn church-key hot chicken 8-bit. Mlkshk schlitz poutine 8-bit la croix Brooklyn kombucha chia occupy YOLO mumblecore squid crucifix. Single-origin coffee prism fam copper mug lyft blue bottle kale chips bodega boys synth.

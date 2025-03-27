@@ -33,6 +33,9 @@ heading-anchors .ha-placeholder {
   --color-caution: var(--color-tokyonight-day-red);
   --color-caution-body: var(--color-red-950);
 
+  --color-documentation: var(--color-tokyonight-day-green);
+  --color-documentation-body: var(--color-lime-950);
+
   --color-important: var(--color-tokyonight-day-magenta);
   --color-important-body: var(--color-purple-950);
 
@@ -42,12 +45,18 @@ heading-anchors .ha-placeholder {
   --color-tip: var(--color-tokyonight-day-teal);
   --color-tip-body: var(--color-green-950);
 
+  --color-tldr: var(--color-tokyonight-day-fg);
+  --color-tldr-body: var(--color-gray-950);
+
   --color-warning: var(--color-tokyonight-day-yellow);
   --color-warning-body: var(--color-yellow-950);
 
   @variant dark {
     --color-caution: var(--color-tokyonight-moon-red);
     --color-caution-body: var(--color-red-50);
+
+    --color-documentation: var(--color-tokyonight-moon-green);
+    --color-documentation-body: var(--color-lime-50);
 
     --color-important: var(--color-tokyonight-moon-magenta);
     --color-important-body: var(--color-purple-50);
@@ -57,6 +66,9 @@ heading-anchors .ha-placeholder {
 
     --color-tip: var(--color-tokyonight-moon-teal);
     --color-tip-body: var(--color-green-50);
+
+    --color-tldr: var(--color-tokyonight-moon-fg);
+    --color-tldr-body: var(--color-gray-50);
 
     --color-warning: var(--color-tokyonight-moon-yellow);
     --color-warning-body: var(--color-yellow-50);
@@ -105,10 +117,35 @@ heading-anchors .ha-placeholder {
 
   &.markdown-alert-caution {
     border-left-color: var(--color-caution);
-    color: var(--color-warning-body);
+    color: var(--color-caution-body);
 
     .markdown-alert-title {
       color: var(--color-caution);
+    }
+
+    a {
+      text-decoration-color: var(--color-caution);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
+    }
+  }
+
+  &.markdown-alert-documentation {
+    border-left-color: var(--color-documentation);
+    color: var(--color-documentation-body);
+
+    .markdown-alert-title {
+      color: var(--color-documentation);
+    }
+
+    a {
+      text-decoration-color: var(--color-documentation);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
     }
   }
 
@@ -119,6 +156,14 @@ heading-anchors .ha-placeholder {
     .markdown-alert-title {
       color: var(--color-important);
     }
+
+    a {
+      text-decoration-color: var(--color-important);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
+    }
   }
 
   &.markdown-alert-note {
@@ -127,6 +172,14 @@ heading-anchors .ha-placeholder {
 
     .markdown-alert-title {
       color: var(--color-note);
+    }
+
+    a {
+      text-decoration-color: var(--color-note);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
     }
   }
 
@@ -137,6 +190,32 @@ heading-anchors .ha-placeholder {
     .markdown-alert-title {
       color: var(--color-tip);
     }
+
+    a {
+      text-decoration-color: var(--color-tip);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
+    }
+  }
+
+  &.markdown-alert-tl\;dr {
+    border-left-color: var(--color-tldr);
+    color: var(--color-tldr-body);
+
+    .markdown-alert-title {
+      color: var(--color-tldr);
+      text-transform: uppercase;
+    }
+
+    a {
+      text-decoration-color: var(--color-tldr);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
+    }
   }
 
   &.markdown-alert-warning {
@@ -145,6 +224,14 @@ heading-anchors .ha-placeholder {
 
     .markdown-alert-title {
       color: var(--color-warning);
+    }
+
+    a {
+      text-decoration-color: var(--color-warning);
+
+      &:hover {
+        text-decoration-color: inherit;
+      }
     }
   }
 }
