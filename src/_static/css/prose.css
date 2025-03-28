@@ -31,6 +31,14 @@ a {
   }
 }
 
+blockquote {
+  @apply border-accent-l-gray-300;
+
+  @variant dark {
+    @apply border-accent-l-gray-700;
+  }
+}
+
 /* tailwind-typography plugin adds backticks here, let's remove them */
 code {
   &::before,

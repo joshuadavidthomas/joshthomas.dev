@@ -81,6 +81,37 @@
   --color-tokyonight-day-warning: var(--color-tokyonight-day-yellow);
   --color-tokyonight-day-yellow: oklch(from #8c6c3e l c h);
   --color-tokyonight-day-yellow-bright: oklch(from #a27629 l c h);
+
+  --color-tokyonight-day-black-red: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-red),
+    var(--color-black) 80%
+  );
+  --color-tokyonight-day-black-green: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-green),
+    var(--color-black) 50%
+  );
+  --color-tokyonight-day-black-magenta: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-magenta),
+    var(--color-black) 50%
+  );
+  --color-tokyonight-day-black-blue2: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-blue2),
+    var(--color-black) 50%
+  );
+  --color-tokyonight-day-black-teal: var(
+    in oklch,
+    var(--color-tokyonight-day-teal),
+    var(--color-black) 60%
+  );
+  --color-tokyonight-day-black-yellow: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-yellow),
+    var(--color-gray-950) 75%
+  );
 }
 
 @theme inline {
@@ -152,4 +183,35 @@
   --color-tokyonight-moon-warning: var(--color-tokyonight-moon-yellow);
   --color-tokyonight-moon-yellow: oklch(from #ffc777 l c h);
   --color-tokyonight-moon-yellow-bright: oklch(from #ffd8ab l c h);
+
+  --color-tokyonight-moon-white-red: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-red),
+    var(--color-white) 95%
+  );
+  --color-tokyonight-moon-white-green: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-green),
+    var(--color-white) 90%
+  );
+  --color-tokyonight-moon-white-magenta: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-magenta),
+    var(--color-white) 90%
+  );
+  --color-tokyonight-moon-white-blue2: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-blue2),
+    var(--color-gray-50) 70%
+  );
+  --color-tokyonight-moon-white-teal: var(
+    in oklch,
+    var(--color-tokyonight-moon-teal),
+    var(--color-white) 90%
+  );
+  --color-tokyonight-moon-white-yellow: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-yellow),
+    var(--color-white) 95%
+  );
 }
