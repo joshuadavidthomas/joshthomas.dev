@@ -14,6 +14,7 @@
   --code-token-keyword: var(--color-tokyonight-day-purple);
   --code-token-inserted-bg: var(--color-tokyonight-day-diff-add);
   --code-token-inserted-fg: var(--color-tokyonight-moon-diff-add);
+  --code-token-number: var(--color-tokyonight-day-orange);
   --code-token-operator: var(--color-tokyonight-day-blue5);
   --code-token-prolog: var(--color-tokyonight-day-red);
   --code-token-punctuation: var(--color-tokyonight-day-magenta);
@@ -37,6 +38,7 @@
     --code-token-keyword: var(--color-tokyonight-moon-purple);
     --code-token-inserted-bg: var(--color-tokyonight-moon-diff-add);
     --code-token-inserted-fg: var(--color-tokyonight-day-diff-add);
+    --code-token-number: var(--color-tokyonight-moon-orange);
     --code-token-operator: var(--color-tokyonight-moon-blue5);
     --code-token-prolog: var(--color-tokyonight-moon-red);
     --code-token-punctuation: var(--color-tokyonight-moon-magenta);
@@ -111,6 +113,7 @@ pre[class*="language-"] {
 
     &.comment {
       color: var(--code-token-comment);
+      font-style: italic;
     }
 
     &.constant {
@@ -149,6 +152,10 @@ pre[class*="language-"] {
 
     &.keyword {
       color: var(--code-token-keyword);
+    }
+
+    &.number {
+      color: var(--code-token-number);
     }
 
     &.operator {
