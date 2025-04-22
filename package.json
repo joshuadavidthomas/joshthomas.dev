@@ -33,7 +33,7 @@
     "tailwindcss": "^4.1.4"
   },
   "scripts": {
-    "build": "bunx tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
+    "build": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
     "clean": "rm -rf .cache dist",
     "dev": "bun .bin/runner.ts dev",
     "dev:11ty": "eleventy --serve",
