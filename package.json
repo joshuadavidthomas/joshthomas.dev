@@ -6,7 +6,8 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/bun": "latest",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.12.0"
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.1-alpha.5",
@@ -42,5 +43,5 @@
     "lock": "bun install --lockfile-only",
     "typecheck": "tsc"
   },
-  "trustedDependencies": ["@biomejs/biome", "@parcel/watcher"]
+  "trustedDependencies": ["@biomejs/biome", "@parcel/watcher", "esbuild", "sharp", "workerd"]
 }

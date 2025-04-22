@@ -1,0 +1,7 @@
+name = "joshthomas-dev"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-03-14"
+
+[env.production.vars]
+BUN_VERSION = "1.2"
+NODE_VERSION = "20"
