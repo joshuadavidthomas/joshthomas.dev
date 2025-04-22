@@ -26,26 +26,18 @@ tags:
     <article class="group relative{% if isTIL %} border-accent-r-tokyonight-day-blue2 dark:border-accent-r-tokyonight-moon-blue2{% endif %}"
              style="view-transition-name: entry-{{ entry.data.title | slugify }}"
              data-entry="{{ entryType }}">
-      {% if isPost %}
-        <time datetime="{{ entry.date | dateToHtmlString }}"
-              class="mb-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
-          {{ entry.date | dateToFormat("LLLL d, yyyy") }}
-        </time>
-      {% endif %}
-      <h3 class="font-semibold{%- if isTIL %} flex justify-between items-end gap-8 text-lg sm:text-xl text-gray-800 dark:text-gray-100{%- else -%}text-xl sm:text-2xl{%- endif -%}">
+      <time datetime="{{ entry.date | dateToHtmlString }}"
+            class="mb-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
+        {{ entry.date | dateToFormat("LLLL d, yyyy") }}
+        {%- if isTIL %}
+          <span class="ml-1 my-auto text-xs sm:text-sm text-tokyonight-day-blue2 dark:text-tokyonight-moon-blue2 font-semibold">TIL</span>
+        {%- endif %}
+      </time>
+      <h3 class="font-semibold{%- if isTIL %} flex justify-between items-baseline-last gap-8 text-lg sm:text-xl text-gray-800 dark:text-gray-100{%- else -%}text-xl sm:text-2xl{%- endif -%}">
         <a href="{{ entry.url }}">
           <span class="absolute inset-0"></span>
           {{ entry.data.title | markdownify | safe }}
         </a>
-        {%- if isTIL %}
-          <div class="flex gap-3 shrink-0">
-            <time datetime="{{ entry.date | dateToHtmlString }}"
-                  class="text-xs sm:text-sm text-gray-600 font-normal dark:text-gray-300 shrink-0">
-              {{ entry.date | dateToFormat("LLLL d, yyyy") }}
-            </time>
-            <span class="text-sm text-tokyonight-day-blue2 dark:text-tokyonight-moon-blue2 font-semibold">TIL</span>
-          </div>
-        {%- endif %}
       </h3>
       {%- if entry.data.summary %}
         <p class="mt-4 text-sm sm:text-base {% if isTIL %}text-gray-700 dark:text-gray-400{% else %}text-gray-600 dark:text-gray-300{% endif %}">

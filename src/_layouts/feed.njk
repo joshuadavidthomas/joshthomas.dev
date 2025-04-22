@@ -1,0 +1,45 @@
+---
+eleventyExcludeFromCollections: true
+metadata:
+  author:
+    email: josh@joshthomas.dev
+    name: Josh Thomas
+    uri: https://joshthomas.dev/
+  language: en-us
+  title: Josh Thomas
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xml:lang="{{ feed.language or metadata.language }}">
+  <title>{{ feed.title or metadata.title }}</title>
+  <subtitle>{{ feed.description | safe }}</subtitle>
+  <link href="{{ permalink | htmlBaseUrl(feed.base) }}"
+        rel="self"
+        type="application/atom+xml" />
+  <link href="{{ feed.base | addPathPrefixToFullUrl }}"
+        rel="alternate"
+        type="text/html" />
+  <author>
+    {% set author = feed.author or metadata.author -%}
+    <name>{{ author.name }}</name>
+    <email>{{ author.email }}</email>
+    <uri>{{ author.uri }}</uri>
+  </author>
+  {%- if feed.collection %}
+    <updated>{{ feed.collection | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
+  {%- endif %}
+  <id>{{ feed.base | addPathPrefixToFullUrl }}</id>
+  {%- for item in feed.collection | reverse -%}
+    {%- set absoluteItemUrl %}{{ item.url | htmlBaseUrl(feed.base) }}{% endset %}
+    <entry>
+      <title>{{ item.data.title | safe }}</title>
+      <link href="{{ absoluteItemUrl }}" />
+      <updated>{{ item.date | dateToRfc3339 }}</updated>
+      <id>{{ absoluteItemUrl }}</id>
+      <content type="html">
+        <![CDATA[{{ item.templateContent | htmlToAbsoluteUrls(absoluteItemUrl) | safe }}]]>
+      </content>
+    </entry>
+  {%- endfor %}
+</feed>
