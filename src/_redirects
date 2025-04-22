@@ -2,7 +2,9 @@
 #
 #source                   destination                                            code
 #------------------------------------------------------------------------------------
-/blog/feed/               /blog/feed/atom.xml                                     200
+/feeds/blog/              /feeds/blog.xml                                         200
+/blog/feed/               /feeds/blog/                                            307
+/blog/feed/atom.xml       /feeds/blog.xml                                         307
 
 # mastodon
 /@josh                    https://social.joshthomas.dev/@josh                     307
