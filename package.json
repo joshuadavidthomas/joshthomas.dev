@@ -33,7 +33,7 @@
     "tailwindcss": "^4.1.4"
   },
   "scripts": {
-    "build": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
+    "build": "bunx tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
     "clean": "rm -rf .cache dist",
     "dev": "bun .bin/runner.ts dev",
     "dev:11ty": "eleventy --serve",
@@ -43,5 +43,11 @@
     "lock": "bun install --lockfile-only",
     "typecheck": "tsc"
   },
-  "trustedDependencies": ["@biomejs/biome", "@parcel/watcher", "esbuild", "sharp", "workerd"]
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@parcel/watcher",
+    "esbuild",
+    "sharp",
+    "workerd"
+  ]
 }
