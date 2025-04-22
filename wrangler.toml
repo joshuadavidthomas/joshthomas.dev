@@ -5,3 +5,7 @@ compatibility_date = "2025-03-14"
 [env.production.vars]
 BUN_VERSION = "1.2"
 NODE_VERSION = "20"
+
+[env.preview.vars]
+BUN_VERSION = "1.2"
+NODE_VERSION = "20"
