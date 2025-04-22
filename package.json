@@ -6,30 +6,30 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/bun": "latest",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@11ty/eleventy": "^3.0.1-alpha.4",
+    "@11ty/eleventy": "^3.0.1-alpha.5",
     "@11ty/eleventy-fetch": "^5.0.2",
-    "@11ty/eleventy-img": "^6.0.1",
+    "@11ty/eleventy-img": "^6.0.2",
     "@11ty/eleventy-navigation": "^0.3.5",
     "@11ty/eleventy-plugin-rss": "^2.0.3",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
     "@11ty/font-awesome": "^1.0.0-beta.1",
-    "@tailwindcss/cli": "^4.0.11",
+    "@tailwindcss/cli": "^4.1.4",
     "@tailwindcss/typography": "^0.5.16",
     "@vrugtehagel/eleventy-asset-hash": "npm:@jsr/vrugtehagel__eleventy-asset-hash",
     "@zachleat/heading-anchors": "^1.0.3",
     "html-minifier-terser": "^7.2.0",
     "linkedom": "^0.18.9",
-    "luxon": "^3.5.0",
+    "luxon": "^3.6.1",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-attrs": "^4.3.1",
     "markdown-it-footnote": "^4.0.0",
-    "markdown-it-github-alerts": "^0.3.1",
+    "markdown-it-github-alerts": "^0.3.2",
     "markdown-it-table-captions": "^1.0.4",
-    "tailwindcss": "^4.0.10"
+    "tailwindcss": "^4.1.4"
   },
   "scripts": {
     "build": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
