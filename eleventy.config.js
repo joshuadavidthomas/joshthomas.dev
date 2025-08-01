@@ -1,7 +1,3 @@
-import fs from "fs";
-import path from "path";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
 import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
@@ -19,9 +15,11 @@ export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
   eleventyConfig
-    .addPassthroughCopy("src/_headers")
-    .addPassthroughCopy("src/_redirects")
-    .addPassthroughCopy({ "src/_static/fonts": "static/fonts" })
+    .addPassthroughCopy({ "public/_headers": "_headers" })
+    .addPassthroughCopy({ "public/_redirects": "_redirects" })
+    .addPassthroughCopy({ "public/fonts": "static/fonts" })
+    .addPassthroughCopy({ "public/images": "static/images" })
+    .addPassthroughCopy({ "public/js": "static/js" })
     .addPassthroughCopy({
       "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
     });
@@ -36,7 +34,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPlugin(EleventyPluginRss);
   eleventyConfig.addPlugin(EleventyPluginSyntaxhighlight);
   eleventyConfig.addPlugin(colorSwatchesPlugin, {
-    pagePath: "design-system/index.html"
+    pagePath: "design-system/index.html",
   });
   eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
     urlPath: "/static/img/",
@@ -62,7 +60,6 @@ export default function (eleventyConfig) {
     eleventyConfig.addFilter(filterName, filters[filterName]);
   }
 
-
   eleventyConfig.addTransform("htmlmin", function (content) {
     if ((this.page.outputPath || "").endsWith(".html")) {
       return htmlmin.minify(content, {
@@ -70,7 +67,7 @@ export default function (eleventyConfig) {
         minifyCSS: true,
         removeComments: true,
         useShortDoctype: true,
-        ignoreCustomComments: [/color-swatches/]
+        ignoreCustomComments: [/color-swatches/],
       });
     }
     return content;
