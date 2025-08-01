@@ -19,6 +19,7 @@ export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
   eleventyConfig
+    .addPassthroughCopy("src/_headers")
     .addPassthroughCopy("src/_redirects")
     .addPassthroughCopy({ "src/_static/fonts": "static/fonts" })
     .addPassthroughCopy({
