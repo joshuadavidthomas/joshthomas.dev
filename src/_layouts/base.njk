@@ -55,7 +55,7 @@
     {{ content | safe }}
     {% getBundle "fontawesome" %}
     {%- js %}
-      {% include "../../public/js/goatcounter.js" %}
+      {% include "../../public/static/js/goatcounter.js" %}
     {% endjs %}
     <script type="module" src="{% getBundleFileUrl "js" %}"></script>
     {% getBundle "js", "modules" %}

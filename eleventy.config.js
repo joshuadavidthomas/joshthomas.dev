@@ -15,11 +15,7 @@ export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
   eleventyConfig
-    .addPassthroughCopy({ "public/_headers": "_headers" })
-    .addPassthroughCopy({ "public/_redirects": "_redirects" })
-    .addPassthroughCopy({ "public/fonts": "static/fonts" })
-    .addPassthroughCopy({ "public/images": "static/images" })
-    .addPassthroughCopy({ "public/js": "static/js" })
+    .addPassthroughCopy({ "public": "/" })
     .addPassthroughCopy({
       "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
     });
