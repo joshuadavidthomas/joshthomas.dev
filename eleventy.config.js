@@ -1,3 +1,5 @@
+import path from "node:path";
+import fs from "node:fs";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
 import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
@@ -34,7 +36,9 @@ export default function (eleventyConfig) {
   });
   eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
     urlPath: "/static/img/",
-    outputDir: "./dist/static/img/",
+    outputDir: ".cache/@11ty/img/",
+    formats: ["svg", "avif", "jpeg"],
+    svgShortCircuit: true,
   });
 
   // only use asset hashing if building in Cloudflare Pages
@@ -70,6 +74,17 @@ export default function (eleventyConfig) {
   });
 
   eleventyConfig.addTransform("trim-whitespace", (content) => content.trim());
+
+  eleventyConfig.on("eleventy.after", () => {
+    const cacheDir = ".cache/@11ty/img/";
+    const outputDir = path.join(eleventyConfig.directories.output, "/static/img/");
+    
+    if (fs.existsSync(cacheDir)) {
+      fs.cpSync(cacheDir, outputDir, {
+        recursive: true
+      });
+    }
+  });
 
   return {
     dir: {
