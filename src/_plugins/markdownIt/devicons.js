@@ -1,4 +1,4 @@
-export default function markdownDevicons(md) {
+export default (md) => {
   const overrides = {
     dockerfile: "docker",
     diff: "git",
@@ -26,4 +26,4 @@ export default function markdownDevicons(md) {
 
     return result;
   };
-}
+};
