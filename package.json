@@ -21,6 +21,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@vrugtehagel/eleventy-asset-hash": "npm:@jsr/vrugtehagel__eleventy-asset-hash",
     "@zachleat/heading-anchors": "^1.0.3",
+    "devicon": "^2.17.0",
     "html-minifier-terser": "^7.2.0",
     "linkedom": "^0.18.9",
     "luxon": "^3.6.1",
