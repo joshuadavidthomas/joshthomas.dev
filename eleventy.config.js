@@ -20,6 +20,10 @@ export default function (eleventyConfig) {
     .addPassthroughCopy({ "public": "/" })
     .addPassthroughCopy({
       "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
+    })
+    .addPassthroughCopy({
+      "node_modules/devicon/devicon.min.css": `static/devicon/devicon.min.css`,
+      "node_modules/devicon/fonts/devicon.ttf": `static/devicon/fonts/devicon.ttf`,
     });
 
   eleventyConfig.addBundle("css");

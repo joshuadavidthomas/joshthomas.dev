@@ -5,6 +5,7 @@ import MarkdownItFootnote from "markdown-it-footnote";
 import MarkdownItGitHubAlerts from "markdown-it-github-alerts";
 import MarkdownItTableCaptions from "markdown-it-table-captions";
 import MarkdownItShiftHeadings from "../_plugins/markdownIt/shiftHeadings.js";
+import MarkdownItDevicons from "../_plugins/markdownIt/devicons.js";
 
 export default markdownIt({
   html: true,
@@ -49,4 +50,5 @@ export default markdownIt({
       return "</table></div>";
     };
   })
-  .use(MarkdownItShiftHeadings);
+  .use(MarkdownItShiftHeadings)
+  .use(MarkdownItDevicons);

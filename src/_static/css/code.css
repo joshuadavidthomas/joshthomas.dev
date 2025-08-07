@@ -191,3 +191,21 @@ pre[class*="language-"] {
     }
   }
 }
+
+/* Code block devicon styling */
+pre[class*="language-"] {
+  position: relative;
+}
+
+pre .code-icon {
+  position: absolute;
+  top: calc(var(--spacing) * 2);
+  right: calc(var(--spacing) * 2);
+  font-size: var(--text-lg);
+  opacity: 0.4;
+  pointer-events: none;
+
+  @media (prefers-color-scheme: dark) {
+    opacity: 0.3;
+  }
+}
