@@ -40,11 +40,16 @@ src/
 ├── _components/      # Reusable components
 ├── _config/          # Collections and filters
 ├── _data/            # Global data (site info, Raindrop integration)
-├── _layouts/         # Base templates
-├── _static/          # CSS, fonts, images
+├── _includes/        # Template partials (cards, etc.)
+├── _layouts/         # Base templates (base, default, post, til)
+├── _plugins/         # Custom Eleventy plugins
+├── _static/          # CSS processed by Tailwind
 ├── feeds/            # RSS feed templates
 ├── posts/            # Blog posts in Markdown
+├── til/              # Today I Learned posts
 └── _redirects        # Cloudflare Pages redirects
+
+public/               # Static assets (fonts, images, JS) copied to dist root
 ```
 
 ## Environment
