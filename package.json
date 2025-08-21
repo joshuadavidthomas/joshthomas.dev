@@ -42,6 +42,7 @@
     "format": "biome check --write",
     "lint": "biome check",
     "lock": "bun install --lockfile-only",
+    "preview": "bun run build && cd dist && python -m http.server 8000",
     "typecheck": "tsc"
   },
   "trustedDependencies": [

@@ -102,7 +102,7 @@
     var(--color-tokyonight-day-blue2),
     var(--color-black) 50%
   );
-  --color-tokyonight-day-black-teal: var(
+  --color-tokyonight-day-black-teal: color-mix(
     in oklch,
     var(--color-tokyonight-day-teal),
     var(--color-black) 60%
@@ -204,7 +204,7 @@
     var(--color-tokyonight-moon-blue2),
     var(--color-gray-50) 70%
   );
-  --color-tokyonight-moon-white-teal: var(
+  --color-tokyonight-moon-white-teal: color-mix(
     in oklch,
     var(--color-tokyonight-moon-teal),
     var(--color-white) 90%
