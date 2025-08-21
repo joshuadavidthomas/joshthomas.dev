@@ -42,6 +42,24 @@ export default {
   },
 
   /**
+   * Check if an item has a specific tag
+   * @param {Object} item - Collection item
+   * @param {string} tagName - The tag to check for
+   * @returns {boolean} True if the item has the specified tag
+   */
+  hasTag: (item, tagName) => {
+    if (!item || !item.data || !item.data.tags) {
+      return false;
+    }
+
+    const tags = Array.isArray(item.data.tags)
+      ? item.data.tags
+      : [item.data.tags];
+
+    return tags.includes(tagName);
+  },
+
+  /**
    * Check if a URL is the active URL or parent of the active URL
    * @param {string} pageUrl - The current page URL
    * @param {string} targetUrl - The URL to check against

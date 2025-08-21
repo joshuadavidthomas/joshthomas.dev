@@ -10,9 +10,53 @@
   @import "./prose.css";
 }
 
+@utility border-accent-t-* {
+  border-top: 0.25rem solid --value(--color-\*);
+  padding-left: var(--spacing);
+  padding-right: var(--spacing);
+  padding-top: calc(var(--spacing) * 4);
+
+  @variant xl {
+    padding-top: calc(var(--spacing) * 6);
+  }
+}
+
+@utility border-accent-r-* {
+  border-right: 0.25rem solid --value(--color-\*);
+  padding-bottom: var(--spacing);
+  padding-inline-end: calc(var(--spacing) * 4);
+  padding-top: var(--spacing);
+
+  @variant xl {
+    padding-inline-end: calc(var(--spacing) * 6);
+  }
+}
+
+@utility border-accent-b-* {
+  border-bottom: 0.25rem solid --value(--color-\*);
+  padding-bottom: calc(var(--spacing) * 4);
+  padding-left: var(--spacing);
+  padding-right: var(--spacing);
+
+  @variant xl {
+    padding-bottom: calc(var(--spacing) * 6);
+  }
+}
+
+@utility border-accent-l-* {
+  border-left: 0.25rem solid --value(--color-\*);
+  padding-bottom: var(--spacing);
+  padding-inline-start: calc(var(--spacing) * 4);
+  padding-top: var(--spacing);
+
+  @variant xl {
+    padding-inline-start: calc(var(--spacing) * 6);
+  }
+}
+
 heading-anchors:not(:defined) :is(h2, h3, h4, h5, h6):after {
   content: "#";
-  padding: 0 .25em;
+  padding: 0 0.25em;
   opacity: 0;
 }
 
@@ -31,50 +75,58 @@ heading-anchors .ha-placeholder {
 
 .markdown-alert {
   --color-caution: var(--color-tokyonight-day-red);
-  --color-caution-body: var(--color-red-950);
+  --color-caution-body: var(--color-tokyonight-day-black-red);
 
   --color-documentation: var(--color-tokyonight-day-green);
-  --color-documentation-body: var(--color-lime-950);
+  --color-documentation-body: var(--color-tokyonight-day-black-green);
 
   --color-important: var(--color-tokyonight-day-magenta);
-  --color-important-body: var(--color-purple-950);
+  --color-important-body: var(--color-tokyonight-day-black-magenta);
 
   --color-note: var(--color-tokyonight-day-blue2);
-  --color-note-body: var(--color-blue-950);
+  --color-note-body: var(--color-tokyonight-day-black-blue2);
 
   --color-tip: var(--color-tokyonight-day-teal);
-  --color-tip-body: var(--color-green-950);
+  --color-tip-body: var(--color-tokyonight-day-black-teal);
 
-  --color-tldr: var(--color-tokyonight-day-fg);
-  --color-tldr-body: var(--color-gray-950);
+  --color-tldr: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-fg),
+    var(--color-gray-950) 40%
+  );
+  --color-tldr-body: color-mix(
+    in oklch,
+    var(--color-tokyonight-day-fg),
+    var(--color-gray-950) 75%
+  );
 
   --color-warning: var(--color-tokyonight-day-yellow);
-  --color-warning-body: var(--color-yellow-950);
+  --color-warning-body: var(--color-tokyonight-day-black-yellow);
 
   @variant dark {
     --color-caution: var(--color-tokyonight-moon-red);
-    --color-caution-body: var(--color-red-50);
+    --color-caution-body: var(--color-tokyonight-moon-white-red);
 
     --color-documentation: var(--color-tokyonight-moon-green);
-    --color-documentation-body: var(--color-lime-50);
+    --color-documentation-body: var(--color-tokyonight-moon-white-green);
 
     --color-important: var(--color-tokyonight-moon-magenta);
-    --color-important-body: var(--color-purple-50);
+    --color-important-body: var(--color-tokyonight-moon-white-magenta);
 
     --color-note: var(--color-tokyonight-moon-blue2);
-    --color-note-body: var(--color-blue-50);
+    --color-note-body: var(--color-tokyonight-moon-white-blue2);
 
     --color-tip: var(--color-tokyonight-moon-teal);
-    --color-tip-body: var(--color-green-50);
+    --color-tip-body: var(--color-tokyonight-moon-white-teal);
 
     --color-tldr: var(--color-tokyonight-moon-fg);
     --color-tldr-body: var(--color-gray-50);
 
     --color-warning: var(--color-tokyonight-moon-yellow);
-    --color-warning-body: var(--color-yellow-50);
+    --color-warning-body: var(--color-tokyonight-moon-white-yellow);
   }
 
-  border-left: .25em solid var(--color-gray-500);
+  @apply border-accent-l-gray-500;
   color: inherit;
   font-size: var(--text-sm);
   margin-bottom: calc(var(--spacing) * 4);

@@ -1,0 +1,16 @@
+<article class="group relative"
+         style="view-transition-name: post-{{ entry.data.title | slugify }}"
+         data-entry-type="post">
+  <time datetime="{{ entry.date | dateToHtmlString }}"
+        class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
+    <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
+    {{ entry.date | dateToFormat("LLLL d, yyyy") }}
+  </time>
+  <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
+    <a href="{{ entry.url }}">
+      <span class="absolute inset-0"></span>
+      {{ entry.data.title | markdownify | safe }}
+    </a>
+  </h3>
+  <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ entry.data.summary }}</p>
+</article>

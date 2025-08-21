@@ -4,7 +4,7 @@ eleventyNavigation:
   order: 2
 layout: default
 pagination:
-  data: collections.posts
+  data: collections.blog
   size: 10
 tags:
   - main-nav
@@ -14,27 +14,17 @@ tags:
   <h2 class="sr-only">Blog</h2>
   <a href="/feeds/blog/"
      class="ml-auto flex items-center gap-1 group underline-offset-4">
-    <i class="fa-solid fa-rss size-4 xs:size-6 text-[#FFA500] group-hover:text-blue-500"></i>
+    <i class="fa-solid fa-rss size-4 xs:size-6 text-tokyonight-day-orange dark:text-tokyonight-moon-orange group-hover:text-inherit"></i>
     RSS
   </a>
 </header>
 <div class="mt-4 space-y-12">
-  {%- for post in collections.posts | reverse -%}
-    <article class="group relative"
-             style="view-transition-name: post-{{ post.data.title | slugify }}">
-      <time datetime="{{ post.date | dateToHtmlString }}"
-            class="flex items-baseline gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-200">
-        <i class="fa-solid fa-calendar-day size-3 sm:size-4 text-gray-700 dark:text-gray-300"></i>
-        {{ post.date | dateToFormat("LLLL d, yyyy") }}
-      </time>
-      <h3 class="mt-2 text-xl/6 sm:text-2xl/7 font-semibold">
-        <a href="{{ post.url }}">
-          <span class="absolute inset-0"></span>
-          {{ post.data.title | markdownify | safe }}
-        </a>
-      </h3>
-      <p class="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ post.data.summary }}</p>
-    </article>
+  {%- for entry in collections.blog | reverse -%}
+    {%- if entry | hasTag("posts") %}
+      {% include "cards/post.html" %}
+    {%- elif entry | hasTag("til") %}
+      {% include "cards/til.html" %}
+    {%- endif %}
   {%- endfor -%}
   {% if pagination.href.next or pagination.href.previous %}
     <nav class="flex justify-between items-center mt-8">
