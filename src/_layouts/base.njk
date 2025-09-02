@@ -12,12 +12,14 @@
     <link rel="canonical" href="{{ absolutePageUrl }}">
     <meta property="og:title"
           content="{%- if title -%}{{ title }} - {{ site.title }}{%- else -%}{{ site.title }}{%- endif -%}">
-    <meta property="og:image"
-          content="https://screenshot.11ty.app/{{ (site.url + '/og' + page.url) | urlencode }}/opengraph/">
+    {%- set ogImageUrl %}https://screenshot.11ty.app/{{ (site.url + '/og' + page.url) | urlencode }}/opengraph/{% endset %}
+    <meta property="og:image" content="{{ ogImageUrl }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ site.title }}">
     <meta property="og:url" content="{{ absolutePageUrl }}">
     <meta property="og:locale" content="en_us">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="{{ ogImageUrl }}" />
     <link rel="alternate"
           href="/feeds/blog.xml"
           type="application/atom+xml"
