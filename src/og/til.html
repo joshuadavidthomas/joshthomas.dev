@@ -1,0 +1,33 @@
+---
+eleventyComputed:
+  sourceUrl: "{{ site.url }}/{{ til.url }}"
+layout: base
+pagination:
+  data: collections.til
+  size: 1
+  alias: til
+permalink: "/og/{{ til.url }}"
+---
+
+<div class="grid grid-rows-[min-content_1fr_min-content] gap-6 py-8 px-12 relative min-h-screen bg-tokyonight-moon-bg-dark1">
+  <div class="flex items-center gap-8">
+    <img src="../../public/static/images/me.png"
+         width="250"
+         height="250"
+         alt="A picture of Josh"
+         fetchpriority="high"
+         class="size-24 rounded-full drop-shadow-md" />
+    <p class="text-4xl font-semibold font-brico">{{ site.author }}</p>
+  </div>
+  <div>
+    <p class="text-6xl font-bold text-tokyonight-day-teal dark:text-tokyonight-moon-teal mb-4">TIL</p>
+    <h1 class="text-7xl">{{ til.data.title | markdownify | safe }}</h1>
+    {%- if til.data.summary %}<p class="mt-auto text-5xl">{{ til.data.summary | markdownify | safe }}</p>{%- endif %}
+  </div>
+  <div class="flex items-center justify-between text-4xl">
+    <time datetime="{{ til.date | dateToHtmlString }}">
+      {{ til.date | dateToFormat("LLLL d, yyyy") }}
+    </time>
+    <p class="font-medium font-brico">{{ site.title }}</p>
+  </div>
+</div>

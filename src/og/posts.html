@@ -1,0 +1,32 @@
+---
+eleventyComputed:
+  sourceUrl: "{{ site.url }}/{{ post.url }}"
+layout: base
+pagination:
+  data: collections.posts
+  size: 1
+  alias: post
+permalink: "/og/{{ post.url }}"
+---
+
+<div class="grid grid-rows-[min-content_1fr_min-content] gap-6 py-8 px-12 relative min-h-screen bg-tokyonight-moon-bg-dark1">
+  <div class="flex items-center gap-8">
+    <img src="../../public/static/images/me.png"
+         width="250"
+         height="250"
+         alt="A picture of Josh"
+         fetchpriority="high"
+         class="size-24 rounded-full drop-shadow-md" />
+    <p class="text-4xl font-medium font-brico">{{ site.author }}</p>
+  </div>
+  <div class="flex flex-col gap-2">
+    <h1 class="text-8xl">{{ post.data.title | markdownify | safe }}</h1>
+    {%- if post.data.ogSummary %}<p class="text-4xl">{{ post.data.ogSummary | markdownify | safe }}</p>{%- endif %}
+  </div>
+  <div class="flex items-center justify-between text-4xl font-light">
+    <time datetime="{{ post.date | dateToHtmlString }}">
+      {{ post.date | dateToFormat("LLLL d, yyyy") }}
+    </time>
+    <p class="font-brico">{{ site.title }}</p>
+  </div>
+</div>
