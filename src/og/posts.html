@@ -20,7 +20,10 @@ permalink: "/og/{{ post.url }}"
     <p class="text-4xl font-medium font-brico">{{ site.author }}</p>
   </div>
   <div class="flex flex-col gap-2">
-    <h1 class="text-8xl">{{ post.data.title | markdownify | safe }}</h1>
+    {%- set titleWordCount = post.data.title.split(' ') | length -%}
+    <h1 class="{%- if titleWordCount >= 10 -%}text-7xl{%- else -%}text-8xl{%- endif -%}">
+      {{ post.data.title | markdownify | safe }}
+    </h1>
     {%- if post.data.ogSummary %}<p class="text-4xl">{{ post.data.ogSummary | markdownify | safe }}</p>{%- endif %}
   </div>
   <div class="flex items-center justify-between text-4xl font-light">
