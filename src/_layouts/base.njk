@@ -12,7 +12,7 @@
     <link rel="canonical" href="{{ absolutePageUrl }}">
     <meta property="og:title"
           content="{%- if title -%}{{ title }} - {{ site.title }}{%- else -%}{{ site.title }}{%- endif -%}">
-    {%- set ogImageUrl %}https://screenshot.11ty.app/{{ (site.url + '/og' + page.url) | urlencode }}/opengraph/{% endset %}
+    {%- set ogImageUrl %}https://screenshot.11ty.app/{{ (site.url + '/og' + page.url) | urlencode }}/opengraph/?updatedAt={{ updatedAt.getTime() }}{% endset %}
     <meta property="og:image" content="{{ ogImageUrl }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ site.title }}">
