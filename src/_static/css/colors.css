@@ -184,6 +184,11 @@
   --color-tokyonight-moon-yellow: oklch(from #ffc777 l c h);
   --color-tokyonight-moon-yellow-bright: oklch(from #ffd8ab l c h);
 
+  --color-tokyonight-moon-white: color-mix(
+    in oklch,
+    var(--color-tokyonight-moon-fg),
+    var(--color-white) 80%
+  );
   --color-tokyonight-moon-white-red: color-mix(
     in oklch,
     var(--color-tokyonight-moon-red),
