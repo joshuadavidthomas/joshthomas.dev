@@ -1,26 +1,29 @@
-import { execSync } from "child_process";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 export default {
-  updatedAt: (data) => {
+  updatedAt: async (data) => {
     if (data.updatedAt) {
       return data.updatedAt;
     }
 
-    // Only use git dates in production/CI environments to save build time
-    if (process.env.CI || process.env.CF_PAGES) {
-      try {
-        const timestamp = execSync(
-          `git log -1 --format=%cI -- "${data.page.inputPath}"`,
-          { encoding: "utf-8" },
-        ).trim();
+    // Try to get git timestamp
+    try {
+      const gitCommand = `git log -1 --format=%at -- "${data.page.inputPath}"`;
+      const { stdout } = await execAsync(gitCommand);
 
-        return timestamp ? new Date(timestamp) : data.page.date;
-      } catch (e) {
-        return data.page.date;
+      const timestamp = stdout.trim();
+
+      if (timestamp) {
+        const date = new Date(Number.parseInt(timestamp, 10) * 1000);
+        return date;
       }
+    } catch (e) {
+      // Git command failed, fallback
     }
 
-    // In development, just use the page date to avoid the performance hit
     return data.page.date;
   },
 };
