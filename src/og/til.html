@@ -20,8 +20,11 @@ permalink: "/og/{{ til.url }}"
     <p class="text-4xl font-semibold font-brico">{{ site.author }}</p>
   </div>
   <div>
-    <p class="text-6xl font-bold text-tokyonight-day-teal dark:text-tokyonight-moon-teal mb-4">TIL</p>
-    <h1 class="text-7xl">{{ til.data.title | markdownify | safe }}</h1>
+    {%- set titleWordCount = til.data.title.split(' ') | length -%}
+    <h1 class="{%- if titleWordCount >= 10 -%}text-7xl{%- else -%}text-8xl{%- endif -%}">
+      <span class="mr-3 text-tokyonight-day-teal dark:text-tokyonight-moon-teal">TIL</span>
+      {{ til.data.title | markdownify | safe }}
+    </h1>
     {%- if til.data.summary %}<p class="mt-auto text-5xl">{{ til.data.summary | markdownify | safe }}</p>{%- endif %}
   </div>
   <div class="flex items-center justify-between text-4xl">
