@@ -17,8 +17,7 @@ export default {
       const timestamp = stdout.trim();
 
       if (timestamp) {
-        const date = new Date(Number.parseInt(timestamp, 10) * 1000);
-        return date;
+        return new Date(Number.parseInt(timestamp, 10) * 1000);
       }
     } catch (e) {
       // Git command failed, fallback
