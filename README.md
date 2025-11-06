@@ -4,7 +4,7 @@ Personal site built with [Eleventy](https://www.11ty.dev/).
 
 ## Overview
 
-Features include blog with Markdown support, RSS feed, and Raindrop.io integration for bookmarks.
+Features include blog with Markdown support, RSS feed, Raindrop.io integration for bookmarks, and automatic GitHub projects showcase.
 
 Built with:
 
@@ -54,4 +54,5 @@ public/               # Static assets (fonts, images, JS) copied to dist root
 
 ## Environment
 
-- `RAINDROPIO_API_KEY` required for bookmarks integration
+- `RAINDROPIO_API_KEY` - Required for bookmarks integration
+- `GITHUB_TOKEN` - Optional. Increases API rate limit for projects page (5000 req/hr vs 60 req/hr)
