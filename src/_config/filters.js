@@ -114,4 +114,16 @@ export default {
     }
     return arr.filter((item) => item[key] === value);
   },
+
+  /**
+   * Format a number with thousand separators
+   * @param {number} num - Number to format
+   * @returns {string} Formatted number string (e.g., "1,234")
+   */
+  formatNumber: (num) => {
+    if (num === null || num === undefined) {
+      return "0";
+    }
+    return num.toLocaleString("en-US");
+  },
 };
