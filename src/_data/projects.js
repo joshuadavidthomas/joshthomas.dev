@@ -30,6 +30,7 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string} type - Type (always 'pr')
  * @property {string} title - PR title
  * @property {string} url - PR URL
+ * @property {string} repoFullName - Full repository name (owner/repo)
  * @property {string} repoName - Repository name
  * @property {string} repoOwner - Repository owner
  * @property {string} repoUrl - Repository URL
@@ -348,6 +349,7 @@ async function fetchContributions() {
         url: pr.html_url,
         repoName: repoName,
         repoOwner: repoOwner,
+        repoFullName: repoFullName,
         repoUrl: `https://github.com/${repoFullName}`,
         number: pr.number,
         merged: !!pr.pull_request?.merged_at,

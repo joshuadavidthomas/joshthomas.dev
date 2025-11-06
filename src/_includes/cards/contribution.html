@@ -1,12 +1,12 @@
 <article class="group relative"
          aria-labelledby="{{ contribution.repoName }}-{{ contribution.number }}">
-  <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-400 mb-1">
+  <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 mb-1">
     <a href="{{ contribution.repoUrl }}"
        target="_blank"
        rel="noopener noreferrer"
        class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
       <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
-      {{ contribution.repoOwner }}/{{ contribution.repoName }}
+      {{ contribution.repoFullName }}
     </a>
   </div>
   <h3 id="{{ contribution.repoName }}-{{ contribution.number }}"
