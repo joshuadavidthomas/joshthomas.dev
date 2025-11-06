@@ -19,9 +19,27 @@ import Fetch from "@11ty/eleventy-fetch";
  * @typedef {Object} GitHubPR
  * @property {string} repository_url - URL to the repository
  * @property {string} html_url - URL to the PR
+ * @property {number} number - PR number
  * @property {string} title - PR title
  * @property {string} state - PR state (open/closed)
  * @property {string} created_at - Creation date
+ * @property {string|null} merged_at - Merge date
+ * @property {Object} pull_request - PR metadata
+ */
+
+/**
+ * @typedef {Object} PRContribution
+ * @property {string} type - Type (always 'pr')
+ * @property {string} title - PR title
+ * @property {string} url - PR URL
+ * @property {string} repoName - Repository name
+ * @property {string} repoOwner - Repository owner
+ * @property {string} repoUrl - Repository URL
+ * @property {number} number - PR number
+ * @property {string} state - PR state
+ * @property {boolean} merged - Whether PR was merged
+ * @property {string} created - Creation date
+ * @property {Language[]} languages - Languages in the repo
  */
 
 /**
@@ -33,12 +51,12 @@ import Fetch from "@11ty/eleventy-fetch";
 
 /**
  * @typedef {Object} Project
+ * @property {string} type - Type (always 'project')
  * @property {string} name - Project name
  * @property {string} description - Project description
  * @property {string} url - Project URL
  * @property {string|null} homepage - Project homepage
  * @property {string[]} topics - Project topics
- * @property {boolean} contribution - Whether this is a contribution
  * @property {number} stars - Number of stars
  * @property {number} forks - Number of forks
  * @property {Language[]} languages - Languages used in the project
@@ -48,6 +66,7 @@ import Fetch from "@11ty/eleventy-fetch";
 const GITHUB_USERNAME = "joshuadavidthomas";
 const MIN_STARS = 0; // Minimum stars for a repo to be included
 const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
+const MAX_CONTRIBUTIONS = 10; // Maximum number of PR contributions to display
 
 /**
  * Map language names to devicon class names
@@ -56,45 +75,45 @@ const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
  */
 function getDeviconClass(language) {
   const languageMap = {
-    JavaScript: "devicon-javascript-plain",
-    TypeScript: "devicon-typescript-plain",
-    Python: "devicon-python-plain",
-    Java: "devicon-java-plain",
-    "C++": "devicon-cplusplus-plain",
-    "C#": "devicon-csharp-plain",
-    C: "devicon-c-plain",
-    Go: "devicon-go-plain",
-    Rust: "devicon-rust-plain",
-    Ruby: "devicon-ruby-plain",
-    PHP: "devicon-php-plain",
-    Swift: "devicon-swift-plain",
-    Kotlin: "devicon-kotlin-plain",
-    Dart: "devicon-dart-plain",
-    Scala: "devicon-scala-plain",
-    R: "devicon-r-plain",
-    Shell: "devicon-bash-plain",
-    PowerShell: "devicon-powershell-plain",
-    HTML: "devicon-html5-plain",
-    CSS: "devicon-css3-plain",
-    SCSS: "devicon-sass-plain",
-    Vue: "devicon-vuejs-plain",
-    React: "devicon-react-plain",
-    Angular: "devicon-angularjs-plain",
-    Svelte: "devicon-svelte-plain",
-    Elixir: "devicon-elixir-plain",
-    Erlang: "devicon-erlang-plain",
-    Haskell: "devicon-haskell-plain",
-    Lua: "devicon-lua-plain",
-    Perl: "devicon-perl-plain",
-    Clojure: "devicon-clojure-plain",
-    Docker: "devicon-docker-plain",
-    Vim: "devicon-vim-plain",
-    Markdown: "devicon-markdown-plain",
-    Jupyter: "devicon-jupyter-plain",
-    Nix: "devicon-nixos-plain",
+    JavaScript: "devicon-javascript-plain colored",
+    TypeScript: "devicon-typescript-plain colored",
+    Python: "devicon-python-plain colored",
+    Java: "devicon-java-plain colored",
+    "C++": "devicon-cplusplus-plain colored",
+    "C#": "devicon-csharp-plain colored",
+    C: "devicon-c-plain colored",
+    Go: "devicon-go-plain colored",
+    Rust: "devicon-rust-plain colored",
+    Ruby: "devicon-ruby-plain colored",
+    PHP: "devicon-php-plain colored",
+    Swift: "devicon-swift-plain colored",
+    Kotlin: "devicon-kotlin-plain colored",
+    Dart: "devicon-dart-plain colored",
+    Scala: "devicon-scala-plain colored",
+    R: "devicon-r-plain colored",
+    Shell: "devicon-bash-plain colored",
+    PowerShell: "devicon-powershell-plain colored",
+    HTML: "devicon-html5-plain colored",
+    CSS: "devicon-css3-plain colored",
+    SCSS: "devicon-sass-plain colored",
+    Vue: "devicon-vuejs-plain colored",
+    React: "devicon-react-original colored",
+    Angular: "devicon-angularjs-plain colored",
+    Svelte: "devicon-svelte-plain colored",
+    Elixir: "devicon-elixir-plain colored",
+    Erlang: "devicon-erlang-plain colored",
+    Haskell: "devicon-haskell-plain colored",
+    Lua: "devicon-lua-plain colored",
+    Perl: "devicon-perl-plain colored",
+    Clojure: "devicon-clojure-plain colored",
+    Docker: "devicon-docker-plain colored",
+    Vim: "devicon-vim-plain colored",
+    Markdown: "devicon-markdown-plain colored",
+    Jupyter: "devicon-jupyter-plain colored",
+    Nix: "devicon-nixos-plain colored",
   };
 
-  return languageMap[language] || "devicon-github-plain";
+  return languageMap[language] || "devicon-github-plain colored";
 }
 
 /**
@@ -124,12 +143,12 @@ async function fetchUserRepos() {
 }
 
 /**
- * Fetch repositories where user has contributed via pull requests
+ * Fetch pull requests where user has contributed
  * @async
- * @returns {Promise<string[]>} Array of repository full names
+ * @returns {Promise<GitHubPR[]>} Array of pull request details
  */
-async function fetchContributedRepos() {
-  const url = `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}&sort=created&order=desc&per_page=100`;
+async function fetchContributedPRs() {
+  const url = `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_CONTRIBUTIONS}`;
 
   const options = {
     duration: "1d",
@@ -147,21 +166,9 @@ async function fetchContributedRepos() {
 
   try {
     const data = await Fetch(url, options);
-
-    // Extract unique repository full names from PR data
-    const repoSet = new Set();
-    for (const pr of data.items || []) {
-      // Extract repo full name from repository_url
-      // Format: https://api.github.com/repos/owner/repo
-      const match = pr.repository_url?.match(/repos\/([^/]+\/[^/]+)$/);
-      if (match) {
-        repoSet.add(match[1]);
-      }
-    }
-
-    return Array.from(repoSet);
+    return data.items || [];
   } catch (error) {
-    console.warn("Failed to fetch contributed repos:", error.message);
+    console.warn("Failed to fetch contributed PRs:", error.message);
     return [];
   }
 }
@@ -244,21 +251,48 @@ async function fetchRepoLanguages(fullName) {
  * Transform GitHub repo data to project format
  * @param {GitHubRepo} repo - GitHub repository data
  * @param {Language[]} languages - Languages used in the repo
- * @param {boolean} isContribution - Whether this is a contribution
  * @returns {Project} Transformed project data
  */
-function transformRepo(repo, languages = [], isContribution = false) {
+function transformRepo(repo, languages = []) {
   return {
+    type: "project",
     name: repo.name,
     description: repo.description || "No description available",
     url: repo.html_url,
     homepage: repo.homepage || null,
     topics: repo.topics || [],
-    contribution: isContribution,
     stars: repo.stargazers_count,
     forks: repo.forks_count,
     languages: languages,
     updated: repo.pushed_at,
+  };
+}
+
+/**
+ * Transform GitHub PR data to contribution format
+ * @param {GitHubPR} pr - GitHub PR data
+ * @param {Language[]} languages - Languages used in the repo
+ * @returns {PRContribution} Transformed PR contribution data
+ */
+function transformPR(pr, languages = []) {
+  // Extract repo info from repository_url
+  const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
+  const repoOwner = match ? match[1] : "";
+  const repoName = match ? match[2] : "";
+  const repoFullName = match ? `${repoOwner}/${repoName}` : "";
+
+  return {
+    type: "pr",
+    title: pr.title,
+    url: pr.html_url,
+    repoName: repoName,
+    repoOwner: repoOwner,
+    repoUrl: `https://github.com/${repoFullName}`,
+    number: pr.number,
+    state: pr.state,
+    merged: !!pr.pull_request?.merged_at,
+    created: pr.created_at,
+    languages: languages,
   };
 }
 
@@ -291,27 +325,26 @@ export default async function () {
 
     console.log(`Found ${ownProjects.length} own projects`);
 
-    // Fetch contributed repos
-    const contributedRepoNames = await fetchContributedRepos();
-    console.log(`Found ${contributedRepoNames.length} contributed repos`);
+    // Fetch contributed PRs
+    const contributedPRs = await fetchContributedPRs();
+    console.log(`Found ${contributedPRs.length} contributed PRs`);
 
-    // Fetch details for contributed repos (limit to top 10 by activity)
-    const contributionDetails = [];
-    for (const repoName of contributedRepoNames.slice(0, 10)) {
-      const repo = await fetchRepoDetails(repoName);
-      if (repo) {
-        const languages = await fetchRepoLanguages(repoName);
-        contributionDetails.push(transformRepo(repo, languages, true));
+    // Transform PRs with language data
+    const contributions = [];
+    for (const pr of contributedPRs) {
+      // Extract repo full name from repository_url
+      const match = pr.repository_url?.match(/repos\/([^/]+\/[^/]+)$/);
+      if (match) {
+        const repoFullName = match[1];
+        const languages = await fetchRepoLanguages(repoFullName);
+        contributions.push(transformPR(pr, languages));
       }
     }
 
-    // Sort contributions by stars
-    contributionDetails.sort((a, b) => b.stars - a.stars);
-
-    console.log(`Processed ${contributionDetails.length} contributions`);
+    console.log(`Processed ${contributions.length} contributions`);
 
     // Combine both lists
-    return [...ownProjects, ...contributionDetails];
+    return [...ownProjects, ...contributions];
   } catch (error) {
     console.error("Error fetching GitHub projects:", error);
     // Return fallback data in case of error
