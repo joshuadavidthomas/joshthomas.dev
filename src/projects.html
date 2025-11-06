@@ -7,42 +7,60 @@ tags:
   - main-nav
 ---
 
-<div class="space-y-8">
-  <header class="flex flex-col gap-4">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Projects</h1>
-    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300">
-      An overview of my open source projects and contributions to the community.
-    </p>
-    <div class="flex items-center gap-4 text-sm">
-      <a href="{{ site.social[2].url }}"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
-        <i class="fa-brands fa-github size-5"></i>
-        View all on GitHub
-      </a>
-    </div>
-  </header>
-
+<div class="space-y-16">
   {% set myProjects = projects | filterByKey("type", "project") %}
   {% if myProjects.length > 0 %}
-    <section>
-      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">My Projects</h2>
-      <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+    <section aria-labelledby="projects">
+      <h2 id="projects" class="sr-only" data-ha-exclude>Projects</h2>
+      <p class="leading-[1.75] text-sm sm:text-base text-gray-600 dark:text-gray-300">
+        A collection of projects I've built and <a href="/blog/2025/open-source-is-a-gift/"
+    class="underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">shared openly</a>. If something catches your attention, dive into the code and help improve it.
+        <a href="{{ site.github_profile }}?tab=repositories&type=source"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="group underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">
+          Click here to view more on
+          <span class="ml-0.5 inline-flex items-baseline gap-1 underline decoration-inherit">
+            <i aria-hidden="true"
+               class="my-auto fa-brands fa-github size-3 sm:size-4"></i>
+            GitHub
+          </span>
+        </a>
+        .
+      </p>
+      <div class="mt-10 space-y-12">
         {%- for project in myProjects -%}
           {% include "cards/project.html" %}
         {%- endfor -%}
       </div>
     </section>
   {% endif %}
-
   {% set contributions = projects | filterByKey("type", "pr") %}
   {% if contributions.length > 0 %}
-    <section>
-      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Pull Request Contributions</h2>
-      <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+    <hr aria-hidden="true"
+        class="w-24 mx-auto text-gray-300 dark:text-white/15" />
+    <section aria-labelledby="contributions">
+      <h2 id="contributions" class="sr-only" data-ha-exclude>Open Source Contributions</h2>
+      <p class="leading-[1.75] text-sm sm:text-base text-gray-600 dark:text-gray-300">
+        Here are some contributions I've made to other open source projects.
+        <a href="https://github.com/search?q=type%3Apr+author%3Ajoshuadavidthomas+is%3Apublic+-user%3Ajoshuadavidthomas&type=pullrequests&s=created&o=desc"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="group underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">
+          Click here to view more on
+          <span class="ml-0.5 inline-flex items-baseline gap-1 underline decoration-inherit">
+            <i aria-hidden="true"
+               class="my-auto fa-brands fa-github size-3 sm:size-4"></i>
+            GitHub
+          </span>
+        </a>
+        .
+      </p>
+      <div class="mt-10 space-y-8">
         {%- for contribution in contributions -%}
-          {% include "cards/contribution.html" %}
+          {% if contribution.merged %}
+            {% include "cards/contribution.html" %}
+          {% endif %}
         {%- endfor -%}
       </div>
     </section>

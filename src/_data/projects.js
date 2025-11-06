@@ -78,45 +78,51 @@ const EXCLUDED_ORGS = ["westerveltco"]; // Organizations to exclude from contrib
  */
 function getDeviconClass(language) {
   const languageMap = {
-    JavaScript: "devicon-javascript-plain colored",
-    TypeScript: "devicon-typescript-plain colored",
-    Python: "devicon-python-plain colored",
-    Java: "devicon-java-plain colored",
-    "C++": "devicon-cplusplus-plain colored",
-    "C#": "devicon-csharp-plain colored",
-    C: "devicon-c-plain colored",
-    Go: "devicon-go-plain colored",
-    Rust: "devicon-rust-original colored",
-    Ruby: "devicon-ruby-plain colored",
-    PHP: "devicon-php-plain colored",
-    Swift: "devicon-swift-plain colored",
-    Kotlin: "devicon-kotlin-plain colored",
-    Dart: "devicon-dart-plain colored",
-    Scala: "devicon-scala-plain colored",
-    R: "devicon-r-plain colored",
-    Shell: "devicon-bash-plain colored",
-    PowerShell: "devicon-powershell-plain colored",
-    HTML: "devicon-html5-plain colored",
-    CSS: "devicon-css3-plain colored",
-    SCSS: "devicon-sass-plain colored",
-    Vue: "devicon-vuejs-plain colored",
-    React: "devicon-react-original colored",
-    Angular: "devicon-angularjs-plain colored",
-    Svelte: "devicon-svelte-plain colored",
-    Elixir: "devicon-elixir-plain colored",
-    Erlang: "devicon-erlang-plain colored",
-    Haskell: "devicon-haskell-plain colored",
-    Lua: "devicon-lua-plain colored",
-    Perl: "devicon-perl-plain colored",
-    Clojure: "devicon-clojure-plain colored",
-    Docker: "devicon-docker-plain colored",
-    Vim: "devicon-vim-plain colored",
-    Markdown: "devicon-markdown-plain colored",
-    Jupyter: "devicon-jupyter-plain colored",
-    Nix: "devicon-nixos-plain colored",
+    Angular: "angularjs",
+    C: "c",
+    "C#": "csharp",
+    "C++": "cplusplus",
+    CSS: "css3",
+    Clojure: "clojure",
+    Dart: "dart",
+    Docker: "docker",
+    Elixir: "elixir",
+    Erlang: "erlang",
+    Go: "go",
+    HTML: "html5",
+    Haskell: "haskell",
+    Java: "java",
+    JavaScript: "javascript",
+    Jupyter: "jupyter",
+    Kotlin: "kotlin",
+    Lua: "lua",
+    Markdown: "markdown",
+    Nix: "nixos",
+    PHP: "php",
+    Perl: "perl",
+    PowerShell: "powershell",
+    Python: "python",
+    R: "r",
+    React: "react",
+    Ruby: "ruby",
+    Rust: "rust",
+    SCSS: "sass",
+    Scala: "scala",
+    Shell: "bash",
+    Svelte: "svelte",
+    Swift: "swift",
+    TypeScript: "typescript",
+    Vim: "vim",
+    Vue: "vuejs",
   };
+  const deviconLang = languageMap[language] || "github";
 
-  return languageMap[language] || "devicon-github-plain colored";
+  const deviconStyleMap = {
+    rust: "colored dark:var(--tw-invert)",
+  };
+  const deviconStyle = deviconStyleMap[deviconLang] || "colored";
+
+  return `devicon-${deviconLang}-plain ${deviconStyle}`;
 }
 
 /**
@@ -315,7 +321,7 @@ export default async function () {
 
     // Filter user repos: not forks, have stars >= MIN_STARS
     const filteredRepos = userRepos.filter(
-      (repo) => !repo.fork && repo.stargazers_count >= MIN_STARS
+      (repo) => !repo.fork && repo.stargazers_count >= MIN_STARS,
     );
 
     // Fetch languages for each user repo
@@ -363,7 +369,7 @@ export default async function () {
     const topContributions = contributions.slice(0, MAX_CONTRIBUTIONS);
 
     console.log(
-      `Processed ${contributions.length} contributions, showing top ${topContributions.length}`
+      `Processed ${contributions.length} contributions, showing top ${topContributions.length}`,
     );
 
     // Combine both lists
