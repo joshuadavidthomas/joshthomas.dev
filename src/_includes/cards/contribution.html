@@ -1,0 +1,25 @@
+<article class="group relative"
+         aria-labelledby="{{ contribution.repoName }}-{{ contribution.number }}">
+  <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 mb-1">
+    <a href="{{ contribution.repoUrl }}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+      <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
+      {{ contribution.repoFullName }}
+    </a>
+  </div>
+  <h3 id="{{ contribution.repoName }}-{{ contribution.number }}"
+      class="text-lg/6 sm:text-xl/7 font-semibold"
+      data-ha-exclude>
+    <a href="{{ contribution.url }}"
+       target="_blank"
+       rel="noopener noreferrer">
+      <span class="absolute inset-0"></span>
+      {{ contribution.title | markdownify | safe }}
+      <span class="text-base sm:text-lg font-normal text-gray-800 dark:text-gray-300 group-hover:text-inherit tabular-num">
+        (#{{ contribution.number }})
+      </span>
+    </a>
+  </h3>
+</article>

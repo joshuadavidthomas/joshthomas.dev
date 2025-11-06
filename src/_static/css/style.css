@@ -287,3 +287,16 @@ heading-anchors .ha-placeholder {
     }
   }
 }
+
+/* Devicon fixes for dark mode visibility */
+@media (prefers-color-scheme: dark) {
+  /* Rust icon - make it more visible in dark mode */
+  .devicon-rust-original.colored {
+    filter: brightness(1.5) saturate(1.2);
+  }
+
+  /* GitHub icon - lighten the gray/black icon in dark mode */
+  .devicon-github-plain.colored {
+    filter: brightness(2) contrast(0.8);
+  }
+}

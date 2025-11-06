@@ -100,4 +100,18 @@ export default {
    * @returns string The rendered content
    */
   markdownify: (content) => md.renderInline(content),
+
+  /**
+   * Filter an array of objects by a key-value pair
+   * @param {Array} arr - Array of objects to filter
+   * @param {string} key - The key to check in each object
+   * @param {*} value - The value to match
+   * @returns {Array} Filtered array
+   */
+  filterByKey: (arr, key, value) => {
+    if (!arr || !Array.isArray(arr)) {
+      return [];
+    }
+    return arr.filter((item) => item[key] === value);
+  },
 };

@@ -73,8 +73,9 @@ layout: base
     {{ content | safe }}
   </main>
   <footer class="mt-24 pb-4 text-xs">
-    <hr class="mb-4 border-gray-400 dark:border-gray-600 border-t-px w-24 mx-auto" />
-    <div class="flex items-center justify-between">
+    <hr aria-hidden="true"
+        class="w-24 mx-auto text-gray-300 dark:text-white/15" />
+    <div class="mt-4 flex items-center justify-between">
       {% set footerNavPages = collections['footer-nav'] | eleventyNavigation %}
       <nav class="flex gap-2 items-center uppercase" aria-labelledby="site-nav">
         <h2 id="site-nav" class="sr-only" data-ha-exclude>Secondary site navigation</h2>
