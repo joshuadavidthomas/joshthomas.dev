@@ -24,21 +24,24 @@ tags:
     </div>
   </header>
 
-  <section>
-    <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Featured Projects</h2>
-    <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
-      {%- for project in projects | filterByKey("featured", true) -%}
-        {% include "cards/project.html" %}
-      {%- endfor -%}
-    </div>
-  </section>
-
-  {% set otherProjects = projects | filterByKey("featured", false) %}
-  {% if otherProjects.length > 0 %}
+  {% set myProjects = projects | filterByKey("contribution", false) %}
+  {% if myProjects.length > 0 %}
     <section>
-      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Other Projects</h2>
+      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">My Projects</h2>
       <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
-        {%- for project in otherProjects -%}
+        {%- for project in myProjects -%}
+          {% include "cards/project.html" %}
+        {%- endfor -%}
+      </div>
+    </section>
+  {% endif %}
+
+  {% set contributions = projects | filterByKey("contribution", true) %}
+  {% if contributions.length > 0 %}
+    <section>
+      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Contributions to Other Projects</h2>
+      <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        {%- for project in contributions -%}
           {% include "cards/project.html" %}
         {%- endfor -%}
       </div>
