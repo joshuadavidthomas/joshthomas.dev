@@ -22,13 +22,31 @@
 
 export default {
   /**
+   * Returns all blog posts
+   * @param {Collection} collection - Eleventy collection object
+   * @returns {CollectionItem[]} Array of post collection items
+   */
+  posts: (collection) => {
+    return collection.getFilteredByGlob("./src/content/posts/**/*.md");
+  },
+
+  /**
+   * Returns all TIL entries
+   * @param {Collection} collection - Eleventy collection object
+   * @returns {CollectionItem[]} Array of TIL collection items
+   */
+  til: (collection) => {
+    return collection.getFilteredByGlob("./src/content/til/**/*.md");
+  },
+
+  /**
    * Returns all blog entries, including posts and tils, sorted by date
    * @param {Collection} collection - Eleventy collection object
    * @returns {CollectionItem[]} Array of post collection items
    */
   blog: (collection) => {
-    const posts = collection.getFilteredByGlob("./src/posts/**/*.md");
-    const tils = collection.getFilteredByGlob("./src/til/**/*.md");
+    const posts = collection.getFilteredByGlob("./src/content/posts/**/*.md");
+    const tils = collection.getFilteredByGlob("./src/content/til/**/*.md");
     return [...posts, ...tils].sort((a, b) => {
       return a.date - b.date;
     });

@@ -16,8 +16,11 @@ import colorSwatchesPlugin from "./src/_plugins/colorSwatchesPlugin.js";
 export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
+  // Watch content directory for changes
+  eleventyConfig.addWatchTarget("./content/");
+
   eleventyConfig
-    .addPassthroughCopy({ "public": "/" })
+    .addPassthroughCopy({ public: "/" })
     .addPassthroughCopy({
       "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
     })
@@ -81,11 +84,14 @@ export default function (eleventyConfig) {
 
   eleventyConfig.on("eleventy.after", () => {
     const cacheDir = ".cache/@11ty/img/";
-    const outputDir = path.join(eleventyConfig.directories.output, "/static/img/");
-    
+    const outputDir = path.join(
+      eleventyConfig.directories.output,
+      "/static/img/",
+    );
+
     if (fs.existsSync(cacheDir)) {
       fs.cpSync(cacheDir, outputDir, {
-        recursive: true
+        recursive: true,
       });
     }
   });
