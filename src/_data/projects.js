@@ -21,10 +21,8 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string} html_url - URL to the PR
  * @property {number} number - PR number
  * @property {string} title - PR title
- * @property {string} state - PR state (open/closed)
- * @property {string} created_at - Creation date
- * @property {string|null} merged_at - Merge date
  * @property {Object} pull_request - PR metadata
+ * @property {string|null} pull_request.merged_at - Merge timestamp
  */
 
 /**
@@ -36,11 +34,7 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string} repoOwner - Repository owner
  * @property {string} repoUrl - Repository URL
  * @property {number} number - PR number
- * @property {string} state - PR state
  * @property {boolean} merged - Whether PR was merged
- * @property {string} created - Creation date
- * @property {number} stars - Number of stars on the repository
- * @property {Language[]} languages - Languages in the repo
  */
 
 /**
@@ -126,71 +120,12 @@ function getDeviconClass(language) {
 }
 
 /**
- * Fetch user's repositories from GitHub
+ * Fetch data from GitHub API with authentication and caching
  * @async
- * @returns {Promise<GitHubRepo[]>} Array of repositories
+ * @param {string} url - GitHub API URL
+ * @returns {Promise<any>} API response data
  */
-async function fetchUserRepos() {
-  const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`;
-
-  const options = {
-    duration: "1d",
-    type: "json",
-    fetchOptions: {
-      headers: {
-        "User-Agent": "Eleventy",
-      },
-    },
-  };
-
-  // Add GitHub token if available for higher rate limits
-  if (process.env.GITHUB_TOKEN) {
-    options.fetchOptions.headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-
-  return await Fetch(url, options);
-}
-
-/**
- * Fetch pull requests where user has contributed
- * @async
- * @returns {Promise<GitHubPR[]>} Array of pull request details
- */
-async function fetchContributedPRs() {
-  const url = `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_PRS_TO_FETCH}`;
-
-  const options = {
-    duration: "1d",
-    type: "json",
-    fetchOptions: {
-      headers: {
-        "User-Agent": "Eleventy",
-      },
-    },
-  };
-
-  if (process.env.GITHUB_TOKEN) {
-    options.fetchOptions.headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-
-  try {
-    const data = await Fetch(url, options);
-    return data.items || [];
-  } catch (error) {
-    console.warn("Failed to fetch contributed PRs:", error.message);
-    return [];
-  }
-}
-
-/**
- * Fetch repository details by full name
- * @async
- * @param {string} fullName - Repository full name (owner/repo)
- * @returns {Promise<GitHubRepo|null>} Repository details
- */
-async function fetchRepoDetails(fullName) {
-  const url = `https://api.github.com/repos/${fullName}`;
-
+async function fetchFromGitHubApi(url) {
   const options = {
     duration: "1d",
     type: "json",
@@ -208,8 +143,8 @@ async function fetchRepoDetails(fullName) {
   try {
     return await Fetch(url, options);
   } catch (error) {
-    console.warn(`Failed to fetch repo ${fullName}:`, error.message);
-    return null;
+    console.warn("Failed to fetch from GitHub API:", error.message);
+    return [];
   }
 }
 
@@ -220,163 +155,122 @@ async function fetchRepoDetails(fullName) {
  * @returns {Promise<Language[]>} Array of languages sorted by bytes
  */
 async function fetchRepoLanguages(fullName) {
-  const url = `https://api.github.com/repos/${fullName}/languages`;
+  const languagesData = await fetchFromGitHubApi(
+    `https://api.github.com/repos/${fullName}/languages`,
+  );
 
-  const options = {
-    duration: "1d",
-    type: "json",
-    fetchOptions: {
-      headers: {
-        "User-Agent": "Eleventy",
-      },
-    },
-  };
+  const languages = Object.entries(languagesData)
+    .map(([name, bytes]) => ({
+      name,
+      bytes,
+      icon: getDeviconClass(name),
+    }))
+    .sort((a, b) => b.bytes - a.bytes)
+    .slice(0, MAX_LANGUAGES);
 
-  if (process.env.GITHUB_TOKEN) {
-    options.fetchOptions.headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-
-  try {
-    const languagesData = await Fetch(url, options);
-
-    // Convert object to array and sort by bytes descending
-    const languages = Object.entries(languagesData)
-      .map(([name, bytes]) => ({
-        name,
-        bytes,
-        icon: getDeviconClass(name),
-      }))
-      .sort((a, b) => b.bytes - a.bytes)
-      .slice(0, MAX_LANGUAGES);
-
-    return languages;
-  } catch (error) {
-    console.warn(`Failed to fetch languages for ${fullName}:`, error.message);
-    return [];
-  }
+  return languages;
 }
 
 /**
- * Transform GitHub repo data to project format
- * @param {GitHubRepo} repo - GitHub repository data
- * @param {Language[]} languages - Languages used in the repo
- * @returns {Project} Transformed project data
+ * Fetch and transform user's own repositories
+ * @async
+ * @returns {Promise<Project[]>} Array of project objects
  */
-function transformRepo(repo, languages = []) {
-  return {
-    type: "project",
-    name: repo.name,
-    description: repo.description || "No description available",
-    url: repo.html_url,
-    homepage: repo.homepage || null,
-    topics: repo.topics || [],
-    stars: repo.stargazers_count,
-    forks: repo.forks_count,
-    languages: languages,
-    updated: repo.pushed_at,
-  };
+async function fetchUserProjects() {
+  console.log("Fetching user GitHub projects...");
+
+  const userRepos = await fetchFromGitHubApi(
+    `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`,
+  );
+
+  const filteredRepos = userRepos.filter(
+    (repo) => !repo.fork && repo.stargazers_count >= MIN_STARS,
+  );
+
+  const userProjects = [];
+  for (const repo of filteredRepos) {
+    const languages = await fetchRepoLanguages(repo.full_name);
+    userProjects.push({
+      type: "project",
+      name: repo.name,
+      description: repo.description || null,
+      url: repo.html_url,
+      homepage: repo.homepage || null,
+      topics: repo.topics || [],
+      stars: repo.stargazers_count,
+      forks: repo.forks_count,
+      languages: languages,
+      updated: repo.pushed_at,
+    });
+  }
+
+  userProjects.sort((a, b) => b.stars - a.stars);
+
+  console.log(`Found ${userProjects.length} user projects`);
+
+  return userProjects;
 }
 
 /**
- * Transform GitHub PR data to contribution format
- * @param {GitHubPR} pr - GitHub PR data
- * @param {number} stars - Number of stars on the repository
- * @param {Language[]} languages - Languages used in the repo
- * @returns {PRContribution} Transformed PR contribution data
+ * Fetch and transform user's contributions to other repositories
+ * @async
+ * @returns {Promise<PRContribution[]>} Array of PR contribution objects
  */
-function transformPR(pr, stars = 0, languages = []) {
-  // Extract repo info from repository_url
-  const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
-  const repoOwner = match ? match[1] : "";
-  const repoName = match ? match[2] : "";
-  const repoFullName = match ? `${repoOwner}/${repoName}` : "";
+async function fetchUserContributions() {
+  console.log("Fetching user GitHub contributions...");
+  const contributionSearch = await fetchFromGitHubApi(
+    `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_PRS_TO_FETCH}`,
+  );
+  const contributedPRs = contributionSearch.items || [];
+  console.log(`Found ${contributedPRs.length} contributed PRs`);
 
-  return {
-    type: "pr",
-    title: pr.title,
-    url: pr.html_url,
-    repoName: repoName,
-    repoOwner: repoOwner,
-    repoUrl: `https://github.com/${repoFullName}`,
-    number: pr.number,
-    state: pr.state,
-    merged: !!pr.pull_request?.merged_at,
-    created: pr.created_at,
-    stars: stars,
-    languages: languages,
-  };
+  const contributions = contributedPRs
+    .map((pr) => {
+      const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
+      if (!match) return null;
+
+      const repoOwner = match[1];
+      const repoName = match[2];
+      const repoFullName = `${repoOwner}/${repoName}`;
+
+      if (EXCLUDED_ORGS.includes(repoOwner)) {
+        return null;
+      }
+
+      return {
+        type: "pr",
+        title: pr.title,
+        url: pr.html_url,
+        repoName: repoName,
+        repoOwner: repoOwner,
+        repoUrl: `https://github.com/${repoFullName}`,
+        number: pr.number,
+        merged: !!pr.pull_request?.merged_at,
+      };
+    })
+    .filter(Boolean);
+
+  const topContributions = contributions.slice(0, MAX_CONTRIBUTIONS);
+
+  console.log(
+    `Processed ${contributions.length} contributions, showing top ${topContributions.length}`,
+  );
+
+  return topContributions;
 }
 
 /**
  * Main function to fetch and combine project data
  * @async
- * @returns {Promise<Project[]>} Array of projects
+ * @returns {Promise<Array<Project|PRContribution>>} Array of projects and contributions
  */
 export default async function () {
   try {
-    console.log("Fetching GitHub projects data...");
-
-    // Fetch user's repos
-    const userRepos = await fetchUserRepos();
-
-    // Filter user repos: not forks, have stars >= MIN_STARS
-    const filteredRepos = userRepos.filter(
-      (repo) => !repo.fork && repo.stargazers_count >= MIN_STARS,
-    );
-
-    // Fetch languages for each user repo
-    const ownProjects = [];
-    for (const repo of filteredRepos) {
-      const languages = await fetchRepoLanguages(repo.full_name);
-      ownProjects.push(transformRepo(repo, languages, false));
-    }
-
-    // Sort by stars descending
-    ownProjects.sort((a, b) => b.stars - a.stars);
-
-    console.log(`Found ${ownProjects.length} own projects`);
-
-    // Fetch contributed PRs
-    const contributedPRs = await fetchContributedPRs();
-    console.log(`Found ${contributedPRs.length} contributed PRs`);
-
-    // Transform PRs with language data and repo stars
-    const contributions = [];
-    for (const pr of contributedPRs) {
-      // Extract repo full name and owner from repository_url
-      const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
-      if (match) {
-        const repoOwner = match[1];
-        const repoName = match[2];
-        const repoFullName = `${repoOwner}/${repoName}`;
-
-        // Skip excluded organizations
-        if (EXCLUDED_ORGS.includes(repoOwner)) {
-          continue;
-        }
-
-        // Fetch repo details to get stars
-        const repo = await fetchRepoDetails(repoFullName);
-        if (repo) {
-          const languages = await fetchRepoLanguages(repoFullName);
-          contributions.push(transformPR(pr, repo.stargazers_count, languages));
-        }
-      }
-    }
-
-    // Sort contributions by stars descending and limit to MAX_CONTRIBUTIONS
-    contributions.sort((a, b) => b.stars - a.stars);
-    const topContributions = contributions.slice(0, MAX_CONTRIBUTIONS);
-
-    console.log(
-      `Processed ${contributions.length} contributions, showing top ${topContributions.length}`,
-    );
-
-    // Combine both lists
-    return [...ownProjects, ...topContributions];
+    const userProjects = await fetchUserProjects();
+    const userContributions = await fetchUserContributions();
+    return [...userProjects, ...userContributions];
   } catch (error) {
     console.error("Error fetching GitHub projects:", error);
-    // Return fallback data in case of error
     return [];
   }
 }
