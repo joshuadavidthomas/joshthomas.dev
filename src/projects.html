@@ -1,0 +1,47 @@
+---
+eleventyNavigation:
+  key: Projects
+  order: 3
+layout: default
+tags:
+  - main-nav
+---
+
+<div class="space-y-8">
+  <header class="flex flex-col gap-4">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Projects</h1>
+    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300">
+      An overview of my open source projects and contributions to the community.
+    </p>
+    <div class="flex items-center gap-4 text-sm">
+      <a href="{{ site.social[2].url }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+        <i class="fa-brands fa-github size-5"></i>
+        View all on GitHub
+      </a>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Featured Projects</h2>
+    <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+      {%- for project in projects | filterByKey("featured", true) -%}
+        {% include "cards/project.html" %}
+      {%- endfor -%}
+    </div>
+  </section>
+
+  {% set otherProjects = projects | filterByKey("featured", false) %}
+  {% if otherProjects.length > 0 %}
+    <section>
+      <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-50">Other Projects</h2>
+      <div class="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        {%- for project in otherProjects -%}
+          {% include "cards/project.html" %}
+        {%- endfor -%}
+      </div>
+    </section>
+  {% endif %}
+</div>

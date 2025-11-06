@@ -1,0 +1,29 @@
+[
+  {
+    "name": "django-tailwind-cli",
+    "description": "Django and Tailwind integration based on the standalone Tailwind CLI",
+    "url": "https://github.com/oliverandrich/django-tailwind-cli",
+    "homepage": "https://django-tailwind-cli.rtfd.io",
+    "topics": ["django", "tailwind", "python"],
+    "featured": true,
+    "contribution": true
+  },
+  {
+    "name": "django-htmx-partial",
+    "description": "A small Django library for rendering partial templates for htmx requests",
+    "url": "https://github.com/joshuadavidthomas/django-htmx-partial",
+    "homepage": null,
+    "topics": ["django", "htmx", "python"],
+    "featured": true,
+    "contribution": false
+  },
+  {
+    "name": "django-postgres-unlimited",
+    "description": "Explore PostgreSQL features and use them in Django",
+    "url": "https://github.com/joshuadavidthomas/django-postgres-unlimited",
+    "homepage": null,
+    "topics": ["django", "postgresql", "python"],
+    "featured": true,
+    "contribution": false
+  }
+]

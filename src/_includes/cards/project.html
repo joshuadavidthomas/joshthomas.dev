@@ -1,0 +1,41 @@
+<article class="group relative border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex-1 min-w-0">
+      <h3 class="text-xl/6 sm:text-2xl/7 font-semibold">
+        <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">
+          <span class="absolute inset-0"></span>
+          {{ project.name }}
+        </a>
+      </h3>
+      <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ project.description }}</p>
+      {% if project.topics and project.topics.length > 0 %}
+        <div class="mt-4 flex flex-wrap gap-2">
+          {% for topic in project.topics %}
+            <span class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+              {{ topic }}
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <div class="flex flex-col items-end gap-2 shrink-0">
+      <i class="fa-brands fa-github size-6 text-gray-400 dark:text-gray-500"></i>
+      {% if project.contribution %}
+        <span class="inline-flex items-center rounded-md bg-blue-100 dark:bg-blue-900 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
+          Contributor
+        </span>
+      {% endif %}
+    </div>
+  </div>
+  {% if project.homepage %}
+    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <a href="{{ project.homepage }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="relative z-10 inline-flex items-center gap-1 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+        <i class="fa-solid fa-book size-4"></i>
+        Documentation
+      </a>
+    </div>
+  {% endif %}
+</article>
