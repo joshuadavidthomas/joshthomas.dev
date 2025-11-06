@@ -39,6 +39,7 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string} state - PR state
  * @property {boolean} merged - Whether PR was merged
  * @property {string} created - Creation date
+ * @property {number} stars - Number of stars on the repository
  * @property {Language[]} languages - Languages in the repo
  */
 
@@ -64,9 +65,10 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 const GITHUB_USERNAME = "joshuadavidthomas";
-const MIN_STARS = 0; // Minimum stars for a repo to be included
+const MIN_STARS = 3; // Minimum stars for a repo to be included
 const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
 const MAX_CONTRIBUTIONS = 10; // Maximum number of PR contributions to display
+const EXCLUDED_ORGS = ["westerveltco"]; // Organizations to exclude from contributions
 
 /**
  * Map language names to devicon class names
@@ -83,7 +85,7 @@ function getDeviconClass(language) {
     "C#": "devicon-csharp-plain colored",
     C: "devicon-c-plain colored",
     Go: "devicon-go-plain colored",
-    Rust: "devicon-rust-plain colored",
+    Rust: "devicon-rust-original colored",
     Ruby: "devicon-ruby-plain colored",
     PHP: "devicon-php-plain colored",
     Swift: "devicon-swift-plain colored",
@@ -271,10 +273,11 @@ function transformRepo(repo, languages = []) {
 /**
  * Transform GitHub PR data to contribution format
  * @param {GitHubPR} pr - GitHub PR data
+ * @param {number} stars - Number of stars on the repository
  * @param {Language[]} languages - Languages used in the repo
  * @returns {PRContribution} Transformed PR contribution data
  */
-function transformPR(pr, languages = []) {
+function transformPR(pr, stars = 0, languages = []) {
   // Extract repo info from repository_url
   const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
   const repoOwner = match ? match[1] : "";
@@ -292,6 +295,7 @@ function transformPR(pr, languages = []) {
     state: pr.state,
     merged: !!pr.pull_request?.merged_at,
     created: pr.created_at,
+    stars: stars,
     languages: languages,
   };
 }
@@ -329,17 +333,32 @@ export default async function () {
     const contributedPRs = await fetchContributedPRs();
     console.log(`Found ${contributedPRs.length} contributed PRs`);
 
-    // Transform PRs with language data
+    // Transform PRs with language data and repo stars
     const contributions = [];
     for (const pr of contributedPRs) {
-      // Extract repo full name from repository_url
-      const match = pr.repository_url?.match(/repos\/([^/]+\/[^/]+)$/);
+      // Extract repo full name and owner from repository_url
+      const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
       if (match) {
-        const repoFullName = match[1];
-        const languages = await fetchRepoLanguages(repoFullName);
-        contributions.push(transformPR(pr, languages));
+        const repoOwner = match[1];
+        const repoName = match[2];
+        const repoFullName = `${repoOwner}/${repoName}`;
+
+        // Skip excluded organizations
+        if (EXCLUDED_ORGS.includes(repoOwner)) {
+          continue;
+        }
+
+        // Fetch repo details to get stars
+        const repo = await fetchRepoDetails(repoFullName);
+        if (repo) {
+          const languages = await fetchRepoLanguages(repoFullName);
+          contributions.push(transformPR(pr, repo.stargazers_count, languages));
+        }
       }
     }
+
+    // Sort contributions by stars descending
+    contributions.sort((a, b) => b.stars - a.stars);
 
     console.log(`Processed ${contributions.length} contributions`);
 
