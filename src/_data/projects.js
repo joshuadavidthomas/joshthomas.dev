@@ -46,6 +46,13 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 /**
+ * @typedef {Object} PyPIStats
+ * @property {number} lastDay - Downloads in the last day
+ * @property {number} lastWeek - Downloads in the last week
+ * @property {number} lastMonth - Downloads in the last month
+ */
+
+/**
  * @typedef {Object} Project
  * @property {string} type - Type (always 'project')
  * @property {string} name - Project name
@@ -58,6 +65,8 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {number} forks - Number of forks
  * @property {Language[]} languages - Languages used in the project
  * @property {string} updated - Last update date
+ * @property {string|null} pypiPackage - PyPI package name if available
+ * @property {PyPIStats|null} pypiStats - PyPI download statistics
  */
 
 const GITHUB_USERNAME = "joshuadavidthomas";
@@ -154,6 +163,78 @@ async function fetchFromGitHubApi(url) {
 }
 
 /**
+ * Fetch and parse pyproject.toml to get PyPI package name
+ * @async
+ * @param {string} fullName - Repository full name (owner/repo)
+ * @returns {Promise<string|null>} PyPI package name or null if not found
+ */
+async function fetchPyProjectToml(fullName) {
+  const branches = ["main", "master"];
+  
+  for (const branch of branches) {
+    try {
+      const pyprojectUrl = `https://raw.githubusercontent.com/${fullName}/${branch}/pyproject.toml`;
+      const content = await Fetch(pyprojectUrl, {
+        duration: "1d",
+        type: "text",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      });
+
+      // Simple regex to extract name = "package-name" from pyproject.toml
+      const nameMatch = content.match(/^name\s*=\s*"([^"]+)"/m);
+      if (nameMatch) {
+        return nameMatch[1];
+      }
+    } catch (error) {
+      // Continue to next branch or return null
+      continue;
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Fetch PyPI download statistics for a package
+ * @async
+ * @param {string} packageName - PyPI package name
+ * @returns {Promise<PyPIStats|null>} Download statistics or null if not found
+ */
+async function fetchPyPIStats(packageName) {
+  try {
+    const statsUrl = `https://pypistats.org/api/packages/${packageName}/recent`;
+    const data = await Fetch(statsUrl, {
+      duration: "1d",
+      type: "json",
+      fetchOptions: {
+        headers: {
+          "User-Agent": "Eleventy",
+        },
+      },
+    });
+
+    if (data && data.data) {
+      return {
+        lastDay: data.data.last_day || 0,
+        lastWeek: data.data.last_week || 0,
+        lastMonth: data.data.last_month || 0,
+      };
+    }
+  } catch (error) {
+    // Silently ignore 404s (package not on PyPI), but warn on other errors
+    if (!error.message.includes("404")) {
+      console.warn(`Failed to fetch PyPI stats for ${packageName}:`, error.message);
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Fetch languages for a repository
  * @async
  * @param {string} fullName - Repository full name (owner/repo)
@@ -226,6 +307,19 @@ async function fetchOrgProjects(org) {
     }
 
     const languages = await fetchRepoLanguages(repo.full_name);
+    
+    // Check if this is a Python project with a PyPI package
+    let pypiPackage = null;
+    let pypiStats = null;
+    const hasPython = languages.some(lang => lang.name === "Python");
+    
+    if (hasPython) {
+      pypiPackage = await fetchPyProjectToml(repo.full_name);
+      if (pypiPackage) {
+        pypiStats = await fetchPyPIStats(pypiPackage);
+      }
+    }
+    
     orgProjects.push({
       type: "project",
       name: repo.name,
@@ -238,6 +332,8 @@ async function fetchOrgProjects(org) {
       forks: repo.forks_count,
       languages: languages,
       updated: repo.pushed_at,
+      pypiPackage: pypiPackage,
+      pypiStats: pypiStats,
     });
   }
 
@@ -264,6 +360,19 @@ async function fetchUserProjects() {
   const userProjects = [];
   for (const repo of filteredRepos) {
     const languages = await fetchRepoLanguages(repo.full_name);
+    
+    // Check if this is a Python project with a PyPI package
+    let pypiPackage = null;
+    let pypiStats = null;
+    const hasPython = languages.some(lang => lang.name === "Python");
+    
+    if (hasPython) {
+      pypiPackage = await fetchPyProjectToml(repo.full_name);
+      if (pypiPackage) {
+        pypiStats = await fetchPyPIStats(pypiPackage);
+      }
+    }
+    
     userProjects.push({
       type: "project",
       name: repo.name,
@@ -276,6 +385,8 @@ async function fetchUserProjects() {
       forks: repo.forks_count,
       languages: languages,
       updated: repo.pushed_at,
+      pypiPackage: pypiPackage,
+      pypiStats: pypiStats,
     });
   }
 
