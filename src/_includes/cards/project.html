@@ -1,34 +1,40 @@
 <article class="group relative" aria-labelledby="{{ project.name }}">
-  <div class="flex items-center gap-4">
-    <h3 id="{{ project.name }}"
-        class="text-xl/6 sm:text-2xl/7 font-semibold"
-        data-ha-exclude>
-      <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">
-        <span class="absolute inset-0"></span>
-        {{ project.name }}
-      </a>
-    </h3>
-    {% if project.stars !== undefined %}
-      <span class="inline-flex items-center gap-1">
-        <i aria-hidden="true"
-           class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
-        {{ project.stars }}
-        <span class="sr-only">Stars</span>
-      </span>
-    {% endif %}
-    {% if project.forks !== undefined and project.forks > 0 %}
-      <span class="inline-flex items-center gap-1">
-        <i aria-hidden="true"
-           class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
-        {{ project.forks }}
-        <span class="sr-only">Forks</span>
-      </span>
-    {% endif %}
+  <h3 id="{{ project.name }}"
+      class="text-xl/6 sm:text-2xl/7 font-semibold"
+      data-ha-exclude>
+    <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">
+      <span class="absolute inset-0"></span>
+      {{ project.name }}
+    </a>
+  </h3>
+  <div class="mt-1 flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300">
+    <span class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
+      <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
+      {{ project.fullName }}
+    </span>
+    <div class="flex items-center gap-3">
+      {% if project.stars !== undefined %}
+        <span class="inline-flex items-center gap-1">
+          <i aria-hidden="true"
+             class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
+          {{ project.stars }}
+          <span class="sr-only">Stars</span>
+        </span>
+      {% endif %}
+      {% if project.forks !== undefined and project.forks > 0 %}
+        <span class="inline-flex items-center gap-1">
+          <i aria-hidden="true"
+             class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
+          {{ project.forks }}
+          <span class="sr-only">Forks</span>
+        </span>
+      {% endif %}
+    </div>
   </div>
   {% if project.description %}
     <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ project.description }}</p>
   {% endif %}
-  <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+  <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
     {% if project.languages and project.languages.length > 0 %}
       <div class="inline-flex items-center gap-2">
         <span class="sr-only">Languages used in project:</span>
@@ -42,10 +48,10 @@
     {% endif %}
   </div>
   {% if project.topics and project.topics.length > 0 %}
-    <div class="mt-4 flex flex-wrap gap-2">
+    <div class="mt-2 flex flex-wrap gap-2">
       <p class="sr-only">The project is tagged with the following topics:</p>
       {% for topic in project.topics %}
-        <span class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+        <span class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
           {{ topic }}
         </span>
       {% endfor %}
