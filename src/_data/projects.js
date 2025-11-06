@@ -25,6 +25,13 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 /**
+ * @typedef {Object} Language
+ * @property {string} name - Language name
+ * @property {number} bytes - Number of bytes
+ * @property {string} icon - Devicon class name
+ */
+
+/**
  * @typedef {Object} Project
  * @property {string} name - Project name
  * @property {string} description - Project description
@@ -34,12 +41,61 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {boolean} contribution - Whether this is a contribution
  * @property {number} stars - Number of stars
  * @property {number} forks - Number of forks
- * @property {string|null} language - Primary language
+ * @property {Language[]} languages - Languages used in the project
  * @property {string} updated - Last update date
  */
 
 const GITHUB_USERNAME = "joshuadavidthomas";
 const MIN_STARS = 0; // Minimum stars for a repo to be included
+const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
+
+/**
+ * Map language names to devicon class names
+ * @param {string} language - Language name from GitHub
+ * @returns {string} Devicon class name
+ */
+function getDeviconClass(language) {
+  const languageMap = {
+    JavaScript: "devicon-javascript-plain",
+    TypeScript: "devicon-typescript-plain",
+    Python: "devicon-python-plain",
+    Java: "devicon-java-plain",
+    "C++": "devicon-cplusplus-plain",
+    "C#": "devicon-csharp-plain",
+    C: "devicon-c-plain",
+    Go: "devicon-go-plain",
+    Rust: "devicon-rust-plain",
+    Ruby: "devicon-ruby-plain",
+    PHP: "devicon-php-plain",
+    Swift: "devicon-swift-plain",
+    Kotlin: "devicon-kotlin-plain",
+    Dart: "devicon-dart-plain",
+    Scala: "devicon-scala-plain",
+    R: "devicon-r-plain",
+    Shell: "devicon-bash-plain",
+    PowerShell: "devicon-powershell-plain",
+    HTML: "devicon-html5-plain",
+    CSS: "devicon-css3-plain",
+    SCSS: "devicon-sass-plain",
+    Vue: "devicon-vuejs-plain",
+    React: "devicon-react-plain",
+    Angular: "devicon-angularjs-plain",
+    Svelte: "devicon-svelte-plain",
+    Elixir: "devicon-elixir-plain",
+    Erlang: "devicon-erlang-plain",
+    Haskell: "devicon-haskell-plain",
+    Lua: "devicon-lua-plain",
+    Perl: "devicon-perl-plain",
+    Clojure: "devicon-clojure-plain",
+    Docker: "devicon-docker-plain",
+    Vim: "devicon-vim-plain",
+    Markdown: "devicon-markdown-plain",
+    Jupyter: "devicon-jupyter-plain",
+    Nix: "devicon-nixos-plain",
+  };
+
+  return languageMap[language] || "devicon-github-plain";
+}
 
 /**
  * Fetch user's repositories from GitHub
@@ -142,12 +198,56 @@ async function fetchRepoDetails(fullName) {
 }
 
 /**
+ * Fetch languages for a repository
+ * @async
+ * @param {string} fullName - Repository full name (owner/repo)
+ * @returns {Promise<Language[]>} Array of languages sorted by bytes
+ */
+async function fetchRepoLanguages(fullName) {
+  const url = `https://api.github.com/repos/${fullName}/languages`;
+
+  const options = {
+    duration: "1d",
+    type: "json",
+    fetchOptions: {
+      headers: {
+        "User-Agent": "Eleventy",
+      },
+    },
+  };
+
+  if (process.env.GITHUB_TOKEN) {
+    options.fetchOptions.headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+
+  try {
+    const languagesData = await Fetch(url, options);
+
+    // Convert object to array and sort by bytes descending
+    const languages = Object.entries(languagesData)
+      .map(([name, bytes]) => ({
+        name,
+        bytes,
+        icon: getDeviconClass(name),
+      }))
+      .sort((a, b) => b.bytes - a.bytes)
+      .slice(0, MAX_LANGUAGES);
+
+    return languages;
+  } catch (error) {
+    console.warn(`Failed to fetch languages for ${fullName}:`, error.message);
+    return [];
+  }
+}
+
+/**
  * Transform GitHub repo data to project format
  * @param {GitHubRepo} repo - GitHub repository data
+ * @param {Language[]} languages - Languages used in the repo
  * @param {boolean} isContribution - Whether this is a contribution
  * @returns {Project} Transformed project data
  */
-function transformRepo(repo, isContribution = false) {
+function transformRepo(repo, languages = [], isContribution = false) {
   return {
     name: repo.name,
     description: repo.description || "No description available",
@@ -157,7 +257,7 @@ function transformRepo(repo, isContribution = false) {
     contribution: isContribution,
     stars: repo.stargazers_count,
     forks: repo.forks_count,
-    language: repo.language,
+    languages: languages,
     updated: repo.pushed_at,
   };
 }
@@ -175,10 +275,19 @@ export default async function () {
     const userRepos = await fetchUserRepos();
 
     // Filter user repos: not forks, have stars >= MIN_STARS
-    const ownProjects = userRepos
-      .filter((repo) => !repo.fork && repo.stargazers_count >= MIN_STARS)
-      .map((repo) => transformRepo(repo, false))
-      .sort((a, b) => b.stars - a.stars); // Sort by stars descending
+    const filteredRepos = userRepos.filter(
+      (repo) => !repo.fork && repo.stargazers_count >= MIN_STARS
+    );
+
+    // Fetch languages for each user repo
+    const ownProjects = [];
+    for (const repo of filteredRepos) {
+      const languages = await fetchRepoLanguages(repo.full_name);
+      ownProjects.push(transformRepo(repo, languages, false));
+    }
+
+    // Sort by stars descending
+    ownProjects.sort((a, b) => b.stars - a.stars);
 
     console.log(`Found ${ownProjects.length} own projects`);
 
@@ -191,7 +300,8 @@ export default async function () {
     for (const repoName of contributedRepoNames.slice(0, 10)) {
       const repo = await fetchRepoDetails(repoName);
       if (repo) {
-        contributionDetails.push(transformRepo(repo, true));
+        const languages = await fetchRepoLanguages(repoName);
+        contributionDetails.push(transformRepo(repo, languages, true));
       }
     }
 
