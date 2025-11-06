@@ -59,11 +59,12 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 const GITHUB_USERNAME = "joshuadavidthomas";
-const MIN_STARS = 3; // Minimum stars for a repo to be included
+const MIN_STARS = 4; // Minimum stars for a repo to be included
 const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
 const MAX_PRS_TO_FETCH = 100; // Maximum number of PRs to fetch from GitHub
 const MAX_CONTRIBUTIONS = 10; // Maximum number of PR contributions to display
 const EXCLUDED_ORGS = ["westerveltco"]; // Organizations to exclude from contributions
+const EXCLUDED_REPOS = ["neovim/nvim-lspconfig", "zed-industries/extensions"]; // Repositories to exclude from contributions
 
 /**
  * Map language names to devicon class names
@@ -234,6 +235,10 @@ async function fetchUserContributions() {
       const repoFullName = `${repoOwner}/${repoName}`;
 
       if (EXCLUDED_ORGS.includes(repoOwner)) {
+        return null;
+      }
+
+      if (EXCLUDED_REPOS.includes(repoFullName)) {
         return null;
       }
 
