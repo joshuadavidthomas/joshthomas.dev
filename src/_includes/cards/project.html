@@ -9,70 +9,74 @@
       {{ project.name }}
     </a>
   </h3>
-  <div class="mt-2 flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300">
-    <a href="{{ project.url }}"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
-      <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
-      {{ project.fullName }}
-    </a>
-    <div class="flex items-center gap-3">
-      {% if project.stars !== undefined %}
-        <span class="inline-flex items-center gap-1">
-          <i aria-hidden="true"
-             class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
-          {{ project.stars }}
-          <span class="sr-only">Stars</span>
-        </span>
-      {% endif %}
-      {% if project.forks !== undefined and project.forks > 0 %}
-        <span class="inline-flex items-center gap-1">
-          <i aria-hidden="true"
-             class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
-          {{ project.forks }}
-          <span class="sr-only">Forks</span>
-        </span>
+  <div class="flex mt-2">
+    <div class="relative z-10 flex flex-col gap-1">
+      <div class="flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300">
+        <a href="{{ project.url }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
+          <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
+          {{ project.fullName }}
+        </a>
+        <div class="flex items-center gap-3">
+          {% if project.stars !== undefined %}
+            <span class="inline-flex items-center gap-1">
+              <i aria-hidden="true"
+                 class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
+              {{ project.stars }}
+              <span class="sr-only">Stars</span>
+            </span>
+          {% endif %}
+          {% if project.forks !== undefined and project.forks > 0 %}
+            <span class="inline-flex items-center gap-1">
+              <i aria-hidden="true"
+                 class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
+              {{ project.forks }}
+              <span class="sr-only">Forks</span>
+            </span>
+          {% endif %}
+        </div>
+      </div>
+      {% if project.pypiStats and project.pypiPackage %}
+        <div class="flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300">
+          <a href="https://pypi.org/project/{{ project.pypiPackage }}/"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="group/pypi no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
+            <i aria-hidden="true" class="devicon-pypi-plain colored size-3"></i>
+            <span class="group-hover/pypi:underline decoration-(--color-hover)">{{ project.pypiPackage }}</span>
+          </a>
+          <div class="flex items-center gap-3">
+            <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.pypiStats.lastDay | formatNumber }}/day
+            </a>
+            <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.pypiStats.lastWeek | formatNumber }}/week
+            </a>
+            <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.pypiStats.lastMonth | formatNumber }}/month
+            </a>
+          </div>
+        </div>
       {% endif %}
     </div>
   </div>
-  {% if project.pypiStats and project.pypiPackage %}
-    <div class="mt-1 flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300">
-      <a href="https://pypi.org/project/{{ project.pypiPackage }}/"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="group/pypi relative no-underline inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
-        <i aria-hidden="true" class="devicon-pypi-plain colored size-3"></i>
-        <span class="group-hover/pypi:underline decoration-(--color-hover)">{{ project.pypiPackage }}</span>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
-          <i aria-hidden="true"
-             class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
-          {{ project.pypiStats.lastDay | formatNumber }}/day
-        </a>
-        <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
-          <i aria-hidden="true"
-             class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
-          {{ project.pypiStats.lastWeek | formatNumber }}/week
-        </a>
-        <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
-          <i aria-hidden="true"
-             class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
-          {{ project.pypiStats.lastMonth | formatNumber }}/month
-        </a>
-      </div>
-    </div>
-  {% endif %}
   {% if project.description %}
     <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">{{ project.description }}</p>
   {% endif %}
