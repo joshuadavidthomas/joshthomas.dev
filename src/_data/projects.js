@@ -67,6 +67,7 @@ import Fetch from "@11ty/eleventy-fetch";
 const GITHUB_USERNAME = "joshuadavidthomas";
 const MIN_STARS = 3; // Minimum stars for a repo to be included
 const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
+const MAX_PRS_TO_FETCH = 100; // Maximum number of PRs to fetch from GitHub
 const MAX_CONTRIBUTIONS = 10; // Maximum number of PR contributions to display
 const EXCLUDED_ORGS = ["westerveltco"]; // Organizations to exclude from contributions
 
@@ -150,7 +151,7 @@ async function fetchUserRepos() {
  * @returns {Promise<GitHubPR[]>} Array of pull request details
  */
 async function fetchContributedPRs() {
-  const url = `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_CONTRIBUTIONS}`;
+  const url = `https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_PRS_TO_FETCH}`;
 
   const options = {
     duration: "1d",
@@ -357,13 +358,16 @@ export default async function () {
       }
     }
 
-    // Sort contributions by stars descending
+    // Sort contributions by stars descending and limit to MAX_CONTRIBUTIONS
     contributions.sort((a, b) => b.stars - a.stars);
+    const topContributions = contributions.slice(0, MAX_CONTRIBUTIONS);
 
-    console.log(`Processed ${contributions.length} contributions`);
+    console.log(
+      `Processed ${contributions.length} contributions, showing top ${topContributions.length}`
+    );
 
     // Combine both lists
-    return [...ownProjects, ...contributions];
+    return [...ownProjects, ...topContributions];
   } catch (error) {
     console.error("Error fetching GitHub projects:", error);
     // Return fallback data in case of error
