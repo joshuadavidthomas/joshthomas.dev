@@ -69,6 +69,19 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {PyPIStats|null} pypiStats - PyPI download statistics
  */
 
+/**
+ * @typedef {Object} ComprehensiveStats
+ * @property {number} totalRepos - Total number of repositories (excluding forks)
+ * @property {number} totalStars - Total stars across all repositories
+ * @property {number} totalForks - Total forks across all repositories
+ */
+
+/**
+ * @typedef {Object} ProjectsData
+ * @property {Array<Project|PRContribution>} items - Array of projects and contributions
+ * @property {ComprehensiveStats} stats - Comprehensive stats across all repos
+ */
+
 const GITHUB_USERNAME = "joshuadavidthomas";
 const MIN_STARS = 4; // Minimum stars for a repo to be included
 const MAX_LANGUAGES = 4; // Maximum number of languages to display per project
@@ -425,6 +438,36 @@ async function fetchProjects() {
 }
 
 /**
+ * Fetch comprehensive statistics across all user repositories
+ * @async
+ * @returns {Promise<ComprehensiveStats>} Stats object with totals
+ */
+async function fetchComprehensiveStats() {
+  console.log("Fetching comprehensive GitHub stats...");
+
+  const allUserRepos = await fetchFromGitHubApi(
+    `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`,
+  );
+
+  const originalRepos = allUserRepos.filter((repo) => !repo.fork);
+
+  const stats = {
+    totalRepos: originalRepos.length,
+    totalStars: originalRepos.reduce(
+      (sum, repo) => sum + repo.stargazers_count,
+      0,
+    ),
+    totalForks: originalRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
+  };
+
+  console.log(
+    `OG Stats: ${stats.totalRepos} repos, ${stats.totalStars} stars, ${stats.totalForks} forks`,
+  );
+
+  return stats;
+}
+
+/**
  * Fetch and transform user's contributions to other repositories
  * @async
  * @returns {Promise<PRContribution[]>} Array of PR contribution objects
@@ -480,24 +523,11 @@ async function fetchContributions() {
 /**
  * Main function to fetch and combine project data
  * @async
- * @returns {Promise<Object>} Object with items array and stats object
+ * @returns {Promise<ProjectsData>} Object with items array and stats object
  */
 export default async function () {
   try {
-    // Fetch comprehensive stats from ALL user repos (unfiltered)
-    console.log("Fetching comprehensive GitHub stats...");
-    const allUserRepos = await fetchFromGitHubApi(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`,
-    );
-    const originalRepos = allUserRepos.filter((repo) => !repo.fork);
-    const stats = {
-      totalRepos: originalRepos.length,
-      totalStars: originalRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
-      totalForks: originalRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
-    };
-    console.log(`OG Stats: ${stats.totalRepos} repos, ${stats.totalStars} stars, ${stats.totalForks} forks`);
-
-    // Fetch filtered projects and contributions for display
+    const stats = await fetchComprehensiveStats();
     const projects = await fetchProjects();
     const contributions = await fetchContributions();
     const items = [...projects, ...contributions];
