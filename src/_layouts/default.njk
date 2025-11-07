@@ -39,7 +39,7 @@ layout: base
   <script src="/static/js/heading-anchors.js" type="module"></script>
 {%- endjs %}
 <heading-anchors class="grid-layout px-2">
-  <header class="flex justify-between items-baseline">
+  <header class="flex flex-col xs:flex-row gap-y-2 justify-between items-baseline">
     <div>
       <h1 class="text-2xl">
         <a href="/">Josh Thomas</a>
@@ -55,30 +55,33 @@ layout: base
         {%- endfor %}
       </nav>
     </div>
-    <nav class="flex items-center gap-2" aria-labelledby="social-nav">
+    <nav class="mt-2 xs:mt-0 order-first xs:order-none w-full flex items-center justify-between xs:justify-end gap-2"
+         aria-labelledby="social-nav">
       <h2 id="social-nav" class="sr-only" data-ha-exclude>Social media</h2>
-      {%- for item in site.social %}
-        {%- set socialId = item.title | slugify -%}
-        <a href="{{ item.url }}"
-           target="_blank"
-           rel="noopener noreferrer"
-           aria-labelledby="{{ socialId }}-link">
-          <span id="{{ socialId }}-link" class="sr-only">{{ item.title }}</span>
-          {{ item.icon | safe }}
-        </a>
-      {%- endfor %}
+      <div class="flex items-center gap-2">
+        {%- for item in site.social %}
+          {%- set socialId = item.title | slugify -%}
+          <a href="{{ item.url }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-labelledby="{{ socialId }}-link">
+            <span id="{{ socialId }}-link" class="sr-only">{{ item.title }}</span>
+            {{ item.icon | safe }}
+          </a>
+        {%- endfor %}
+      </div>
       <button id="theme-toggle"
               type="button"
               class="ml-4 cursor-pointer"
               title="Toggle theme"
               aria-label="Toggle theme">
-        <i class="fa-solid fa-sun size-4 xs:size-6 hover:text-[#FF8C00] hidden opacity-100"
+        <i class="fa-solid fa-sun size-4 hover:text-[#FF8C00] hidden opacity-100"
            aria-hidden="true"
            data-theme-state="light"></i>
-        <i class="fa-solid fa-moon size-4 xs:size-6 hover:text-[#F1C40F] hidden opacity-100"
+        <i class="fa-solid fa-moon size-4 hover:text-[#F1C40F] hidden opacity-100"
            aria-hidden="true"
            data-theme-state="dark"></i>
-        <i class="fa-solid fa-desktop size-4 xs:size-6 hover:text-[#3498DB] hidden opacity-100"
+        <i class="fa-solid fa-desktop size-4 hover:text-[#3498DB] hidden opacity-100"
            aria-hidden="true"
            data-theme-state="auto"></i>
       </button>
@@ -86,7 +89,7 @@ layout: base
         (function() {
           const stored = localStorage.getItem('theme');
           const state = stored === 'light' ? 'light' : stored === 'dark' ? 'dark' : 'auto';
-          
+
           const activeIcon = document.querySelector(`[data-theme-state="${state}"]`);
           if (activeIcon) {
             activeIcon.classList.remove('hidden');
