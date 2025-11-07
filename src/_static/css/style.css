@@ -2,6 +2,29 @@
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+/* Theme toggle animations */
+@media (prefers-reduced-motion: no-preference) {
+  #theme-toggle {
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  #theme-toggle.rotating {
+    transform: rotate(10deg);
+  }
+  
+  [data-theme-state] {
+    transition: opacity 200ms ease-in-out;
+  }
+}
+
+/* For reduced motion preference, no animations */
+@media (prefers-reduced-motion: reduce) {
+  #theme-toggle,
+  [data-theme-state] {
+    transition: none !important;
+  }
+}
+
 @import "./code.css";
 @import "./colors.css";
 @import "./layout.css";

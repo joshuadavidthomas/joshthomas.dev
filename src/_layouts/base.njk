@@ -88,28 +88,59 @@
           return 'light';
         }
 
-        function updateThemeButton(state) {
+        function updateThemeButton(state, animate = true) {
           const button = document.getElementById('theme-toggle');
           if (!button) return;
 
           const appliedTheme = state === 'auto' ? getSystemTheme() : state;
 
-          document.querySelectorAll('[data-theme-state]').forEach(icon => {
-            icon.classList.add('hidden');
-          });
-
-          const activeIcon = document.querySelector(`[data-theme-state="${state}"]`);
-          if (activeIcon) {
-            activeIcon.classList.remove('hidden');
+          if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            button.classList.add('rotating');
+            
+            const currentIcon = button.querySelector('[data-theme-state]:not(.hidden)');
+            if (currentIcon) {
+              currentIcon.style.opacity = '0';
+            }
+            
+            setTimeout(() => {
+              document.querySelectorAll('[data-theme-state]').forEach(icon => {
+                icon.classList.add('hidden');
+                icon.style.opacity = '0';
+              });
+              
+              const activeIcon = document.querySelector(`[data-theme-state="${state}"]`);
+              if (activeIcon) {
+                activeIcon.classList.remove('hidden');
+                activeIcon.style.transition = 'opacity 300ms ease-in-out';
+                void activeIcon.offsetWidth;
+                activeIcon.style.opacity = '1';
+              }
+              
+              setTimeout(() => {
+                button.classList.remove('rotating');
+              }, 100);
+            }, 200);
+          } else {
+            document.querySelectorAll('[data-theme-state]').forEach(icon => {
+              icon.classList.add('hidden');
+              icon.style.opacity = '1';
+            });
+            
+            const activeIcon = document.querySelector(`[data-theme-state="${state}"]`);
+            if (activeIcon) {
+              activeIcon.classList.remove('hidden');
+              activeIcon.style.opacity = '1';
+            }
           }
 
           const labels = {
-            light: 'Theme: Light. Click to switch to dark mode',
-            dark: 'Theme: Dark. Click to use system theme',
-            auto: `Theme: Auto (currently ${appliedTheme}). Click to switch to light mode`
+            light: 'Theme: Light. Click to switch to dark mode.',
+            dark: 'Theme: Dark. Click to use system theme.',
+            auto: `Theme: Auto (currently ${appliedTheme}). Click to switch to light mode.`
           };
 
           button.setAttribute('aria-label', labels[state]);
+          button.setAttribute('title', labels[state]);
         }
 
         const initialState = getCurrentState();
@@ -117,7 +148,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
           const currentState = getCurrentState();
-          updateThemeButton(currentState);
+          updateThemeButton(currentState, false);
 
           const button = document.getElementById('theme-toggle');
           if (button) {
@@ -125,7 +156,7 @@
               const currentState = getCurrentState();
               const nextState = getNextState(currentState);
               persistTheme(nextState);
-              updateThemeButton(nextState);
+              updateThemeButton(nextState, true);
             });
           }
 
@@ -133,7 +164,7 @@
             if (getCurrentState() === 'auto') {
               const newTheme = e.matches ? 'dark' : 'light';
               applyTheme(newTheme);
-              updateThemeButton('auto');
+              updateThemeButton('auto', false);
             }
           });
         });
