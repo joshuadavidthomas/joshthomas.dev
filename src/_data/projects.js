@@ -480,15 +480,31 @@ async function fetchContributions() {
 /**
  * Main function to fetch and combine project data
  * @async
- * @returns {Promise<Array<Project|PRContribution>>} Array of projects and contributions
+ * @returns {Promise<Object>} Object with items array and stats object
  */
 export default async function () {
   try {
+    // Fetch comprehensive stats from ALL user repos (unfiltered)
+    console.log("Fetching comprehensive GitHub stats...");
+    const allUserRepos = await fetchFromGitHubApi(
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`,
+    );
+    const originalRepos = allUserRepos.filter((repo) => !repo.fork);
+    const stats = {
+      totalRepos: originalRepos.length,
+      totalStars: originalRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
+      totalForks: originalRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
+    };
+    console.log(`OG Stats: ${stats.totalRepos} repos, ${stats.totalStars} stars, ${stats.totalForks} forks`);
+
+    // Fetch filtered projects and contributions for display
     const projects = await fetchProjects();
     const contributions = await fetchContributions();
-    return [...projects, ...contributions];
+    const items = [...projects, ...contributions];
+
+    return { items, stats };
   } catch (error) {
     console.error("Error fetching GitHub projects:", error);
-    return [];
+    return { items: [], stats: { totalRepos: 0, totalStars: 0, totalForks: 0 } };
   }
 }

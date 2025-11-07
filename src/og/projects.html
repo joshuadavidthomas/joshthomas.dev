@@ -3,7 +3,7 @@ layout: base
 permalink: "/og/projects/"
 ---
 
-{%- set myProjects = projects | filterByKey("type", "project") -%}
+{%- set myProjects = projects.items | filterByKey("type", "project") -%}
 {%- set totalPyPIDownloads = 0 -%}
 
 {%- for project in myProjects -%}
@@ -30,15 +30,15 @@ permalink: "/og/projects/"
     <div class="flex gap-12 text-3xl mt-4">
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-code-branch size-8"></i>
-        <span>{{ ogStats.totalRepos }}</span>
+        <span>{{ projects.stats.totalRepos }}</span>
       </div>
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-star size-8 text-yellow-400 dark:text-yellow-300"></i>
-        <span>{{ ogStats.totalStars }}</span>
+        <span>{{ projects.stats.totalStars }}</span>
       </div>
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-code-fork size-8 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
-        <span>{{ ogStats.totalForks }}</span>
+        <span>{{ projects.stats.totalForks }}</span>
       </div>
       {%- if totalPyPIDownloads > 0 -%}
       <div class="flex items-center gap-3">
