@@ -1,4 +1,8 @@
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
   .grid-layout {
     display: grid;
     grid-template:
