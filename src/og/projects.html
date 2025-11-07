@@ -1,0 +1,55 @@
+---
+layout: base
+permalink: "/og/projects/"
+---
+
+{%- set myProjects = projects.items | filterByKey("type", "project") -%}
+{%- set totalPyPIDownloads = 0 -%}
+
+{%- for project in myProjects -%}
+  {%- if project.pypiStats -%}
+    {%- set totalPyPIDownloads = totalPyPIDownloads + project.pypiStats.lastMonth -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div class="grid grid-rows-[min-content_1fr_min-content] gap-6 py-8 px-12 relative min-h-screen bg-tokyonight-moon-bg-dark1 text-tokyonight-moon-white">
+  <div class="flex items-center gap-8">
+    <img src="../../public/static/images/me.png"
+         width="250"
+         height="250"
+         alt="A picture of Josh"
+         fetchpriority="high"
+         class="size-24 rounded-full drop-shadow-md" />
+    <p class="text-4xl font-medium font-brico">{{ site.author }}</p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <h1 class="text-8xl">Projects</h1>
+    <p class="text-4xl">Open source projects I've built and shared</p>
+
+    <div class="flex gap-12 text-3xl mt-4">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-code-branch size-8"></i>
+        <span>{{ projects.stats.totalRepos }}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-star size-8 text-yellow-400 dark:text-yellow-300"></i>
+        <span>{{ projects.stats.totalStars }}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-code-fork size-8 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
+        <span>{{ projects.stats.totalForks }}</span>
+      </div>
+      {%- if totalPyPIDownloads > 0 -%}
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-download size-8 text-gray-500 dark:text-gray-400"></i>
+        <span>{{ (totalPyPIDownloads / 1000) | round(1) }}k</span>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end text-4xl font-light">
+    <p class="font-brico">{{ site.title }}</p>
+  </div>
+</div>

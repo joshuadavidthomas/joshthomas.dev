@@ -8,7 +8,7 @@ tags:
 ---
 
 <div class="space-y-16">
-  {% set myProjects = projects | filterByKey("type", "project") %}
+  {% set myProjects = projects.items | filterByKey("type", "project") %}
   {% if myProjects.length > 0 %}
     <section aria-labelledby="projects">
       <h2 id="projects" class="sr-only" data-ha-exclude>Projects</h2>
@@ -35,7 +35,7 @@ tags:
       </div>
     </section>
   {% endif %}
-  {% set contributions = projects | filterByKey("type", "pr") %}
+  {% set contributions = projects.items | filterByKey("type", "pr") %}
   {% if contributions.length > 0 %}
     <hr aria-hidden="true"
         class="w-24 mx-auto text-gray-300 dark:text-white/15" />
