@@ -33,20 +33,20 @@ permalink: "/og/projects/"
 
     <div class="flex gap-12 text-3xl mt-4">
       <div class="flex items-center gap-3">
-        <i class="fa-solid fa-code-branch"></i>
+        <i class="fa-solid fa-code-branch size-8"></i>
         <span>{{ myProjects.length }}</span>
       </div>
       <div class="flex items-center gap-3">
-        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star size-8"></i>
         <span>{{ totalStars }}</span>
       </div>
       <div class="flex items-center gap-3">
-        <i class="fa-solid fa-code-fork"></i>
+        <i class="fa-solid fa-code-fork size-8"></i>
         <span>{{ totalForks }}</span>
       </div>
       {%- if totalPyPIDownloads > 0 -%}
       <div class="flex items-center gap-3">
-        <i class="fa-solid fa-download"></i>
+        <i class="fa-solid fa-download size-8"></i>
         <span>{{ (totalPyPIDownloads / 1000) | round(1) }}k</span>
       </div>
       {%- endif -%}
