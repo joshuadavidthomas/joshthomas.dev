@@ -1,0 +1,59 @@
+---
+layout: base
+permalink: "/og/projects/"
+---
+
+{%- set myProjects = projects | filterByKey("type", "project") -%}
+{%- set totalStars = 0 -%}
+{%- set totalForks = 0 -%}
+{%- set totalPyPIDownloads = 0 -%}
+
+{%- for project in myProjects -%}
+  {%- set totalStars = totalStars + project.stars -%}
+  {%- set totalForks = totalForks + project.forks -%}
+  {%- if project.pypiStats -%}
+    {%- set totalPyPIDownloads = totalPyPIDownloads + project.pypiStats.lastMonth -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div class="grid grid-rows-[min-content_1fr_min-content] gap-6 py-8 px-12 relative min-h-screen bg-tokyonight-moon-bg-dark1 text-tokyonight-moon-white">
+  <div class="flex items-center gap-8">
+    <img src="../../public/static/images/me.png"
+         width="250"
+         height="250"
+         alt="A picture of Josh"
+         fetchpriority="high"
+         class="size-24 rounded-full drop-shadow-md" />
+    <p class="text-4xl font-medium font-brico">{{ site.author }}</p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <h1 class="text-8xl">Projects</h1>
+    <p class="text-4xl">Open source projects I've built and shared</p>
+
+    <div class="flex gap-12 text-3xl mt-4">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-code-branch"></i>
+        <span>{{ myProjects.length }}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-star"></i>
+        <span>{{ totalStars }}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-code-fork"></i>
+        <span>{{ totalForks }}</span>
+      </div>
+      {%- if totalPyPIDownloads > 0 -%}
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-download"></i>
+        <span>{{ (totalPyPIDownloads / 1000) | round(1) }}k</span>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end text-4xl font-light">
+    <p class="font-brico">{{ site.title }}</p>
+  </div>
+</div>
