@@ -12,7 +12,7 @@
     <link rel="canonical" href="{{ absolutePageUrl }}">
     <meta property="og:title"
           content="{%- if title -%}{{ title }} - {{ site.title }}{%- else -%}{{ site.title }}{%- endif -%}">
-    {%- set ogImageUrl %}https://screenshot.11ty.app/{{ (site.url + '/og' + page.url + '?updatedAt=' + updatedAt.getTime()) | urlencode }}/opengraph/{% endset %}
+    {%- set ogImageUrl %}https://screenshot.11ty.app/{{ ( site.url + '/og' + page.url + '?updatedAt=' + updatedAt.getTime() ) | urlencode }}/opengraph/{% endset %}
     <meta property="og:image" content="{{ ogImageUrl }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ site.title }}">
@@ -48,6 +48,12 @@
     {% endcss %}
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/devicon/devicon.min.css">
+    {%- headJs %}
+      {% include "../../public/static/js/theme.js" %}
+    {% endheadJs %}
+    {# djlint: off #}
+    <script>{% getBundle "headJs" %}</script>
+    {# djlint: on #}
     <script data-goatcounter="https://joshthomasdev.goatcounter.com/count"
             async
             src="//gc.zgo.at/count.js"></script>

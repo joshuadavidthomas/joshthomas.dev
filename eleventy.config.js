@@ -1,5 +1,5 @@
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import EleventyPluginNavigation from "@11ty/eleventy-navigation";
 import EleventyPluginRss from "@11ty/eleventy-plugin-rss";
@@ -17,7 +17,7 @@ export default function (eleventyConfig) {
   eleventyConfig.setServerPassthroughCopyBehavior("copy");
 
   eleventyConfig
-    .addPassthroughCopy({ "public": "/" })
+    .addPassthroughCopy({ public: "/" })
     .addPassthroughCopy({
       "node_modules/@zachleat/heading-anchors/heading-anchors.js": `static/js/heading-anchors.js`,
     })
@@ -29,6 +29,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addBundle("css");
   eleventyConfig.addBundle("html");
   eleventyConfig.addBundle("js");
+  eleventyConfig.addBundle("headJs");
 
   eleventyConfig.addPlugin(EleventyPluginAutoPreload);
   eleventyConfig.addPlugin(EleventyPluginFontAwesome);
@@ -81,11 +82,14 @@ export default function (eleventyConfig) {
 
   eleventyConfig.on("eleventy.after", () => {
     const cacheDir = ".cache/@11ty/img/";
-    const outputDir = path.join(eleventyConfig.directories.output, "/static/img/");
-    
+    const outputDir = path.join(
+      eleventyConfig.directories.output,
+      "/static/img/",
+    );
+
     if (fs.existsSync(cacheDir)) {
       fs.cpSync(cacheDir, outputDir, {
-        recursive: true
+        recursive: true,
       });
     }
   });

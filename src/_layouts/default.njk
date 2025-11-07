@@ -67,6 +67,32 @@ layout: base
           {{ item.icon | safe }}
         </a>
       {%- endfor %}
+      <button id="theme-toggle"
+              type="button"
+              class="ml-4 cursor-pointer"
+              title="Toggle theme"
+              aria-label="Toggle theme">
+        <i class="fa-solid fa-sun size-4 xs:size-6 hover:text-[#FF8C00] hidden opacity-100"
+           aria-hidden="true"
+           data-theme-state="light"></i>
+        <i class="fa-solid fa-moon size-4 xs:size-6 hover:text-[#F1C40F] hidden opacity-100"
+           aria-hidden="true"
+           data-theme-state="dark"></i>
+        <i class="fa-solid fa-desktop size-4 xs:size-6 hover:text-[#3498DB] hidden opacity-100"
+           aria-hidden="true"
+           data-theme-state="auto"></i>
+      </button>
+      <script>
+        (function() {
+          const stored = localStorage.getItem('theme');
+          const state = stored === 'light' ? 'light' : stored === 'dark' ? 'dark' : 'auto';
+          
+          const activeIcon = document.querySelector(`[data-theme-state="${state}"]`);
+          if (activeIcon) {
+            activeIcon.classList.remove('hidden');
+          }
+        })();
+      </script>
     </nav>
   </header>
   <main id="skip"{%- if class.main -%} class="{{ class.main }}"{%- endif -%}>

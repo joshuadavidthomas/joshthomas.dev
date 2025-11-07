@@ -1,6 +1,6 @@
 blank_line_after_tag = ""
 blank_line_before_tag = ""
-custom_blocks = "css,html,js"
+custom_blocks = "css,headJs,html,js"
 custom_html = "author,content,entry,feed,heading-anchors,url"
 format_css = true
 format_js = true
