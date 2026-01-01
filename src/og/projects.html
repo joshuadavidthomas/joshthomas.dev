@@ -5,12 +5,17 @@ permalink: "/og/projects/"
 
 {%- set myProjects = projects.items | filterByKey("type", "project") -%}
 {%- set totalPyPIDownloads = 0 -%}
+{%- set totalNPMDownloads = 0 -%}
 
 {%- for project in myProjects -%}
   {%- if project.pypiStats -%}
     {%- set totalPyPIDownloads = totalPyPIDownloads + project.pypiStats.lastMonth -%}
   {%- endif -%}
+  {%- if project.npmStats -%}
+    {%- set totalNPMDownloads = totalNPMDownloads + project.npmStats.lastMonth -%}
+  {%- endif -%}
 {%- endfor -%}
+{%- set totalDownloads = totalPyPIDownloads + totalNPMDownloads -%}
 
 <div class="grid grid-rows-[min-content_1fr_min-content] gap-6 py-8 px-12 relative min-h-screen bg-tokyonight-moon-bg-dark1 text-tokyonight-moon-white">
   <div class="flex items-center gap-8">
@@ -40,10 +45,10 @@ permalink: "/og/projects/"
         <i class="fa-solid fa-code-fork size-8 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
         <span>{{ projects.stats.totalForks }}</span>
       </div>
-      {%- if totalPyPIDownloads > 0 -%}
+      {%- if totalDownloads > 0 -%}
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-download size-8 text-gray-500 dark:text-gray-400"></i>
-        <span>{{ (totalPyPIDownloads / 1000) | round(1) }}k</span>
+        <span>{{ (totalDownloads / 1000) | round(1) }}k</span>
       </div>
       {%- endif -%}
     </div>
