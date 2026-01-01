@@ -75,6 +75,43 @@
           </div>
         </div>
       {% endif %}
+      {% if project.npmStats and project.npmPackage %}
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
+          <a href="https://www.npmjs.com/package/{{ project.npmPackage }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="group/npm no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
+            <i aria-hidden="true" class="devicon-npm-original-wordmark colored size-3"></i>
+            <span class="group-hover/npm:underline decoration-(--color-hover)">{{ project.npmPackage }}</span>
+          </a>
+          <div class="flex items-center gap-3">
+            <a href="https://npmtrends.com/{{ project.npmPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.npmStats.lastDay | formatNumber }}/day
+            </a>
+            <a href="https://npmtrends.com/{{ project.npmPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.npmStats.lastWeek | formatNumber }}/week
+            </a>
+            <a href="https://npmtrends.com/{{ project.npmPackage }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
+              <i aria-hidden="true"
+                 class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
+              {{ project.npmStats.lastMonth | formatNumber }}/month
+            </a>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
   {% if project.description %}

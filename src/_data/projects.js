@@ -53,6 +53,13 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 /**
+ * @typedef {Object} NPMStats
+ * @property {number} lastDay - Downloads in the last day
+ * @property {number} lastWeek - Downloads in the last week
+ * @property {number} lastMonth - Downloads in the last month
+ */
+
+/**
  * @typedef {Object} Project
  * @property {string} type - Type (always 'project')
  * @property {string} name - Project name
@@ -67,6 +74,8 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string} updated - Last update date
  * @property {string|null} pypiPackage - PyPI package name if available
  * @property {PyPIStats|null} pypiStats - PyPI download statistics
+ * @property {string|null} npmPackage - npm package name if available
+ * @property {NPMStats|null} npmStats - npm download statistics
  */
 
 /**
@@ -243,7 +252,99 @@ async function fetchPyPIStats(packageName) {
       console.warn(`Failed to fetch PyPI stats for ${packageName}:`, error.message);
     }
   }
-  
+
+  return null;
+}
+
+/**
+ * Fetch and parse package.json to get npm package name
+ * @async
+ * @param {string} fullName - Repository full name (owner/repo)
+ * @returns {Promise<string|null>} npm package name or null if not found/private
+ */
+async function fetchPackageJson(fullName) {
+  const branches = ["main", "master"];
+
+  for (const branch of branches) {
+    try {
+      const packageJsonUrl = `https://raw.githubusercontent.com/${fullName}/${branch}/package.json`;
+      const content = await Fetch(packageJsonUrl, {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      });
+
+      // Only return if package has a name and is not private
+      if (content && content.name && !content.private) {
+        return content.name;
+      }
+    } catch (error) {
+      // Continue to next branch or return null
+      continue;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Fetch npm download statistics for a package
+ * @async
+ * @param {string} packageName - npm package name
+ * @returns {Promise<NPMStats|null>} Download statistics or null if not found
+ */
+async function fetchNPMStats(packageName) {
+  try {
+    // npm API requires URL encoding for scoped packages (@org/package)
+    const encodedName = encodeURIComponent(packageName);
+
+    // Fetch all three time periods in parallel
+    const [lastDayData, lastWeekData, lastMonthData] = await Promise.all([
+      Fetch(`https://api.npmjs.org/downloads/point/last-day/${encodedName}`, {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      }),
+      Fetch(`https://api.npmjs.org/downloads/point/last-week/${encodedName}`, {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      }),
+      Fetch(`https://api.npmjs.org/downloads/point/last-month/${encodedName}`, {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      }),
+    ]);
+
+    return {
+      lastDay: lastDayData?.downloads || 0,
+      lastWeek: lastWeekData?.downloads || 0,
+      lastMonth: lastMonthData?.downloads || 0,
+    };
+  } catch (error) {
+    // Silently ignore 404s (package not on npm), but warn on other errors
+    if (!error.message.includes("404")) {
+      console.warn(`Failed to fetch npm stats for ${packageName}:`, error.message);
+    }
+  }
+
   return null;
 }
 
@@ -320,19 +421,33 @@ async function fetchOrgProjects(org) {
     }
 
     const languages = await fetchRepoLanguages(repo.full_name);
-    
+
     // Check if this is a Python project with a PyPI package
     let pypiPackage = null;
     let pypiStats = null;
-    const hasPython = languages.some(lang => lang.name === "Python");
-    
+    const hasPython = languages.some((lang) => lang.name === "Python");
+
     if (hasPython) {
       pypiPackage = await fetchPyProjectToml(repo.full_name);
       if (pypiPackage) {
         pypiStats = await fetchPyPIStats(pypiPackage);
       }
     }
-    
+
+    // Check if this is a JavaScript/TypeScript project with an npm package
+    let npmPackage = null;
+    let npmStats = null;
+    const hasJS = languages.some(
+      (lang) => lang.name === "JavaScript" || lang.name === "TypeScript",
+    );
+
+    if (hasJS) {
+      npmPackage = await fetchPackageJson(repo.full_name);
+      if (npmPackage) {
+        npmStats = await fetchNPMStats(npmPackage);
+      }
+    }
+
     orgProjects.push({
       type: "project",
       name: repo.name,
@@ -347,6 +462,8 @@ async function fetchOrgProjects(org) {
       updated: repo.pushed_at,
       pypiPackage: pypiPackage,
       pypiStats: pypiStats,
+      npmPackage: npmPackage,
+      npmStats: npmStats,
     });
   }
 
@@ -373,19 +490,33 @@ async function fetchUserProjects() {
   const userProjects = [];
   for (const repo of filteredRepos) {
     const languages = await fetchRepoLanguages(repo.full_name);
-    
+
     // Check if this is a Python project with a PyPI package
     let pypiPackage = null;
     let pypiStats = null;
-    const hasPython = languages.some(lang => lang.name === "Python");
-    
+    const hasPython = languages.some((lang) => lang.name === "Python");
+
     if (hasPython) {
       pypiPackage = await fetchPyProjectToml(repo.full_name);
       if (pypiPackage) {
         pypiStats = await fetchPyPIStats(pypiPackage);
       }
     }
-    
+
+    // Check if this is a JavaScript/TypeScript project with an npm package
+    let npmPackage = null;
+    let npmStats = null;
+    const hasJS = languages.some(
+      (lang) => lang.name === "JavaScript" || lang.name === "TypeScript",
+    );
+
+    if (hasJS) {
+      npmPackage = await fetchPackageJson(repo.full_name);
+      if (npmPackage) {
+        npmStats = await fetchNPMStats(npmPackage);
+      }
+    }
+
     userProjects.push({
       type: "project",
       name: repo.name,
@@ -400,6 +531,8 @@ async function fetchUserProjects() {
       updated: repo.pushed_at,
       pypiPackage: pypiPackage,
       pypiStats: pypiStats,
+      npmPackage: npmPackage,
+      npmStats: npmStats,
     });
   }
 
