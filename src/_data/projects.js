@@ -60,6 +60,11 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 /**
+ * @typedef {Object} ZedStats
+ * @property {number} totalDownloads - Total downloads for the extension
+ */
+
+/**
  * @typedef {Object} Project
  * @property {string} type - Type (always 'project')
  * @property {string} name - Project name
@@ -76,6 +81,8 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {PyPIStats|null} pypiStats - PyPI download statistics
  * @property {string|null} npmPackage - npm package name if available
  * @property {NPMStats|null} npmStats - npm download statistics
+ * @property {string|null} zedExtension - Zed extension ID if available
+ * @property {ZedStats|null} zedStats - Zed extension download statistics
  */
 
 /**
@@ -100,6 +107,9 @@ const WORK_ORGS = ["westerveltco"]; // Organizations to include as work projects
 const MIN_ORG_CONTRIBUTION_RANK = 5; // Only include org repos where user is in top N contributors
 const EXCLUDED_ORGS = ["westerveltco"]; // Organizations to exclude from PR contributions
 const EXCLUDED_REPOS = ["neovim/nvim-lspconfig", "zed-industries/extensions"]; // Repositories to exclude from contributions
+const ZED_EXTENSIONS = {
+  "joshuadavidthomas/zed-django": "django",
+}; // Map of repo full names to Zed extension IDs
 
 /**
  * Map language names to devicon class names
@@ -349,6 +359,47 @@ async function fetchNPMStats(packageName) {
 }
 
 /**
+ * Fetch Zed extension download statistics
+ * @async
+ * @param {string} extensionId - Zed extension ID
+ * @returns {Promise<ZedStats|null>} Download statistics or null if not found
+ */
+async function fetchZedExtensionStats(extensionId) {
+  try {
+    const data = await Fetch(
+      `https://api.zed.dev/extensions?filter=${extensionId}`,
+      {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy",
+          },
+        },
+      },
+    );
+
+    if (Array.isArray(data) && data.length > 0) {
+      const extension = data.find((ext) => ext.id === extensionId);
+      if (extension && extension.download_count !== undefined) {
+        return {
+          totalDownloads: extension.download_count,
+        };
+      }
+    }
+  } catch (error) {
+    if (!error.message.includes("404")) {
+      console.warn(
+        `Failed to fetch Zed extension stats for ${extensionId}:`,
+        error.message,
+      );
+    }
+  }
+
+  return null;
+}
+
+/**
  * Fetch languages for a repository
  * @async
  * @param {string} fullName - Repository full name (owner/repo)
@@ -448,6 +499,14 @@ async function fetchOrgProjects(org) {
       }
     }
 
+    // Check if this repo has an associated Zed extension
+    let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
+    let zedStats = null;
+
+    if (zedExtension) {
+      zedStats = await fetchZedExtensionStats(zedExtension);
+    }
+
     orgProjects.push({
       type: "project",
       name: repo.name,
@@ -464,6 +523,8 @@ async function fetchOrgProjects(org) {
       pypiStats: pypiStats,
       npmPackage: npmPackage,
       npmStats: npmStats,
+      zedExtension: zedExtension,
+      zedStats: zedStats,
     });
   }
 
@@ -517,6 +578,14 @@ async function fetchUserProjects() {
       }
     }
 
+    // Check if this repo has an associated Zed extension
+    let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
+    let zedStats = null;
+
+    if (zedExtension) {
+      zedStats = await fetchZedExtensionStats(zedExtension);
+    }
+
     userProjects.push({
       type: "project",
       name: repo.name,
@@ -533,6 +602,8 @@ async function fetchUserProjects() {
       pypiStats: pypiStats,
       npmPackage: npmPackage,
       npmStats: npmStats,
+      zedExtension: zedExtension,
+      zedStats: zedStats,
     });
   }
 
