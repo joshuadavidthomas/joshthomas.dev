@@ -379,8 +379,9 @@ async function fetchZedExtensionStats(extensionId) {
       },
     );
 
-    if (Array.isArray(data) && data.length > 0) {
-      const extension = data.find((ext) => ext.id === extensionId);
+    const extensions = data?.data;
+    if (Array.isArray(extensions) && extensions.length > 0) {
+      const extension = extensions.find((ext) => ext.id === extensionId);
       if (extension && extension.download_count !== undefined) {
         return {
           totalDownloads: extension.download_count,
