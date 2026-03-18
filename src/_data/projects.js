@@ -60,6 +60,13 @@ import Fetch from "@11ty/eleventy-fetch";
  */
 
 /**
+ * @typedef {Object} CratesIOStats
+ * @property {number} lastDay - Downloads in the last day
+ * @property {number} lastWeek - Downloads in the last week
+ * @property {number} lastMonth - Downloads in the last month
+ */
+
+/**
  * @typedef {Object} ZedStats
  * @property {number} totalDownloads - Total downloads for the extension
  */
@@ -81,6 +88,7 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {PyPIStats|null} pypiStats - PyPI download statistics
  * @property {string|null} npmPackage - npm package name if available
  * @property {NPMStats|null} npmStats - npm download statistics
+ * @property {Array<{name: string, stats: CratesIOStats|null}>} cratesIOCrates - crates.io crates with individual download statistics
  * @property {string|null} zedExtension - Zed extension ID if available
  * @property {ZedStats|null} zedStats - Zed extension download statistics
  */
@@ -359,6 +367,171 @@ async function fetchNPMStats(packageName) {
 }
 
 /**
+ * Extract publishable crate name from Cargo.toml content
+ * @param {string} content - Raw Cargo.toml content
+ * @returns {string|null} Crate name or null if not a publishable package
+ */
+function extractCrateName(content) {
+  const nameMatch = content.match(/\[package\][^[]*?name\s*=\s*"([^"]+)"/);
+  if (!nameMatch) return null;
+
+  // Skip if publish = false or publish = []
+  if (/\[package\][^[]*?publish\s*=\s*false/.test(content)) return null;
+  if (/\[package\][^[]*?publish\s*=\s*\[\s*\]/.test(content)) return null;
+
+  return nameMatch[1];
+}
+
+/**
+ * Fetch publishable crate names from a repository.
+ * Handles both single-crate repos and Cargo workspaces.
+ * @async
+ * @param {string} fullName - Repository full name (owner/repo)
+ * @returns {Promise<string[]>} Array of publishable crate names
+ */
+async function fetchCrateNames(fullName) {
+  const branches = ["main", "master"];
+
+  for (const branch of branches) {
+    try {
+      const rootContent = await Fetch(
+        `https://raw.githubusercontent.com/${fullName}/${branch}/Cargo.toml`,
+        {
+          duration: "1d",
+          type: "text",
+          fetchOptions: {
+            headers: {
+              "User-Agent": "Eleventy",
+            },
+          },
+        },
+      );
+
+      const isWorkspace = /^\[workspace\]/m.test(rootContent);
+
+      if (!isWorkspace) {
+        // Single-crate repo
+        const name = extractCrateName(rootContent);
+        return name ? [name] : [];
+      }
+
+      // Workspace: use the tree API to find all Cargo.toml files
+      const tree = await fetchFromGitHubApi(
+        `https://api.github.com/repos/${fullName}/git/trees/${branch}?recursive=1`,
+      );
+
+      if (!tree?.tree) return [];
+
+      const cargoTomlPaths = tree.tree
+        .filter(
+          (item) =>
+            item.type === "blob" &&
+            item.path !== "Cargo.toml" &&
+            item.path.endsWith("/Cargo.toml"),
+        )
+        .map((item) => item.path);
+
+      const names = [];
+
+      // Check if root Cargo.toml also has a [package] section (virtual vs non-virtual workspace)
+      const rootName = extractCrateName(rootContent);
+      if (rootName) names.push(rootName);
+
+      for (const path of cargoTomlPaths) {
+        try {
+          const content = await Fetch(
+            `https://raw.githubusercontent.com/${fullName}/${branch}/${path}`,
+            {
+              duration: "1d",
+              type: "text",
+              fetchOptions: {
+                headers: {
+                  "User-Agent": "Eleventy",
+                },
+              },
+            },
+          );
+
+          const name = extractCrateName(content);
+          if (name) names.push(name);
+        } catch {
+          continue;
+        }
+      }
+
+      return names.sort();
+    } catch {
+      continue;
+    }
+  }
+
+  return [];
+}
+
+/**
+ * Fetch crates.io download statistics for a crate
+ * @async
+ * @param {string} crateName - crates.io crate name
+ * @returns {Promise<CratesIOStats|null>} Download statistics or null if not found
+ */
+async function fetchCratesIOStats(crateName) {
+  try {
+    const data = await Fetch(
+      `https://crates.io/api/v1/crates/${crateName}/downloads`,
+      {
+        duration: "1d",
+        type: "json",
+        fetchOptions: {
+          headers: {
+            "User-Agent": "Eleventy (joshthomas.dev)",
+          },
+        },
+      },
+    );
+
+    // Combine version_downloads and meta.extra_downloads into per-day totals
+    const dailyTotals = {};
+
+    if (data.version_downloads) {
+      for (const entry of data.version_downloads) {
+        dailyTotals[entry.date] =
+          (dailyTotals[entry.date] || 0) + entry.downloads;
+      }
+    }
+
+    if (data.meta?.extra_downloads) {
+      for (const entry of data.meta.extra_downloads) {
+        dailyTotals[entry.date] =
+          (dailyTotals[entry.date] || 0) + entry.downloads;
+      }
+    }
+
+    // Sort dates descending to get most recent first
+    const dates = Object.keys(dailyTotals).sort().reverse();
+
+    const lastDay = dates.length > 0 ? dailyTotals[dates[0]] : 0;
+    const lastWeek = dates
+      .slice(0, 7)
+      .reduce((sum, date) => sum + dailyTotals[date], 0);
+    const lastMonth = dates
+      .slice(0, 30)
+      .reduce((sum, date) => sum + dailyTotals[date], 0);
+
+    return { lastDay, lastWeek, lastMonth };
+  } catch (error) {
+    // Silently ignore 404s (crate not on crates.io), but warn on other errors
+    if (!error.message.includes("404")) {
+      console.warn(
+        `Failed to fetch crates.io stats for ${crateName}:`,
+        error.message,
+      );
+    }
+  }
+
+  return null;
+}
+
+/**
  * Fetch Zed extension download statistics
  * @async
  * @param {string} extensionId - Zed extension ID
@@ -500,6 +673,20 @@ async function fetchOrgProjects(org) {
       }
     }
 
+    // Check if this is a Rust project with crates.io crates
+    const cratesIOCrates = [];
+    const hasRust = languages.some((lang) => lang.name === "Rust");
+
+    if (hasRust) {
+      const crateNames = await fetchCrateNames(repo.full_name);
+      for (const name of crateNames) {
+        const stats = await fetchCratesIOStats(name);
+        if (stats) {
+          cratesIOCrates.push({ name, stats });
+        }
+      }
+    }
+
     // Check if this repo has an associated Zed extension
     let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
     let zedStats = null;
@@ -524,6 +711,7 @@ async function fetchOrgProjects(org) {
       pypiStats: pypiStats,
       npmPackage: npmPackage,
       npmStats: npmStats,
+      cratesIOCrates: cratesIOCrates,
       zedExtension: zedExtension,
       zedStats: zedStats,
     });
@@ -579,6 +767,20 @@ async function fetchUserProjects() {
       }
     }
 
+    // Check if this is a Rust project with crates.io crates
+    const cratesIOCrates = [];
+    const hasRust = languages.some((lang) => lang.name === "Rust");
+
+    if (hasRust) {
+      const crateNames = await fetchCrateNames(repo.full_name);
+      for (const name of crateNames) {
+        const stats = await fetchCratesIOStats(name);
+        if (stats) {
+          cratesIOCrates.push({ name, stats });
+        }
+      }
+    }
+
     // Check if this repo has an associated Zed extension
     let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
     let zedStats = null;
@@ -603,6 +805,7 @@ async function fetchUserProjects() {
       pypiStats: pypiStats,
       npmPackage: npmPackage,
       npmStats: npmStats,
+      cratesIOCrates: cratesIOCrates,
       zedExtension: zedExtension,
       zedStats: zedStats,
     });
