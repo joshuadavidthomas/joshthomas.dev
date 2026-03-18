@@ -89,6 +89,7 @@ import Fetch from "@11ty/eleventy-fetch";
  * @property {string|null} npmPackage - npm package name if available
  * @property {NPMStats|null} npmStats - npm download statistics
  * @property {Array<{name: string, stats: CratesIOStats|null}>} cratesIOCrates - crates.io crates with individual download statistics
+ * @property {number|null} releaseDownloads - Total GitHub release asset downloads
  * @property {string|null} zedExtension - Zed extension ID if available
  * @property {ZedStats|null} zedStats - Zed extension download statistics
  */
@@ -532,6 +533,35 @@ async function fetchCratesIOStats(crateName) {
 }
 
 /**
+ * Fetch total download count across all GitHub release assets
+ * @async
+ * @param {string} fullName - Repository full name (owner/repo)
+ * @returns {Promise<number|null>} Total downloads or null if no releases
+ */
+async function fetchReleaseDownloads(fullName) {
+  const releases = await fetchFromGitHubApi(
+    `https://api.github.com/repos/${fullName}/releases?per_page=100`,
+  );
+
+  if (!Array.isArray(releases) || releases.length === 0) return null;
+
+  const checksumExts = [".sha256", ".sha512", ".md5", ".asc", ".sig"];
+  let total = 0;
+
+  for (const release of releases) {
+    if (!release.assets) continue;
+    for (const asset of release.assets) {
+      const isChecksum = checksumExts.some((ext) => asset.name.endsWith(ext));
+      if (!isChecksum) {
+        total += asset.download_count;
+      }
+    }
+  }
+
+  return total > 0 ? total : null;
+}
+
+/**
  * Fetch Zed extension download statistics
  * @async
  * @param {string} extensionId - Zed extension ID
@@ -687,6 +717,9 @@ async function fetchOrgProjects(org) {
       }
     }
 
+    // Fetch GitHub release download counts
+    const releaseDownloads = await fetchReleaseDownloads(repo.full_name);
+
     // Check if this repo has an associated Zed extension
     let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
     let zedStats = null;
@@ -712,6 +745,7 @@ async function fetchOrgProjects(org) {
       npmPackage: npmPackage,
       npmStats: npmStats,
       cratesIOCrates: cratesIOCrates,
+      releaseDownloads: releaseDownloads,
       zedExtension: zedExtension,
       zedStats: zedStats,
     });
@@ -781,6 +815,9 @@ async function fetchUserProjects() {
       }
     }
 
+    // Fetch GitHub release download counts
+    const releaseDownloads = await fetchReleaseDownloads(repo.full_name);
+
     // Check if this repo has an associated Zed extension
     let zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
     let zedStats = null;
@@ -806,6 +843,7 @@ async function fetchUserProjects() {
       npmPackage: npmPackage,
       npmStats: npmStats,
       cratesIOCrates: cratesIOCrates,
+      releaseDownloads: releaseDownloads,
       zedExtension: zedExtension,
       zedStats: zedStats,
     });
