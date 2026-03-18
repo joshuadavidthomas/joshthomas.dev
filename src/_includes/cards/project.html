@@ -2,9 +2,7 @@
   <h3 id="{{ project.name }}"
       class="text-xl/6 sm:text-2xl/7 font-semibold"
       data-ha-exclude>
-    <a href="{{ project.homepage or project.url }}"
-       target="_blank"
-       rel="noopener noreferrer">
+    <a href="{{ project.homepage or project.url }}">
       <span class="absolute inset-0"></span>
       {{ project.name }}
     </a>
@@ -13,8 +11,6 @@
     <div class="relative z-10 flex flex-col gap-1.5 xs:gap-1">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
         <a href="{{ project.url }}"
-           target="_blank"
-           rel="noopener noreferrer"
            class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
           <i aria-hidden="true" class="fa-brands fa-github size-3"></i>
           {{ project.fullName }}
@@ -22,8 +18,6 @@
         <div class="flex items-center gap-3">
           {% if project.stars !== undefined %}
             <a href="{{ project.url }}/stargazers"
-               target="_blank"
-               rel="noopener noreferrer"
                class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
@@ -33,8 +27,6 @@
           {% endif %}
           {% if project.forks !== undefined and project.forks > 0 %}
             <a href="{{ project.url }}/forks"
-               target="_blank"
-               rel="noopener noreferrer"
                class="hidden xs:inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
@@ -44,8 +36,6 @@
           {% endif %}
           {% if project.releaseDownloads %}
             <a href="{{ project.url }}/releases"
-               target="_blank"
-               rel="noopener noreferrer"
                class="inline-flex items-center gap-1 tabular-nums hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -58,32 +48,24 @@
       {% if project.pypiStats and project.pypiPackage %}
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
           <a href="https://pypi.org/project/{{ project.pypiPackage }}/"
-             target="_blank"
-             rel="noopener noreferrer"
              class="group/pypi no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
             <i aria-hidden="true" class="devicon-pypi-plain colored size-3"></i>
             <span class="group-hover/pypi:underline decoration-(--color-hover)">{{ project.pypiPackage }}</span>
           </a>
           <div class="flex items-center gap-3 tabular-nums">
             <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
               {{ project.pypiStats.lastDay | formatNumber }}/day
             </a>
             <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
               {{ project.pypiStats.lastWeek | formatNumber }}/week
             </a>
             <a href="https://pypistats.org/packages/{{ project.pypiPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -95,32 +77,24 @@
       {% if project.npmStats and project.npmPackage %}
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
           <a href="https://www.npmjs.com/package/{{ project.npmPackage }}"
-             target="_blank"
-             rel="noopener noreferrer"
              class="group/npm no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
             <i aria-hidden="true" class="devicon-npm-original-wordmark colored size-3"></i>
             <span class="group-hover/npm:underline decoration-(--color-hover)">{{ project.npmPackage }}</span>
           </a>
           <div class="flex items-center gap-3 tabular-nums">
             <a href="https://npmtrends.com/{{ project.npmPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
               {{ project.npmStats.lastDay | formatNumber }}/day
             </a>
             <a href="https://npmtrends.com/{{ project.npmPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative hidden xs:inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
               {{ project.npmStats.lastWeek | formatNumber }}/week
             </a>
             <a href="https://npmtrends.com/{{ project.npmPackage }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -135,8 +109,6 @@
             <tr>
               <td class="pr-4">
                 <a href="https://crates.io/crates/{{ crate.name }}"
-                   target="_blank"
-                   rel="noopener noreferrer"
                    class="group/crate no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
                   <i aria-hidden="true" class="fa-brands fa-rust size-3"></i>
                   <span class="group-hover/crate:underline decoration-(--color-hover)">{{ crate.name }}</span>
@@ -145,8 +117,6 @@
               {% if crate.stats %}
                 <td class="hidden xs:table-cell pr-3">
                   <a href="https://crates.io/crates/{{ crate.name }}"
-                     target="_blank"
-                     rel="noopener noreferrer"
                      class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
                     <i aria-hidden="true"
                        class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -155,8 +125,6 @@
                 </td>
                 <td class="hidden xs:table-cell pr-3">
                   <a href="https://crates.io/crates/{{ crate.name }}"
-                     target="_blank"
-                     rel="noopener noreferrer"
                      class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
                     <i aria-hidden="true"
                        class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -165,8 +133,6 @@
                 </td>
                 <td>
                   <a href="https://crates.io/crates/{{ crate.name }}"
-                     target="_blank"
-                     rel="noopener noreferrer"
                      class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
                     <i aria-hidden="true"
                        class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
@@ -181,8 +147,6 @@
       {% if project.zedStats and project.zedExtension %}
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
           <a href="https://zed.dev/extensions/{{ project.zedExtension }}"
-             target="_blank"
-             rel="noopener noreferrer"
              class="group/zed no-underline inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
             <img src="/static/images/zed-icon-black.png" alt="" aria-hidden="true" class="size-3 dark:hidden" width="32" height="32" eleventy:ignore />
             <img src="/static/images/zed-icon-white.png" alt="" aria-hidden="true" class="size-3 hidden dark:inline" width="32" height="32" eleventy:ignore />
@@ -190,8 +154,6 @@
           </a>
           <div class="flex items-center gap-3 tabular-nums">
             <a href="https://zed.dev/extensions/{{ project.zedExtension }}"
-               target="_blank"
-               rel="noopener noreferrer"
                class="relative inline-flex items-center gap-1 z-10 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-download size-3 text-gray-500 dark:text-gray-400"></i>
