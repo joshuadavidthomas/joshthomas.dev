@@ -21,20 +21,26 @@
         </a>
         <div class="flex items-center gap-3">
           {% if project.stars !== undefined %}
-            <span class="inline-flex items-center gap-1">
+            <a href="{{ project.url }}/stargazers"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-star size-3 text-yellow-400 dark:text-yellow-300"></i>
               {{ project.stars }}
               <span class="sr-only">Stars</span>
-            </span>
+            </a>
           {% endif %}
           {% if project.forks !== undefined and project.forks > 0 %}
-            <span class="hidden xs:inline-flex items-center gap-1">
+            <a href="{{ project.url }}/forks"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="hidden xs:inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100">
               <i aria-hidden="true"
                  class="fa-solid fa-code-fork size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange"></i>
               {{ project.forks }}
               <span class="sr-only">Forks</span>
-            </span>
+            </a>
           {% endif %}
           {% if project.releaseDownloads %}
             <a href="{{ project.url }}/releases"
