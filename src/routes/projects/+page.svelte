@@ -1,0 +1,85 @@
+<script lang="ts">
+	import { Download, GitFork, Package, Star } from '@lucide/svelte';
+	import GitHubIcon from '$lib/components/GitHubIcon.svelte';
+	import Meta from '$lib/components/Meta.svelte';
+	const Github = GitHubIcon;
+	let { data } = $props();
+	const projects = $derived(data.items.filter((item) => item.type === 'project'));
+	const contributions = $derived(data.items.filter((item) => item.type === 'pr' && item.merged));
+	const number = new Intl.NumberFormat('en-US');
+</script>
+
+<Meta title="Projects" description="Open-source projects and contributions from Josh Thomas." path="/projects/" />
+
+<div class="space-y-16">
+	{#if projects.length}
+		<section aria-labelledby="projects">
+			<h2 id="projects" class="sr-only">Projects</h2>
+			<p class="text-sm leading-[1.75] text-gray-600 sm:text-base dark:text-gray-300">
+				A collection of projects I've built and <a href="/blog/2025/open-source-is-a-gift/" class="underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">shared openly</a>. If something catches your attention, dive into the code and help improve it.
+				<a href="https://github.com/joshuadavidthomas?tab=repositories&type=source" target="_blank" rel="noopener noreferrer" class="group underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">Click here to view more on <span class="ml-0.5 inline-flex items-baseline gap-1 underline decoration-inherit"><Github class="my-auto size-3 sm:size-4" aria-hidden="true" />GitHub</span></a>.
+			</p>
+			<div class="mt-10 space-y-16 xs:space-y-12">
+				{#each projects as project (project.fullName)}
+					<article class="group relative" aria-labelledby={`project-${project.name}`}>
+						<h3 id={`project-${project.name}`} class="text-xl/6 font-semibold sm:text-2xl/7">
+							<a href={project.homepage || project.url}><span class="absolute inset-0"></span>{project.name}</a>
+						</h3>
+						<div class="mt-2 flex">
+							<div class="relative z-10 flex flex-col gap-1.5 xs:gap-1">
+								<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
+									<a href={project.url} class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100"><Github class="size-3" aria-hidden="true" />{project.fullName}</a>
+									<div class="flex items-center gap-3">
+										<a href={`${project.url}/stargazers`} class="inline-flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100"><Star class="size-3 fill-yellow-400 text-yellow-400 dark:fill-yellow-300 dark:text-yellow-300" aria-hidden="true" />{project.stars}<span class="sr-only">Stars</span></a>
+										{#if project.forks}<a href={`${project.url}/forks`} class="hidden items-center gap-1 hover:text-gray-900 xs:inline-flex dark:hover:text-gray-100"><GitFork class="size-3 text-tokyonight-day-orange dark:text-tokyonight-moon-orange" aria-hidden="true" />{project.forks}<span class="sr-only">Forks</span></a>{/if}
+										{#if project.releaseDownloads}<a href={`${project.url}/releases`} class="inline-flex items-center gap-1 tabular-nums hover:text-gray-900 dark:hover:text-gray-100"><Download class="size-3 text-gray-500 dark:text-gray-400" aria-hidden="true" />{number.format(project.releaseDownloads)}<span class="sr-only">Downloads</span></a>{/if}
+									</div>
+								</div>
+								{#if project.pypiStats && project.pypiPackage}
+									<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
+										<a href={`https://pypi.org/project/${project.pypiPackage}/`} class="inline-flex items-center gap-1 no-underline"><i class="devicon-pypi-plain colored size-3" aria-hidden="true"></i>{project.pypiPackage}</a>
+										<div class="flex items-center gap-3 tabular-nums"><a href={`https://pypistats.org/packages/${project.pypiPackage}`} class="relative z-10 hidden items-center gap-1 xs:inline-flex"><Download class="size-3 text-gray-500" />{number.format(project.pypiStats.lastDay)}/day</a><a href={`https://pypistats.org/packages/${project.pypiPackage}`} class="relative z-10 hidden items-center gap-1 xs:inline-flex"><Download class="size-3 text-gray-500" />{number.format(project.pypiStats.lastWeek)}/week</a><a href={`https://pypistats.org/packages/${project.pypiPackage}`} class="relative z-10 inline-flex items-center gap-1"><Download class="size-3 text-gray-500" />{number.format(project.pypiStats.lastMonth)}/month</a></div>
+									</div>
+								{/if}
+								{#if project.npmStats && project.npmPackage}
+									<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-700 dark:text-gray-300">
+										<a href={`https://www.npmjs.com/package/${project.npmPackage}`} class="inline-flex items-center gap-1 no-underline"><i class="devicon-npm-original-wordmark colored size-3" aria-hidden="true"></i>{project.npmPackage}</a>
+										<div class="flex items-center gap-3 tabular-nums"><a href={`https://npmtrends.com/${project.npmPackage}`} class="relative z-10 hidden items-center gap-1 xs:inline-flex"><Download class="size-3 text-gray-500" />{number.format(project.npmStats.lastDay)}/day</a><a href={`https://npmtrends.com/${project.npmPackage}`} class="relative z-10 hidden items-center gap-1 xs:inline-flex"><Download class="size-3 text-gray-500" />{number.format(project.npmStats.lastWeek)}/week</a><a href={`https://npmtrends.com/${project.npmPackage}`} class="relative z-10 inline-flex items-center gap-1"><Download class="size-3 text-gray-500" />{number.format(project.npmStats.lastMonth)}/month</a></div>
+									</div>
+								{/if}
+								{#if project.cratesIOCrates?.length}
+									<table class="border-collapse text-xs text-gray-700 tabular-nums dark:text-gray-300">
+										<tbody>{#each project.cratesIOCrates as crate (crate.name)}<tr>
+											<td class="pr-4"><a href={`https://crates.io/crates/${crate.name}`} class="inline-flex items-center gap-1 no-underline"><i class="devicon-rust-original size-3" aria-hidden="true"></i>{crate.name}</a></td>
+											{#if crate.stats}<td class="hidden pr-3 xs:table-cell"><a href={`https://crates.io/crates/${crate.name}`} class="relative z-10 inline-flex items-center gap-1"><Download class="size-3 text-gray-500" />{number.format(crate.stats.lastDay)}/day</a></td><td class="hidden pr-3 xs:table-cell"><a href={`https://crates.io/crates/${crate.name}`} class="relative z-10 inline-flex items-center gap-1"><Download class="size-3 text-gray-500" />{number.format(crate.stats.lastWeek)}/week</a></td><td><a href={`https://crates.io/crates/${crate.name}`} class="relative z-10 inline-flex items-center gap-1"><Download class="size-3 text-gray-500" />{number.format(crate.stats.lastMonth)}/month</a></td>{/if}
+										</tr>{/each}</tbody>
+									</table>
+								{/if}
+								{#if project.zedStats && project.zedExtension}<div class="flex items-center gap-4 text-xs text-gray-700 dark:text-gray-300"><a href={`https://zed.dev/extensions/${project.zedExtension}`} class="inline-flex items-center gap-1 no-underline"><Package class="size-3" />{project.zedExtension}</a><a href={`https://zed.dev/extensions/${project.zedExtension}`} class="inline-flex items-center gap-1 tabular-nums"><Download class="size-3 text-gray-500" />{number.format(project.zedStats.totalDownloads)} downloads</a></div>{/if}
+							</div>
+						</div>
+						{#if project.description}<p class="mt-3 text-sm text-gray-600 xs:mt-2 sm:text-base dark:text-gray-300">{project.description}</p>{/if}
+						{#if project.languages?.length}<div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 xs:mt-2 dark:text-gray-400"><div class="inline-flex items-center gap-2"><span class="sr-only">Languages used in project:</span>{#each project.languages as language (language.name)}<span class="inline-flex items-center gap-1" title={language.name}><i class={`${language.icon} text-base`} aria-hidden="true"></i>{language.name}</span>{/each}</div></div>{/if}
+						{#if project.topics?.length}<div class="mt-2 flex flex-wrap gap-2"><p class="sr-only">The project is tagged with the following topics:</p>{#each project.topics as topic (topic)}<span class="inline-flex items-center rounded-md bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">{topic}</span>{/each}</div>{/if}
+					</article>
+				{/each}
+			</div>
+		</section>
+	{/if}
+
+	{#if contributions.length}
+		<hr aria-hidden="true" class="mx-auto w-24 text-gray-300 dark:text-white/15" />
+		<section aria-labelledby="contributions">
+			<h2 id="contributions" class="sr-only">Open Source Contributions</h2>
+			<p class="text-sm leading-[1.75] text-gray-600 sm:text-base dark:text-gray-300">Here are some contributions I've made to other open source projects. <a href="https://github.com/search?q=type%3Apr+author%3Ajoshuadavidthomas+is%3Apublic+-user%3Ajoshuadavidthomas&type=pullrequests&s=created&o=desc" target="_blank" rel="noopener noreferrer" class="group underline underline-offset-6 hover:text-tokyonight-day-red hover:decoration-tokyonight-day-red dark:hover:text-tokyonight-moon-red dark:hover:decoration-tokyonight-moon-red">Click here to view more on <span class="ml-0.5 inline-flex items-baseline gap-1 underline decoration-inherit"><Github class="my-auto size-3 sm:size-4" />GitHub</span></a>.</p>
+			<div class="mt-10 space-y-8">
+				{#each contributions as contribution (contribution.url)}
+					<article class="group relative" aria-labelledby={`contribution-${contribution.number}`}>
+						<div class="mb-1 flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><a href={contribution.repoUrl} target="_blank" rel="noopener noreferrer" class="relative z-10 inline-flex items-center gap-1"><Github class="size-3" />{contribution.repoFullName}</a></div>
+						<h3 id={`contribution-${contribution.number}`} class="text-lg/6 font-semibold sm:text-xl/7"><a href={contribution.url} target="_blank" rel="noopener noreferrer"><span class="absolute inset-0"></span>{contribution.title} <span class="text-base font-normal text-gray-800 tabular-nums group-hover:text-inherit sm:text-lg dark:text-gray-300">(#{contribution.number})</span></a></h3>
+					</article>
+				{/each}
+			</div>
+		</section>
+	{/if}
+</div>

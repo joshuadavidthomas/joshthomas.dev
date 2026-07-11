@@ -1,0 +1,140 @@
+@custom-variant dark (&:where(.dark, .dark *));
+
+[data-mode-state] #theme-toggle [data-theme-state] {
+	display: none;
+}
+
+[data-mode-state='light'] #theme-toggle [data-theme-state='light'],
+[data-mode-state='dark'] #theme-toggle [data-theme-state='dark'],
+[data-mode-state='system'] #theme-toggle [data-theme-state='system'] {
+	display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+
+	::view-transition-old(post-using-direnv-to-add-a-personal-gitignore-file-to-repos),
+	::view-transition-old(post-open-source-is-a-gift),
+	::view-transition-old(post-debugging-a-no-time-zone-found-error-while-using-the-official-playwright-docker-image),
+	::view-transition-old(post-how-i-organize-staticfiles-in-my-django-projects),
+	::view-transition-old(post-new-year-new-website) {
+		animation: fade 100ms ease-out forwards;
+		height: 100%;
+	}
+
+	::view-transition-new(post-using-direnv-to-add-a-personal-gitignore-file-to-repos),
+	::view-transition-new(post-open-source-is-a-gift),
+	::view-transition-new(post-debugging-a-no-time-zone-found-error-while-using-the-official-playwright-docker-image),
+	::view-transition-new(post-how-i-organize-staticfiles-in-my-django-projects),
+	::view-transition-new(post-new-year-new-website) {
+		animation: fade 200ms ease-in reverse;
+		height: 100%;
+	}
+}
+
+@keyframes fade {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	#theme-toggle {
+		transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	#theme-toggle.rotating {
+		transform: rotate(10deg);
+	}
+
+	[data-theme-state] {
+		transition: opacity 200ms ease-in-out;
+	}
+
+	#theme-toggle.rotating [data-theme-state] {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#theme-toggle,
+	[data-theme-state] {
+		transition: none !important;
+	}
+}
+
+@theme inline {
+	--breakpoint-xs: 24rem;
+
+	--font-brico:
+		BricolageGrotesque, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+		'Segoe UI Symbol', 'Noto Color Emoji';
+	--font-mono:
+		MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+		'Courier New', monospace;
+	--font-sans:
+		InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+		'Segoe UI Symbol', 'Noto Color Emoji';
+
+	--tracking-tightest: -0.1em;
+}
+
+@layer base {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--font-brico);
+
+		code {
+			font-size: inherit;
+			letter-spacing: var(--tracking-tightest);
+		}
+	}
+
+	h1 {
+		font-weight: 900;
+	}
+
+	h2,
+	h3,
+	h4 {
+		font-weight: 800;
+	}
+
+	h5,
+	h6 {
+		font-weight: 700;
+	}
+
+	a {
+		--color: var(--color-tokyonight-day-blue);
+		--color-hover: var(--color-tokyonight-day-blue);
+
+		@variant dark {
+			--color: var(--color-tokyonight-moon-blue);
+			--color-hover: var(--color-tokyonight-moon-blue);
+		}
+
+		text-decoration-color: var(--color);
+		text-decoration-thickness: from-font;
+		text-underline-offset: calc(var(--spacing) * 1);
+
+		&:hover {
+			color: var(--color-hover);
+			text-decoration: underline;
+			text-decoration-color: var(--color-hover);
+		}
+	}
+
+	:is(h1, h2, h3, h4, h5, h6) a:hover {
+		text-decoration: none;
+	}
+}

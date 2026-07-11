@@ -1,102 +1,65 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Development Commands
+## Development commands
 
 ```bash
-# Install dependencies (uses Bun)
-bun install
-
-# Start development server (runs both 11ty and Tailwind CSS in parallel)
-bun dev
-
-# Build for production
-bun run build
-
-# Clean build artifacts
-bun run clean
-
-# Linting and formatting
-bun run lint         # Check for issues without applying fixes
-bun run format       # Apply fixes automatically
-
-# Type checking
-bun run typecheck
-
-# Individual dev servers (used by the runner script)
-bun run dev:11ty      # Eleventy dev server
-bun run dev:tailwind  # Tailwind CSS watcher
+pnpm install
+vp dev
+vp check
+pnpm check
+vp build
+vp preview
 ```
 
-## Architecture Overview
+- `vp check` runs Vite+ formatting, linting, and TypeScript checks.
+- `pnpm check` also runs `svelte-check`.
+- The static production site is written to `dist/`.
 
-This is an Eleventy static site generator project with the following structure:
+## Architecture
 
-### Core Technologies
-- **Eleventy 3.0 (alpha)** - Static site generator
-- **Tailwind CSS 4.0** - Utility-first CSS framework
-- **Bun** - JavaScript runtime and package manager
-- **Nunjucks** - Primary templating engine
-- **TypeScript** - Type checking (for tooling files)
-- **Biome** - Linting and formatting
+This is a fully prerendered SvelteKit 2 and Svelte 5 site deployed to Cloudflare Pages.
 
-### Key Configuration Files
-- `eleventy.config.js` - Main Eleventy configuration
-- `package.json` - Project dependencies and scripts
-- `biome.json` - Code formatting rules (2 spaces, double quotes)
-- `tsconfig.json` - TypeScript configuration
+### Core technologies
 
-### Directory Structure
-- `content/` - Markdown content files (outside src/ for clean separation)
-  - `posts/` - Blog posts in Markdown format
-  - `til/` - Today I Learned posts organized by category
-- `src/` - Source files
-  - `_components/` - Reusable Nunjucks components
-  - `_config/` - Eleventy collections, filters, and markdown configuration
-  - `_data/` - Global data files (site metadata, Raindrop.io integration)
-  - `_includes/` - Template partials (cards, etc.)
-  - `_layouts/` - Base page templates (base.njk, default.njk, post.njk, til.njk)
-  - `_plugins/` - Custom Eleventy plugins
-  - `_static/` - CSS files processed by Tailwind
-  - `content/` - Symlink to `../content` (enables Eleventy processing)
-  - `feeds/` - RSS feed templates
-  - `posts.json` - Blog post configuration (layout, permalinks)
-  - `til.json` - TIL configuration (layout, permalinks)
-- `public/` - True static assets (fonts, images, JS) copied to root of dist
+- SvelteKit with `@sveltejs/adapter-static`
+- Svelte 5 rune mode
+- Vite+ and Vite 8
+- Tailwind CSS 4
+- Markdown-it with syntax highlighting and content plugins
+- pnpm
 
-### Build Process
-1. The `bun dev` command uses `.bin/runner.ts` to run parallel dev servers
-2. Tailwind CSS processes `src/_static/css/style.css` to `dist/static/css/style.css`
-3. Eleventy builds all content to the `dist/` directory
-4. HTML is minified in production
-5. Asset hashing is applied when building on Cloudflare Pages (CF_PAGES env var)
+### Structure
 
-### Environment Variables
-- `RAINDROPIO_API_KEY` - Required for bookmarks integration
+- `content/posts/` — blog Markdown
+- `content/til/` — TIL Markdown grouped by category
+- `content/design-system.md` — design-system reference content
+- `src/lib/components/` — shared Svelte components
+- `src/lib/server/content.ts` — Markdown parsing and content collections
+- `src/lib/server/projects.ts` — cached build-time project and contribution data
+- `src/lib/styles/` — global layout, theme, prose, and code styles
+- `src/routes/` — pages, feed, and sitemap
+- `public/` — fonts, images, Cloudflare headers, and redirects
 
-### Markdown Processing
-Uses markdown-it with several plugins:
-- GitHub-style alerts
-- Heading anchors with automatic IDs
-- Footnotes support
-- Table captions
-- Custom heading level shifting
-- Attributes support for adding classes/IDs to elements
+### Routes
 
-### Image Processing
-- Automatic image optimization with @11ty/eleventy-img
-- Supports SVG, AVIF, and JPEG formats
-- Responsive image generation with multiple sizes
-- Caching enabled for faster builds
+- `/`
+- `/blog/` and `/blog/{page}/`
+- `/blog/{year}/{slug}/`
+- `/til/{category}/{slug}/`
+- `/projects/`
+- `/design-system/`
+- `/feeds/blog.xml`
+- `/sitemap.xml`
+- `/robots.txt`
 
-### Collections
-- **Posts** - Blog posts from `content/posts/` (via symlink at `src/content/`)
-- **TIL** - Today I Learned entries from `content/til/` (via symlink at `src/content/`)
-- **Blog** - Combined posts and TIL entries sorted by date
+### Content
+
+`src/lib/server/content.ts` reads Markdown at build time. It provides heading anchors, attributes, footnotes, GitHub alerts, table captions, linkification, and syntax highlighting. Route `entries` functions enumerate dynamic post and TIL pages for prerendering.
+
+### Projects
+
+`src/lib/server/projects.ts` gathers GitHub repositories, contributions, package statistics, release downloads, languages, topics, and aggregate totals at build time. Responses are cached under `.cache/`. `GITHUB_TOKEN` is optional but recommended to avoid anonymous API limits.
 
 ### Deployment
-- Hosted on Cloudflare Pages
-- Uses `_redirects` and `_headers` files for Cloudflare configuration
-- Asset hashing enabled in production builds
-- Wrangler configuration in `wrangler.toml`
+
+Cloudflare Pages publishes `dist/`. Keep `public/_redirects` and `public/_headers` intact. Runtime versions are declared in `wrangler.toml`.

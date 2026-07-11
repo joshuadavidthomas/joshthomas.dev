@@ -1,0 +1,305 @@
+@import 'tailwindcss';
+@import 'devicon/devicon.min.css';
+@import 'markdown-it-github-alerts/styles/github-base.css';
+@import 'markdown-it-github-alerts/styles/github-colors-light.css';
+@import 'markdown-it-github-alerts/styles/github-colors-dark-class.css';
+@plugin "@tailwindcss/typography";
+
+@import './fonts.css';
+@import './code.css';
+@import './colors.css';
+@import './layout.css';
+@import './theme.css';
+
+.prose {
+	@import './prose.css';
+}
+
+@utility border-accent-t-* {
+	border-top: 0.25rem solid --value(--color-\*);
+	padding-left: var(--spacing);
+	padding-right: var(--spacing);
+	padding-top: calc(var(--spacing) * 4);
+
+	@variant xl {
+		padding-top: calc(var(--spacing) * 6);
+	}
+}
+
+@utility border-accent-r-* {
+	border-right: 0.25rem solid --value(--color-\*);
+	padding-bottom: var(--spacing);
+	padding-inline-end: calc(var(--spacing) * 4);
+	padding-top: var(--spacing);
+
+	@variant xl {
+		padding-inline-end: calc(var(--spacing) * 6);
+	}
+}
+
+@utility border-accent-b-* {
+	border-bottom: 0.25rem solid --value(--color-\*);
+	padding-bottom: calc(var(--spacing) * 4);
+	padding-left: var(--spacing);
+	padding-right: var(--spacing);
+
+	@variant xl {
+		padding-bottom: calc(var(--spacing) * 6);
+	}
+}
+
+@utility border-accent-l-* {
+	border-left: 0.25rem solid --value(--color-\*);
+	padding-bottom: var(--spacing);
+	padding-inline-start: calc(var(--spacing) * 4);
+	padding-top: var(--spacing);
+
+	@variant xl {
+		padding-inline-start: calc(var(--spacing) * 6);
+	}
+}
+
+heading-anchors:not(:defined) :is(h2, h3, h4, h5, h6):after {
+	content: '#';
+	padding: 0 0.25em;
+	opacity: 0;
+}
+
+heading-anchors .ha-placeholder,
+heading-anchors .ha {
+	padding-left: calc(var(--spacing) * 2);
+}
+
+heading-anchors .ha-placeholder {
+	color: var(--color-gray-950) !important;
+
+	@variant dark {
+		color: var(--color-gray-50) !important;
+	}
+}
+
+.markdown-alert {
+	--color-caution: var(--color-tokyonight-day-red);
+	--color-caution-body: var(--color-tokyonight-day-black-red);
+
+	--color-documentation: var(--color-tokyonight-day-green);
+	--color-documentation-body: var(--color-tokyonight-day-black-green);
+
+	--color-important: var(--color-tokyonight-day-magenta);
+	--color-important-body: var(--color-tokyonight-day-black-magenta);
+
+	--color-note: var(--color-tokyonight-day-blue2);
+	--color-note-body: var(--color-tokyonight-day-black-blue2);
+
+	--color-tip: var(--color-tokyonight-day-teal);
+	--color-tip-body: var(--color-tokyonight-day-black-teal);
+
+	--color-tldr: color-mix(in oklch, var(--color-tokyonight-day-fg), var(--color-gray-950) 40%);
+	--color-tldr-body: color-mix(in oklch, var(--color-tokyonight-day-fg), var(--color-gray-950) 75%);
+
+	--color-warning: var(--color-tokyonight-day-yellow);
+	--color-warning-body: var(--color-tokyonight-day-black-yellow);
+
+	@variant dark {
+		--color-caution: var(--color-tokyonight-moon-red);
+		--color-caution-body: var(--color-tokyonight-moon-white-red);
+
+		--color-documentation: var(--color-tokyonight-moon-green);
+		--color-documentation-body: var(--color-tokyonight-moon-white-green);
+
+		--color-important: var(--color-tokyonight-moon-magenta);
+		--color-important-body: var(--color-tokyonight-moon-white-magenta);
+
+		--color-note: var(--color-tokyonight-moon-blue2);
+		--color-note-body: var(--color-tokyonight-moon-white-blue2);
+
+		--color-tip: var(--color-tokyonight-moon-teal);
+		--color-tip-body: var(--color-tokyonight-moon-white-teal);
+
+		--color-tldr: var(--color-tokyonight-moon-fg);
+		--color-tldr-body: var(--color-gray-50);
+
+		--color-warning: var(--color-tokyonight-moon-yellow);
+		--color-warning-body: var(--color-tokyonight-moon-white-yellow);
+	}
+
+	@apply border-accent-l-gray-500;
+	color: inherit;
+	font-size: var(--text-sm);
+	margin-bottom: calc(var(--spacing) * 4);
+	padding-bottom: calc(var(--spacing) * 4);
+	padding-top: calc(var(--spacing) * 3);
+	padding-inline-start: calc(var(--spacing) * 4);
+
+	@variant xl {
+		font-size: var(--text-base);
+		padding-inline-start: calc(var(--spacing) * 6);
+	}
+
+	> :first-child {
+		margin-top: 0;
+	}
+
+	> :last-child {
+		margin-bottom: 0;
+	}
+
+	.markdown-alert-title {
+		align-items: center;
+		display: flex;
+		font-size: var(--text-base);
+		font-weight: 500;
+		line-height: var(--text-base--line-height);
+
+		@variant xl {
+			font-size: var(--text-lg);
+		}
+
+		.octicon,
+		.alert-icon {
+			display: inline-block;
+			margin-right: calc(var(--spacing) * 2);
+			overflow: visible;
+			vertical-align: text-bottom;
+		}
+
+		.octicon {
+			fill: currentColor;
+		}
+
+		.alert-icon {
+			height: 1em;
+			width: 1em;
+		}
+	}
+
+	&.markdown-alert-caution {
+		border-left-color: var(--color-caution);
+		color: var(--color-caution-body);
+
+		.markdown-alert-title {
+			color: var(--color-caution);
+		}
+
+		a {
+			text-decoration-color: var(--color-caution);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-documentation {
+		border-left-color: var(--color-documentation);
+		color: var(--color-documentation-body);
+
+		.markdown-alert-title {
+			color: var(--color-documentation);
+		}
+
+		a {
+			text-decoration-color: var(--color-documentation);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-important {
+		border-left-color: var(--color-important);
+		color: var(--color-important-body);
+
+		.markdown-alert-title {
+			color: var(--color-important);
+		}
+
+		a {
+			text-decoration-color: var(--color-important);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-note {
+		border-left-color: var(--color-note);
+		color: var(--color-note-body);
+
+		.markdown-alert-title {
+			color: var(--color-note);
+		}
+
+		a {
+			text-decoration-color: var(--color-note);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-tip {
+		border-left-color: var(--color-tip);
+		color: var(--color-tip-body);
+
+		.markdown-alert-title {
+			color: var(--color-tip);
+		}
+
+		a {
+			text-decoration-color: var(--color-tip);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-tldr {
+		border-left-color: var(--color-tldr);
+		color: var(--color-tldr-body);
+
+		.markdown-alert-title {
+			color: var(--color-tldr);
+			text-transform: uppercase;
+		}
+
+		a {
+			text-decoration-color: var(--color-tldr);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+
+	&.markdown-alert-warning {
+		border-left-color: var(--color-warning);
+		color: var(--color-warning-body);
+
+		.markdown-alert-title {
+			color: var(--color-warning);
+		}
+
+		a {
+			text-decoration-color: var(--color-warning);
+
+			&:hover {
+				text-decoration-color: inherit;
+			}
+		}
+	}
+}
+
+.dark {
+	.devicon-rust-original.colored {
+		filter: brightness(1.5) saturate(1.2);
+	}
+
+	.devicon-github-plain.colored {
+		filter: brightness(2) contrast(0.8);
+	}
+}

@@ -1,55 +1,57 @@
 {
-  "name": "joshthomas.dev",
-  "type": "module",
-  "version": "0.0.0",
-  "private": true,
-  "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/bun": "latest",
-    "typescript": "^5.8.3",
-    "wrangler": "^4.12.0"
-  },
-  "dependencies": {
-    "@11ty/eleventy": "^3.0.1-alpha.5",
-    "@11ty/eleventy-fetch": "^5.0.2",
-    "@11ty/eleventy-img": "^6.0.2",
-    "@11ty/eleventy-navigation": "^0.3.5",
-    "@11ty/eleventy-plugin-rss": "^2.0.3",
-    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-    "@11ty/font-awesome": "^1.0.0-beta.1",
-    "@tailwindcss/cli": "^4.1.4",
-    "@tailwindcss/typography": "^0.5.16",
-    "@vrugtehagel/eleventy-asset-hash": "npm:@jsr/vrugtehagel__eleventy-asset-hash",
-    "@zachleat/heading-anchors": "^1.0.3",
-    "devicon": "^2.17.0",
-    "html-minifier-terser": "^7.2.0",
-    "linkedom": "^0.18.9",
-    "luxon": "^3.6.1",
-    "markdown-it": "^14.1.0",
-    "markdown-it-anchor": "^9.2.0",
-    "markdown-it-attrs": "^4.3.1",
-    "markdown-it-footnote": "^4.0.0",
-    "markdown-it-github-alerts": "^0.3.2",
-    "markdown-it-table-captions": "^1.0.4",
-    "tailwindcss": "^4.1.4"
-  },
-  "scripts": {
-    "build": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --minify && eleventy",
-    "clean": "rm -rf .cache dist",
-    "dev": "bun .bin/runner.ts dev",
-    "dev:11ty": "eleventy --serve",
-    "dev:tailwind": "tailwindcss --input src/_static/css/style.css --output dist/static/css/style.css --watch",
-    "format": "biome check --write",
-    "lint": "biome check",
-    "lock": "bun install --lockfile-only",
-    "preview": "bun run build && cd dist && python -m http.server 8000",
-    "typecheck": "tsc"
-  },
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "@parcel/watcher",
-    "esbuild",
-    "sharp",
-    "workerd"
-  ]
+	"name": "joshthomas.dev",
+	"private": true,
+	"packageManager": "pnpm@11.9.0",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vp dev",
+		"build": "vp build",
+		"preview": "vp preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "vp check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "vp lint",
+		"format": "vp fmt"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.50.2",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"@tailwindcss/typography": "^0.5.19",
+		"@tailwindcss/vite": "^4.1.18",
+		"@types/markdown-it": "^14.1.2",
+		"@types/node": "^24",
+		"eslint-plugin-svelte": "^3.15.2",
+		"svelte": "^5.54.0",
+		"svelte-check": "^4.4.2",
+		"tailwindcss": "^4.1.18",
+		"typescript": "^5.9.3",
+		"vite": "catalog:",
+		"vite-plugin-devtools-json": "^1.0.0",
+		"vite-plus": "catalog:"
+	},
+	"dependencies": {
+		"@lucide/svelte": "^1.25.0",
+		"devicon": "^2.17.0",
+		"gray-matter": "^4.0.3",
+		"markdown-it": "^14.3.0",
+		"markdown-it-anchor": "^9.2.1",
+		"markdown-it-attrs": "^5.0.0",
+		"markdown-it-footnote": "^4.0.0",
+		"markdown-it-github-alerts": "^1.0.1",
+		"markdown-it-table-captions": "^1.0.4",
+		"mode-watcher": "^1.1.0",
+		"shiki": "^4.3.1"
+	},
+	"workspaces": {
+		"catalog": {
+			"vite": "npm:@voidzero-dev/vite-plus-core@0.2.4",
+			"vite-plus": "0.2.4"
+		}
+	},
+	"overrides": {
+		"vite": "catalog:",
+		"vitest": "4.1.10"
+	}
 }

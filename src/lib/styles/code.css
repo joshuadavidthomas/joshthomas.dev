@@ -1,0 +1,75 @@
+:root {
+	--code-background-color: var(--color-tokyonight-day-bg);
+	--code-color: var(--color-tokyonight-day-fg);
+}
+
+.dark {
+	--code-background-color: var(--color-tokyonight-moon-bg);
+	--code-color: var(--color-tokyonight-moon-fg);
+}
+
+.dark .shiki,
+.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+:is(code, pre) {
+	background-color: var(--code-background-color);
+	color: var(--code-color);
+}
+
+:not(pre) > code {
+	border-radius: var(--radius-sm);
+	padding: 0 calc(var(--spacing) * 1);
+}
+
+:is(h1, h2, h3, h4, h5, h6) code {
+	background-color: inherit;
+	color: inherit;
+	padding: 0;
+	padding-right: calc(var(--spacing) * 1);
+}
+
+:is(h4, h5, h6) code {
+	padding-right: calc(var(--spacing) * 1.5);
+}
+
+.shiki {
+	font-size: var(--text-xs);
+	position: relative;
+
+	@variant sm {
+		font-size: var(--text-sm);
+	}
+
+	@variant xl {
+		font-size: var(--text-base);
+	}
+}
+
+.shiki .code-icon {
+	color: var(--code-color);
+	height: var(--text-lg);
+	opacity: 0.4;
+	pointer-events: none;
+	position: absolute;
+	right: calc(var(--spacing) * 2);
+	top: calc(var(--spacing) * 2);
+	width: var(--text-lg);
+}
+
+.dark .shiki .code-icon {
+	opacity: 0.3;
+}
+
+.markdown-alert .shiki {
+	font-size: var(--text-xs);
+
+	@variant xl {
+		font-size: var(--text-sm);
+	}
+}

@@ -1,5 +1,0 @@
-{
-  "layout": "til",
-  "permalink": "/til/{{ page.filePathStem | replace('til/', '') | replace(page.fileSlug, '') }}{{ title | slugify }}/",
-  "tags": "til"
-}

@@ -17,8 +17,10 @@ api-docs/
 .vscode
 .idea
 
-# Ignore eleventy output when doing manual tests
+# Ignore generated build output
+.brokk/
 dist/
+.svelte-kit/
 
 # Ignore test files
 .cache
