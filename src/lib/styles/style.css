@@ -294,7 +294,7 @@ heading-anchors .ha-placeholder {
 	}
 }
 
-.dark {
+[data-theme='dark'] {
 	.devicon-rust-original.colored {
 		filter: brightness(1.5) saturate(1.2);
 	}

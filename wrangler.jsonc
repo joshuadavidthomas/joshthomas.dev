@@ -1,0 +1,27 @@
+{
+	"name": "joshthomas-dev",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-07-21",
+	"compatibility_flags": ["nodejs_compat"],
+	"triggers": {
+		"crons": ["17 4 * * *"]
+	},
+	"kv_namespaces": [
+		{
+			"binding": "PACKAGE_STATS"
+		}
+	],
+	"env": {
+		"staging": {
+			"name": "joshthomas-dev-staging",
+			"triggers": {
+				"crons": []
+			},
+			"kv_namespaces": [
+				{
+					"binding": "PACKAGE_STATS"
+				}
+			]
+		}
+	}
+}

@@ -1,38 +1,45 @@
 # joshthomas.dev
 
-Personal site built with [SvelteKit](https://svelte.dev/docs/kit), Svelte 5, Tailwind CSS 4, Markdown, and the [Vite+](https://viteplus.dev/) toolchain.
+Personal site built with [Astro](https://astro.build/), Tailwind CSS 4, Markdown, and the [Vite+](https://viteplus.dev/) toolchain.
 
 ## Development
 
 ```bash
 pnpm install
-vp dev
+pnpm dev
 ```
 
 ## Validation
 
 ```bash
-vp fmt
-vp lint
-vp check
+pnpm format
+pnpm lint
 pnpm check
-vp test
-vp build
+pnpm test
+pnpm build
 ```
 
-The static production site is written to `dist/` for Cloudflare Pages.
+Astro writes prerendered assets to `dist/client/` and the Cloudflare Worker to `dist/server/`. The `/projects/` page runs on demand in that Worker; every other page and endpoint is static. Wrangler deploys the Worker and its static assets.
 
 ## Structure
 
 - `content/posts/` — blog posts
 - `content/til/` — Today I Learned entries
 - `content/design-system.md` — design-system reference
-- `src/lib/server/content.ts` — build-time Markdown collection loader
-- `src/lib/server/projects.ts` — cached build-time project and package data
+- `src/content.config.ts` — Astro content collection schemas and loaders
+- `src/lib/content.ts` — collection-to-route mapping
+- `src/lib/markdown.ts` — Markdown rendering and syntax highlighting
+- `src/lib/server/projects.ts` — runtime project aggregation; the `/projects/` route owns response caching
+- `src/lib/server/project-packages.ts` — repository-to-registry package declarations
+- `src/lib/server/pypi-stats.ts` — PyPI snapshot refresh and KV reads
+- `src/worker.ts` — Astro request handling and the daily scheduled refresh
+- `src/components/` and `src/layouts/` — Astro templates
+- `src/pages/` — pages, feed, and sitemap endpoints
 - `src/lib/styles/` — global theme, typography, layout, and code styles
-- `src/routes/` — SvelteKit pages and generated feed/sitemap endpoints
 - `public/` — static assets, Cloudflare redirects, and headers
 
 ## Environment
 
-- `GITHUB_TOKEN` — optional; increases GitHub API limits for project data
+- `GITHUB_TOKEN` — optional Cloudflare secret that raises GitHub API limits for `/projects/`
+
+PyPI statistics are refreshed once daily by the production Worker's cron trigger and stored in the automatically provisioned `PACKAGE_STATS` KV namespace. Request handling reads the last successful snapshot instead of calling PyPI Stats directly.

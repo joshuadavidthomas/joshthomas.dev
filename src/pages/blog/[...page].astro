@@ -1,0 +1,21 @@
+---
+import type { GetStaticPathsOptions, Page } from 'astro';
+import { Rss } from '@lucide/astro';
+import BlogList from '@/components/BlogList.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { BLOG_PAGE_SIZE, entries, type Entry } from '@/lib/content';
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+	return paginate(await entries(), { pageSize: BLOG_PAGE_SIZE });
+}
+
+const { page } = Astro.props as { page: Page<Entry> };
+const isFirstPage = page.currentPage === 1;
+const title = isFirstPage ? 'Blog' : `Blog · Page ${page.currentPage}`;
+const heading = isFirstPage ? 'Blog' : `Blog page ${page.currentPage}`;
+---
+
+<BaseLayout {title} description="Writing and Today I Learned notes from Josh Thomas.">
+	<header class="flex"><h1 class="sr-only">{heading}</h1><a class="group ml-auto flex items-center gap-1 underline-offset-4" href="/feeds/blog.xml"><Rss class="size-4 text-tokyonight-day-orange group-hover:text-inherit dark:text-tokyonight-moon-orange" aria-hidden="true" /> RSS</a></header>
+	<BlogList {page} />
+</BaseLayout>

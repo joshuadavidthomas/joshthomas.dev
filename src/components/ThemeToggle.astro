@@ -1,0 +1,9 @@
+---
+import { Monitor, Moon, Sun } from '@lucide/astro';
+---
+
+<button id="theme-toggle" class="ml-4 grid size-4 cursor-pointer place-items-center" type="button">
+	<Sun data-theme-state="light" class="size-4 hover:text-[#FF8C00]" aria-hidden="true" />
+	<Moon data-theme-state="dark" class="size-4 hover:text-[#F1C40F]" aria-hidden="true" />
+	<Monitor data-theme-state="system" class="size-4 hover:text-[#3498DB]" aria-hidden="true" />
+</button>

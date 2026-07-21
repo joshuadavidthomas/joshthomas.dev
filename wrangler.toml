@@ -1,7 +1,0 @@
-name = "joshthomas-dev"
-pages_build_output_dir = "dist"
-compatibility_date = "2025-03-14"
-
-[vars]
-NODE_VERSION = "24"
-PNPM_VERSION = "11.9.0"

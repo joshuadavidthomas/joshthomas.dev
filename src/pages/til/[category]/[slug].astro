@@ -1,0 +1,19 @@
+---
+import Article from '@/components/Article.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { entries, type Entry } from '@/lib/content';
+
+export async function getStaticPaths() {
+	return (await entries())
+		.filter((entry) => entry.type === 'til')
+		.map((entry) => ({
+			params: { category: entry.category, slug: entry.slug },
+			props: { entry }
+		}));
+}
+const { entry } = Astro.props as { entry: Entry };
+---
+
+<BaseLayout title={entry.title} description={entry.summary ?? entry.title} type="article" updated={entry.date} wide>
+	<Article {entry} />
+</BaseLayout>

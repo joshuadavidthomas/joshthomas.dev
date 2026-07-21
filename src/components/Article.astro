@@ -1,0 +1,22 @@
+---
+import { CalendarDays } from '@lucide/astro';
+import type { Entry } from '@/lib/content';
+import { renderMarkdown } from '@/lib/markdown';
+import { entryTransitionName } from '@/lib/transitions';
+const { entry } = Astro.props as { entry: Entry };
+const html = await renderMarkdown(entry.body, entry.type === 'post');
+---
+
+<article class="prose grid max-w-none grid-container-2xl prose-pre:grid-bleed-7xl prose-a:hover:text-blue-500 xl:prose-xl dark:prose-invert">
+	<header class="not-prose mb-8 max-w-2xl" transition:name={entryTransitionName(entry.title)}>
+		<h2 class="text-3xl tracking-tight text-gray-800 sm:text-4xl dark:text-gray-100">
+			{entry.type === 'til' && <span class="my-auto mr-3 text-tokyonight-day-teal dark:text-tokyonight-moon-teal">TIL</span>}
+			<Fragment set:html={entry.titleHtml} />
+		</h2>
+		<time datetime={entry.date.slice(0, 10)} class="mt-4 flex items-baseline gap-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+			<CalendarDays class="size-4 text-gray-700 dark:text-gray-300" aria-hidden="true" />
+			{new Date(entry.date).toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })}
+		</time>
+	</header>
+	<Fragment set:html={html} />
+</article>

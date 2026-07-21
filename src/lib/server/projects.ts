@@ -1,37 +1,52 @@
 // @ts-nocheck
 
-import { createHash } from 'node:crypto';
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { env } from '$env/dynamic/private';
+import { PROJECT_PACKAGES } from './project-packages';
+import { getPyPIStats } from './pypi-stats';
 
-type FetchOptions = { type?: 'json' | 'text'; fetchOptions?: RequestInit };
-const cache = new Map<string, unknown>();
-const cacheDirectory = '.cache/projects-fetch';
-const maxCacheAge = 24 * 60 * 60 * 1000;
+const USER_AGENT = 'joshthomas.dev (https://joshthomas.dev)';
+const RETRY_DELAYS_MS = [250, 1_000];
+const MAX_RETRY_WAIT_MS = 30_000;
 
-async function Fetch(url: string, options: FetchOptions = {}) {
-	const key = `${options.type ?? 'json'}:${url}`;
-	if (cache.has(key)) return cache.get(key);
-	const cachePath = join(cacheDirectory, createHash('sha256').update(key).digest('hex'));
-	try {
-		const info = await stat(cachePath);
-		if (Date.now() - info.mtimeMs < maxCacheAge) {
-			const cached = await readFile(cachePath, 'utf8');
-			const value = options.type === 'text' ? cached : JSON.parse(cached);
-			cache.set(key, value);
-			return value;
+function retryDelay(response: Response, attempt: number) {
+	const retryAfter = response.headers.get('Retry-After');
+	if (retryAfter) {
+		const seconds = /^\d+$/.test(retryAfter) ? Number(retryAfter) * 1_000 : Number.NaN;
+		const date = Number.isNaN(seconds) ? Date.parse(retryAfter) - Date.now() : Number.NaN;
+		const delay = Number.isNaN(seconds) ? date : seconds;
+		if (Number.isFinite(delay)) {
+			const nonNegativeDelay = Math.max(0, delay);
+			return nonNegativeDelay <= MAX_RETRY_WAIT_MS ? nonNegativeDelay : null;
 		}
-	} catch {
-		// A missing or stale cache entry falls through to the network.
 	}
-	const response = await fetch(url, options.fetchOptions);
-	if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
-	const value = options.type === 'text' ? await response.text() : await response.json();
-	cache.set(key, value);
-	await mkdir(cacheDirectory, { recursive: true });
-	await writeFile(cachePath, options.type === 'text' ? value : JSON.stringify(value));
-	return value;
+	return RETRY_DELAYS_MS[attempt];
+}
+
+function wait(delay: number) {
+	return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+function responseError(response: Response, url: string) {
+	return new Error(`${response.status} ${response.statusText} for ${url}`);
+}
+
+async function fetchJsonWithRetry(url: string, options: RequestInit = {}) {
+	for (let attempt = 0; ; attempt += 1) {
+		let response;
+		try {
+			response = await fetch(url, options);
+		} catch (error) {
+			if (attempt >= RETRY_DELAYS_MS.length) throw error;
+			await wait(RETRY_DELAYS_MS[attempt]);
+			continue;
+		}
+
+		if (response.ok) return response.json();
+		const retryable = response.status === 429 || (response.status >= 500 && response.status < 600);
+		if (!retryable || attempt >= RETRY_DELAYS_MS.length) throw responseError(response, url);
+		const delay = retryDelay(response, attempt);
+		if (delay === null) throw responseError(response, url);
+		await wait(delay);
+	}
 }
 
 /**
@@ -43,39 +58,22 @@ async function Fetch(url: string, options: FetchOptions = {}) {
  * @property {string|null} homepage - Repository homepage URL
  * @property {number} stargazers_count - Number of stars
  * @property {number} forks_count - Number of forks
- * @property {string|null} language - Primary language
  * @property {string[]} topics - Repository topics/tags
  * @property {boolean} fork - Whether this is a fork
- * @property {string} pushed_at - Last push date
- */
-
-/**
- * @typedef {Object} GitHubPR
- * @property {string} repository_url - URL to the repository
- * @property {string} html_url - URL to the PR
- * @property {number} number - PR number
- * @property {string} title - PR title
- * @property {Object} pull_request - PR metadata
- * @property {string|null} pull_request.merged_at - Merge timestamp
  */
 
 /**
  * @typedef {Object} PRContribution
- * @property {string} type - Type (always 'pr')
  * @property {string} title - PR title
  * @property {string} url - PR URL
  * @property {string} repoFullName - Full repository name (owner/repo)
- * @property {string} repoName - Repository name
- * @property {string} repoOwner - Repository owner
  * @property {string} repoUrl - Repository URL
  * @property {number} number - PR number
- * @property {boolean} merged - Whether PR was merged
  */
 
 /**
  * @typedef {Object} Language
  * @property {string} name - Language name
- * @property {number} bytes - Number of bytes
  * @property {string} icon - Devicon class name
  */
 
@@ -107,7 +105,6 @@ async function Fetch(url: string, options: FetchOptions = {}) {
 
 /**
  * @typedef {Object} Project
- * @property {string} type - Type (always 'project')
  * @property {string} name - Project name
  * @property {string} fullName - Full repository name (owner/repo)
  * @property {string} description - Project description
@@ -117,28 +114,14 @@ async function Fetch(url: string, options: FetchOptions = {}) {
  * @property {number} stars - Number of stars
  * @property {number} forks - Number of forks
  * @property {Language[]} languages - Languages used in the project
- * @property {string} updated - Last update date
  * @property {string|null} pypiPackage - PyPI package name if available
  * @property {PyPIStats|null} pypiStats - PyPI download statistics
  * @property {string|null} npmPackage - npm package name if available
  * @property {NPMStats|null} npmStats - npm download statistics
- * @property {Array<{name: string, stats: CratesIOStats|null}>} cratesIOCrates - crates.io crates with individual download statistics
+ * @property {Array<{name: string, stats: CratesIOStats}>} cratesIOCrates - crates.io crates with individual download statistics
  * @property {number|null} releaseDownloads - Total GitHub release asset downloads
  * @property {string|null} zedExtension - Zed extension ID if available
  * @property {ZedStats|null} zedStats - Zed extension download statistics
- */
-
-/**
- * @typedef {Object} ComprehensiveStats
- * @property {number} totalRepos - Total number of repositories (excluding forks)
- * @property {number} totalStars - Total stars across all repositories
- * @property {number} totalForks - Total forks across all repositories
- */
-
-/**
- * @typedef {Object} ProjectsData
- * @property {Array<Project|PRContribution>} items - Array of projects and contributions
- * @property {ComprehensiveStats} stats - Comprehensive stats across all repos
  */
 
 const GITHUB_USERNAME = 'joshuadavidthomas';
@@ -150,10 +133,6 @@ const WORK_ORGS = ['westerveltco']; // Organizations to include as work projects
 const MIN_ORG_CONTRIBUTION_RANK = 5; // Only include org repos where user is in top N contributors
 const EXCLUDED_ORGS = ['westerveltco']; // Organizations to exclude from PR contributions
 const EXCLUDED_REPOS = ['neovim/nvim-lspconfig', 'zed-industries/extensions']; // Repositories to exclude from contributions
-const ZED_EXTENSIONS = {
-	'joshuadavidthomas/zed-django': 'django'
-}; // Map of repo full names to Zed extension IDs
-
 /**
  * Map language names to devicon class names
  * @param {string} language - Language name from GitHub
@@ -209,347 +188,124 @@ function getDeviconClass(language) {
 }
 
 /**
- * Fetch data from GitHub API with authentication and caching
+ * Fetch data from the GitHub API.
  * @async
  * @param {string} url - GitHub API URL
  * @returns {Promise<any>} API response data
  */
-async function fetchFromGitHubApi(url) {
-	const options = {
-		duration: '1d',
-		type: 'json',
-		fetchOptions: {
-			headers: {
-				'User-Agent': 'joshthomas.dev'
-			}
-		}
-	};
+async function fetchFromGitHubApi(url, token) {
+	const headers = { 'User-Agent': USER_AGENT };
+	if (token) headers.Authorization = `Bearer ${token}`;
+	return fetchJsonWithRetry(url, { headers });
+}
 
-	if (env.GITHUB_TOKEN) {
-		options.fetchOptions.headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
-	}
+function isGitHubRepository(value) {
+	return (
+		value !== null &&
+		typeof value === 'object' &&
+		typeof value.name === 'string' &&
+		typeof value.full_name === 'string' &&
+		(value.description === null || typeof value.description === 'string') &&
+		typeof value.html_url === 'string' &&
+		(value.homepage === null || typeof value.homepage === 'string') &&
+		Number.isFinite(value.stargazers_count) &&
+		Number.isFinite(value.forks_count) &&
+		Array.isArray(value.topics) &&
+		value.topics.every((topic) => typeof topic === 'string') &&
+		typeof value.fork === 'boolean'
+	);
+}
 
-	try {
-		return await Fetch(url, options);
-	} catch (error) {
-		console.warn('Failed to fetch from GitHub API:', error.message);
-		return [];
+async function fetchRequiredGitHubRepositories(url, token) {
+	const data = await fetchFromGitHubApi(url, token);
+	if (!Array.isArray(data) || !data.every(isGitHubRepository)) {
+		throw new TypeError(`Expected valid repository records from GitHub API: ${url}`);
 	}
+	return data;
+}
+
+async function fetchRequiredGitHubContributors(url, token) {
+	const data = await fetchFromGitHubApi(url, token);
+	if (
+		!Array.isArray(data) ||
+		!data.every(
+			(contributor) =>
+				contributor !== null &&
+				typeof contributor === 'object' &&
+				typeof contributor.login === 'string'
+		)
+	) {
+		throw new TypeError(`Expected valid contributor records from GitHub API: ${url}`);
+	}
+	return data;
 }
 
 /**
- * Fetch and parse pyproject.toml to get PyPI package name
- * @async
- * @param {string} fullName - Repository full name (owner/repo)
- * @returns {Promise<string|null>} PyPI package name or null if not found
- */
-async function fetchPyProjectToml(fullName) {
-	const branches = ['main', 'master'];
-
-	for (const branch of branches) {
-		try {
-			const pyprojectUrl = `https://raw.githubusercontent.com/${fullName}/${branch}/pyproject.toml`;
-			const content = await Fetch(pyprojectUrl, {
-				duration: '1d',
-				type: 'text',
-				fetchOptions: {
-					headers: {
-						'User-Agent': 'joshthomas.dev'
-					}
-				}
-			});
-
-			// Simple regex to extract name = "package-name" from pyproject.toml
-			const nameMatch = content.match(/^name\s*=\s*"([^"]+)"/m);
-			if (nameMatch) {
-				return nameMatch[1];
-			}
-		} catch (error) {
-			// Continue to next branch or return null
-			continue;
-		}
-	}
-
-	return null;
-}
-
-/**
- * Fetch PyPI download statistics for a package
+ * Fetch required PyPI download statistics for a declared package.
  * @async
  * @param {string} packageName - PyPI package name
- * @returns {Promise<PyPIStats|null>} Download statistics or null if not found
+ * @returns {Promise<PyPIStats>} Download statistics
  */
-async function fetchPyPIStats(packageName) {
-	try {
-		const statsUrl = `https://pypistats.org/api/packages/${packageName}/recent`;
-		const data = await Fetch(statsUrl, {
-			duration: '1d',
-			type: 'json',
-			fetchOptions: {
-				headers: {
-					'User-Agent': 'joshthomas.dev'
-				}
-			}
-		});
-
-		if (data && data.data) {
-			return {
-				lastDay: data.data.last_day || 0,
-				lastWeek: data.data.last_week || 0,
-				lastMonth: data.data.last_month || 0
-			};
-		}
-	} catch (error) {
-		// Silently ignore 404s (package not on PyPI), but warn on other errors
-		if (!error.message.includes('404')) {
-			console.warn(`Failed to fetch PyPI stats for ${packageName}:`, error.message);
-		}
-	}
-
-	return null;
-}
-
 /**
- * Fetch and parse package.json to get npm package name
- * @async
- * @param {string} fullName - Repository full name (owner/repo)
- * @returns {Promise<string|null>} npm package name or null if not found/private
- */
-async function fetchPackageJson(fullName) {
-	const branches = ['main', 'master'];
-
-	for (const branch of branches) {
-		try {
-			const packageJsonUrl = `https://raw.githubusercontent.com/${fullName}/${branch}/package.json`;
-			const content = await Fetch(packageJsonUrl, {
-				duration: '1d',
-				type: 'json',
-				fetchOptions: {
-					headers: {
-						'User-Agent': 'joshthomas.dev'
-					}
-				}
-			});
-
-			// Only return if package has a name and is not private
-			if (content && content.name && !content.private) {
-				return content.name;
-			}
-		} catch (error) {
-			// Continue to next branch or return null
-			continue;
-		}
-	}
-
-	return null;
-}
-
-/**
- * Fetch npm download statistics for a package
+ * Fetch required npm download statistics for a declared package.
  * @async
  * @param {string} packageName - npm package name
- * @returns {Promise<NPMStats|null>} Download statistics or null if not found
+ * @returns {Promise<NPMStats>} Download statistics
  */
 async function fetchNPMStats(packageName) {
-	try {
-		// npm API requires URL encoding for scoped packages (@org/package)
-		const encodedName = encodeURIComponent(packageName);
-
-		// Fetch all three time periods in parallel
-		const [lastDayData, lastWeekData, lastMonthData] = await Promise.all([
-			Fetch(`https://api.npmjs.org/downloads/point/last-day/${encodedName}`, {
-				duration: '1d',
-				type: 'json',
-				fetchOptions: {
-					headers: {
-						'User-Agent': 'joshthomas.dev'
-					}
-				}
-			}),
-			Fetch(`https://api.npmjs.org/downloads/point/last-week/${encodedName}`, {
-				duration: '1d',
-				type: 'json',
-				fetchOptions: {
-					headers: {
-						'User-Agent': 'joshthomas.dev'
-					}
-				}
-			}),
-			Fetch(`https://api.npmjs.org/downloads/point/last-month/${encodedName}`, {
-				duration: '1d',
-				type: 'json',
-				fetchOptions: {
-					headers: {
-						'User-Agent': 'joshthomas.dev'
-					}
-				}
-			})
-		]);
-
-		return {
-			lastDay: lastDayData?.downloads || 0,
-			lastWeek: lastWeekData?.downloads || 0,
-			lastMonth: lastMonthData?.downloads || 0
-		};
-	} catch (error) {
-		// Silently ignore 404s (package not on npm), but warn on other errors
-		if (!error.message.includes('404')) {
-			console.warn(`Failed to fetch npm stats for ${packageName}:`, error.message);
-		}
+	const encodedName = encodeURIComponent(packageName);
+	const options = { headers: { 'User-Agent': USER_AGENT } };
+	const [lastDayData, lastWeekData, lastMonthData] = await Promise.all([
+		fetchJsonWithRetry(`https://api.npmjs.org/downloads/point/last-day/${encodedName}`, options),
+		fetchJsonWithRetry(`https://api.npmjs.org/downloads/point/last-week/${encodedName}`, options),
+		fetchJsonWithRetry(`https://api.npmjs.org/downloads/point/last-month/${encodedName}`, options)
+	]);
+	if (
+		!Number.isFinite(lastDayData?.downloads) ||
+		!Number.isFinite(lastWeekData?.downloads) ||
+		!Number.isFinite(lastMonthData?.downloads)
+	) {
+		throw new TypeError(`Expected valid npm statistics for ${packageName}`);
 	}
-
-	return null;
+	return {
+		lastDay: lastDayData.downloads,
+		lastWeek: lastWeekData.downloads,
+		lastMonth: lastMonthData.downloads
+	};
 }
 
 /**
- * Extract publishable crate name from Cargo.toml content
- * @param {string} content - Raw Cargo.toml content
- * @returns {string|null} Crate name or null if not a publishable package
- */
-function extractCrateName(content) {
-	const nameMatch = content.match(/\[package\][^[]*?name\s*=\s*"([^"]+)"/);
-	if (!nameMatch) return null;
-
-	// Skip if publish = false or publish = []
-	if (/\[package\][^[]*?publish\s*=\s*false/.test(content)) return null;
-	if (/\[package\][^[]*?publish\s*=\s*\[\s*\]/.test(content)) return null;
-
-	return nameMatch[1];
-}
-
-/**
- * Fetch publishable crate names from a repository.
- * Handles both single-crate repos and Cargo workspaces.
- * @async
- * @param {string} fullName - Repository full name (owner/repo)
- * @returns {Promise<string[]>} Array of publishable crate names
- */
-async function fetchCrateNames(fullName) {
-	const branches = ['main', 'master'];
-
-	for (const branch of branches) {
-		try {
-			const rootContent = await Fetch(
-				`https://raw.githubusercontent.com/${fullName}/${branch}/Cargo.toml`,
-				{
-					duration: '1d',
-					type: 'text',
-					fetchOptions: {
-						headers: {
-							'User-Agent': 'joshthomas.dev'
-						}
-					}
-				}
-			);
-
-			const isWorkspace = /^\[workspace\]/m.test(rootContent);
-
-			if (!isWorkspace) {
-				// Single-crate repo
-				const name = extractCrateName(rootContent);
-				return name ? [name] : [];
-			}
-
-			// Workspace: use the tree API to find all Cargo.toml files
-			const tree = await fetchFromGitHubApi(
-				`https://api.github.com/repos/${fullName}/git/trees/${branch}?recursive=1`
-			);
-
-			if (!tree?.tree) return [];
-
-			const cargoTomlPaths = tree.tree
-				.filter(
-					(item) =>
-						item.type === 'blob' && item.path !== 'Cargo.toml' && item.path.endsWith('/Cargo.toml')
-				)
-				.map((item) => item.path);
-
-			const names = [];
-
-			// Check if root Cargo.toml also has a [package] section (virtual vs non-virtual workspace)
-			const rootName = extractCrateName(rootContent);
-			if (rootName) names.push(rootName);
-
-			for (const path of cargoTomlPaths) {
-				try {
-					const content = await Fetch(
-						`https://raw.githubusercontent.com/${fullName}/${branch}/${path}`,
-						{
-							duration: '1d',
-							type: 'text',
-							fetchOptions: {
-								headers: {
-									'User-Agent': 'joshthomas.dev'
-								}
-							}
-						}
-					);
-
-					const name = extractCrateName(content);
-					if (name) names.push(name);
-				} catch {
-					continue;
-				}
-			}
-
-			return names.sort();
-		} catch {
-			continue;
-		}
-	}
-
-	return [];
-}
-
-/**
- * Fetch crates.io download statistics for a crate
+ * Fetch required crates.io download statistics for a declared crate.
  * @async
  * @param {string} crateName - crates.io crate name
- * @returns {Promise<CratesIOStats|null>} Download statistics or null if not found
+ * @returns {Promise<CratesIOStats>} Download statistics
  */
 async function fetchCratesIOStats(crateName) {
-	try {
-		const data = await Fetch(`https://crates.io/api/v1/crates/${crateName}/downloads`, {
-			duration: '1d',
-			type: 'json',
-			fetchOptions: {
-				headers: {
-					'User-Agent': 'joshthomas.dev'
-				}
-			}
-		});
-
-		// Combine version_downloads and meta.extra_downloads into per-day totals
-		const dailyTotals = {};
-
-		if (data.version_downloads) {
-			for (const entry of data.version_downloads) {
-				dailyTotals[entry.date] = (dailyTotals[entry.date] || 0) + entry.downloads;
-			}
-		}
-
-		if (data.meta?.extra_downloads) {
-			for (const entry of data.meta.extra_downloads) {
-				dailyTotals[entry.date] = (dailyTotals[entry.date] || 0) + entry.downloads;
-			}
-		}
-
-		// Sort dates descending to get most recent first
-		const dates = Object.keys(dailyTotals).sort().reverse();
-
-		const lastDay = dates.length > 0 ? dailyTotals[dates[0]] : 0;
-		const lastWeek = dates.slice(0, 7).reduce((sum, date) => sum + dailyTotals[date], 0);
-		const lastMonth = dates.slice(0, 30).reduce((sum, date) => sum + dailyTotals[date], 0);
-
-		return { lastDay, lastWeek, lastMonth };
-	} catch (error) {
-		// Silently ignore 404s (crate not on crates.io), but warn on other errors
-		if (!error.message.includes('404')) {
-			console.warn(`Failed to fetch crates.io stats for ${crateName}:`, error.message);
-		}
+	const data = await fetchJsonWithRetry(`https://crates.io/api/v1/crates/${crateName}/downloads`, {
+		headers: { 'User-Agent': USER_AGENT }
+	});
+	const versionDownloads = data?.version_downloads;
+	const extraDownloads = data?.meta?.extra_downloads;
+	const validEntry = (entry) => typeof entry?.date === 'string' && Number.isFinite(entry.downloads);
+	if (
+		!Array.isArray(versionDownloads) ||
+		!versionDownloads.every(validEntry) ||
+		!Array.isArray(extraDownloads) ||
+		!extraDownloads.every(validEntry)
+	) {
+		throw new TypeError(`Expected valid crates.io statistics for ${crateName}`);
 	}
 
-	return null;
+	const dailyTotals = {};
+	for (const entry of [...versionDownloads, ...extraDownloads]) {
+		dailyTotals[entry.date] = (dailyTotals[entry.date] || 0) + entry.downloads;
+	}
+	const dates = Object.keys(dailyTotals).sort().reverse();
+	return {
+		lastDay: dates.length > 0 ? dailyTotals[dates[0]] : 0,
+		lastWeek: dates.slice(0, 7).reduce((sum, date) => sum + dailyTotals[date], 0),
+		lastMonth: dates.slice(0, 30).reduce((sum, date) => sum + dailyTotals[date], 0)
+	};
 }
 
 /**
@@ -558,63 +314,47 @@ async function fetchCratesIOStats(crateName) {
  * @param {string} fullName - Repository full name (owner/repo)
  * @returns {Promise<number|null>} Total downloads or null if no releases
  */
-async function fetchReleaseDownloads(fullName) {
-	const releases = await fetchFromGitHubApi(
-		`https://api.github.com/repos/${fullName}/releases?per_page=100`
-	);
+async function fetchReleaseDownloads(fullName, token) {
+	try {
+		const releases = await fetchFromGitHubApi(
+			`https://api.github.com/repos/${fullName}/releases?per_page=100`,
+			token
+		);
+		if (!Array.isArray(releases) || releases.length === 0) return null;
 
-	if (!Array.isArray(releases) || releases.length === 0) return null;
-
-	const checksumExts = ['.sha256', '.sha512', '.md5', '.asc', '.sig'];
-	let total = 0;
-
-	for (const release of releases) {
-		if (!release.assets) continue;
-		for (const asset of release.assets) {
-			const isChecksum = checksumExts.some((ext) => asset.name.endsWith(ext));
-			if (!isChecksum) {
-				total += asset.download_count;
+		const checksumExts = ['.sha256', '.sha512', '.md5', '.asc', '.sig'];
+		let total = 0;
+		for (const release of releases) {
+			if (!release.assets) continue;
+			for (const asset of release.assets) {
+				const isChecksum = checksumExts.some((ext) => asset.name.endsWith(ext));
+				if (!isChecksum) total += asset.download_count;
 			}
 		}
+		return total > 0 ? total : null;
+	} catch (error) {
+		console.warn(`Failed to fetch release downloads for ${fullName}:`, error.message);
+		return null;
 	}
-
-	return total > 0 ? total : null;
 }
 
 /**
- * Fetch Zed extension download statistics
+ * Fetch required download statistics for a declared Zed extension.
  * @async
  * @param {string} extensionId - Zed extension ID
- * @returns {Promise<ZedStats|null>} Download statistics or null if not found
+ * @returns {Promise<ZedStats>} Download statistics
  */
 async function fetchZedExtensionStats(extensionId) {
-	try {
-		const data = await Fetch(`https://api.zed.dev/extensions?filter=${extensionId}`, {
-			duration: '1d',
-			type: 'json',
-			fetchOptions: {
-				headers: {
-					'User-Agent': 'joshthomas.dev'
-				}
-			}
-		});
-
-		const extensions = data?.data;
-		if (Array.isArray(extensions) && extensions.length > 0) {
-			const extension = extensions.find((ext) => ext.id === extensionId);
-			if (extension && extension.download_count !== undefined) {
-				return {
-					totalDownloads: extension.download_count
-				};
-			}
-		}
-	} catch (error) {
-		if (!error.message.includes('404')) {
-			console.warn(`Failed to fetch Zed extension stats for ${extensionId}:`, error.message);
-		}
+	const data = await fetchJsonWithRetry(`https://api.zed.dev/extensions?filter=${extensionId}`, {
+		headers: { 'User-Agent': USER_AGENT }
+	});
+	const extension = Array.isArray(data?.data)
+		? data.data.find((candidate) => candidate.id === extensionId)
+		: undefined;
+	if (!Number.isFinite(extension?.download_count)) {
+		throw new TypeError(`Expected valid Zed extension statistics for ${extensionId}`);
 	}
-
-	return null;
+	return { totalDownloads: extension.download_count };
 }
 
 /**
@@ -623,21 +363,24 @@ async function fetchZedExtensionStats(extensionId) {
  * @param {string} fullName - Repository full name (owner/repo)
  * @returns {Promise<Language[]>} Array of languages sorted by bytes
  */
-async function fetchRepoLanguages(fullName) {
-	const languagesData = await fetchFromGitHubApi(
-		`https://api.github.com/repos/${fullName}/languages`
-	);
-
-	const languages = Object.entries(languagesData)
-		.map(([name, bytes]) => ({
-			name,
-			bytes,
-			icon: getDeviconClass(name)
-		}))
-		.sort((a, b) => b.bytes - a.bytes)
-		.slice(0, MAX_LANGUAGES);
-
-	return languages;
+async function fetchRepoLanguages(fullName, token) {
+	try {
+		const languagesData = await fetchFromGitHubApi(
+			`https://api.github.com/repos/${fullName}/languages`,
+			token
+		);
+		if (!languagesData || typeof languagesData !== 'object' || Array.isArray(languagesData)) {
+			throw new TypeError(`Expected a language map for ${fullName}`);
+		}
+		return Object.entries(languagesData)
+			.map(([name, bytes]) => ({ name, bytes }))
+			.sort((a, b) => b.bytes - a.bytes)
+			.slice(0, MAX_LANGUAGES)
+			.map(({ name }) => ({ name, icon: getDeviconClass(name) }));
+	} catch (error) {
+		console.warn(`Failed to fetch languages for ${fullName}:`, error.message);
+		return [];
+	}
 }
 
 /**
@@ -646,15 +389,11 @@ async function fetchRepoLanguages(fullName) {
  * @param {string} fullName - Repository full name (owner/repo)
  * @returns {Promise<boolean>} True if user is in top contributors
  */
-async function isTopContributor(fullName) {
-	const contributors = await fetchFromGitHubApi(
-		`https://api.github.com/repos/${fullName}/contributors?per_page=${MIN_ORG_CONTRIBUTION_RANK}`
+async function isTopContributor(fullName, token) {
+	const contributors = await fetchRequiredGitHubContributors(
+		`https://api.github.com/repos/${fullName}/contributors?per_page=${MIN_ORG_CONTRIBUTION_RANK}`,
+		token
 	);
-
-	if (!Array.isArray(contributors)) {
-		return false;
-	}
-
 	return contributors.some((contributor) => contributor.login === GITHUB_USERNAME);
 }
 
@@ -664,107 +403,17 @@ async function isTopContributor(fullName) {
  * @param {string} org - Organization name
  * @returns {Promise<Project[]>} Array of project objects
  */
-async function fetchOrgProjects(org) {
-	console.log(`Fetching projects from ${org} organization...`);
-
-	const orgRepos = await fetchFromGitHubApi(
-		`https://api.github.com/orgs/${org}/repos?type=public&per_page=100`
+async function fetchOrgProjectRepos(org, token) {
+	const orgRepos = await fetchRequiredGitHubRepositories(
+		`https://api.github.com/orgs/${org}/repos?type=public&per_page=100`,
+		token
 	);
-
-	if (!Array.isArray(orgRepos)) {
-		console.warn(`Failed to fetch repos for org ${org}`);
-		return [];
-	}
-
-	const orgProjects = [];
+	const projectRepos = [];
 	for (const repo of orgRepos) {
-		if (repo.fork || repo.stargazers_count < MIN_STARS) {
-			continue;
-		}
-
-		const isContributor = await isTopContributor(repo.full_name);
-		if (!isContributor) {
-			continue;
-		}
-
-		const languages = await fetchRepoLanguages(repo.full_name);
-
-		// Check if this is a Python project with a PyPI package
-		let pypiPackage = null;
-		let pypiStats = null;
-		const hasPython = languages.some((lang) => lang.name === 'Python');
-
-		if (hasPython) {
-			pypiPackage = await fetchPyProjectToml(repo.full_name);
-			if (pypiPackage) {
-				pypiStats = await fetchPyPIStats(pypiPackage);
-			}
-		}
-
-		// Check if this is a JavaScript/TypeScript project with an npm package
-		let npmPackage = null;
-		let npmStats = null;
-		const hasJS = languages.some(
-			(lang) => lang.name === 'JavaScript' || lang.name === 'TypeScript'
-		);
-
-		if (hasJS) {
-			npmPackage = await fetchPackageJson(repo.full_name);
-			if (npmPackage) {
-				npmStats = await fetchNPMStats(npmPackage);
-			}
-		}
-
-		// Check if this is a Rust project with crates.io crates
-		const cratesIOCrates = [];
-		const hasRust = languages.some((lang) => lang.name === 'Rust');
-
-		if (hasRust) {
-			const crateNames = await fetchCrateNames(repo.full_name);
-			for (const name of crateNames) {
-				const stats = await fetchCratesIOStats(name);
-				if (stats) {
-					cratesIOCrates.push({ name, stats });
-				}
-			}
-		}
-
-		// Fetch GitHub release download counts
-		const releaseDownloads = await fetchReleaseDownloads(repo.full_name);
-
-		// Check if this repo has an associated Zed extension
-		const zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
-		let zedStats = null;
-
-		if (zedExtension) {
-			zedStats = await fetchZedExtensionStats(zedExtension);
-		}
-
-		orgProjects.push({
-			type: 'project',
-			name: repo.name,
-			fullName: repo.full_name,
-			description: repo.description || null,
-			url: repo.html_url,
-			homepage: repo.homepage || null,
-			topics: repo.topics || [],
-			stars: repo.stargazers_count,
-			forks: repo.forks_count,
-			languages: languages,
-			updated: repo.pushed_at,
-			pypiPackage: pypiPackage,
-			pypiStats: pypiStats,
-			npmPackage: npmPackage,
-			npmStats: npmStats,
-			cratesIOCrates: cratesIOCrates,
-			releaseDownloads: releaseDownloads,
-			zedExtension: zedExtension,
-			zedStats: zedStats
-		});
+		if (repo.fork || repo.stargazers_count < MIN_STARS) continue;
+		if (await isTopContributor(repo.full_name, token)) projectRepos.push(repo);
 	}
-
-	console.log(`Found ${orgProjects.length} projects from ${org}`);
-	return orgProjects;
+	return projectRepos;
 }
 
 /**
@@ -772,154 +421,56 @@ async function fetchOrgProjects(org) {
  * @async
  * @returns {Promise<Project[]>} Array of project objects
  */
-async function fetchUserProjects() {
-	console.log('Fetching user GitHub projects...');
-
-	const userRepos = await fetchFromGitHubApi(
-		`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`
+async function fetchUserProjectRepos(token) {
+	const userRepos = await fetchRequiredGitHubRepositories(
+		`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`,
+		token
 	);
-
-	const filteredRepos = userRepos.filter(
-		(repo) => !repo.fork && repo.stargazers_count >= MIN_STARS
-	);
-
-	const userProjects = [];
-	for (const repo of filteredRepos) {
-		const languages = await fetchRepoLanguages(repo.full_name);
-
-		// Check if this is a Python project with a PyPI package
-		let pypiPackage = null;
-		let pypiStats = null;
-		const hasPython = languages.some((lang) => lang.name === 'Python');
-
-		if (hasPython) {
-			pypiPackage = await fetchPyProjectToml(repo.full_name);
-			if (pypiPackage) {
-				pypiStats = await fetchPyPIStats(pypiPackage);
-			}
-		}
-
-		// Check if this is a JavaScript/TypeScript project with an npm package
-		let npmPackage = null;
-		let npmStats = null;
-		const hasJS = languages.some(
-			(lang) => lang.name === 'JavaScript' || lang.name === 'TypeScript'
-		);
-
-		if (hasJS) {
-			npmPackage = await fetchPackageJson(repo.full_name);
-			if (npmPackage) {
-				npmStats = await fetchNPMStats(npmPackage);
-			}
-		}
-
-		// Check if this is a Rust project with crates.io crates
-		const cratesIOCrates = [];
-		const hasRust = languages.some((lang) => lang.name === 'Rust');
-
-		if (hasRust) {
-			const crateNames = await fetchCrateNames(repo.full_name);
-			for (const name of crateNames) {
-				const stats = await fetchCratesIOStats(name);
-				if (stats) {
-					cratesIOCrates.push({ name, stats });
-				}
-			}
-		}
-
-		// Fetch GitHub release download counts
-		const releaseDownloads = await fetchReleaseDownloads(repo.full_name);
-
-		// Check if this repo has an associated Zed extension
-		const zedExtension = ZED_EXTENSIONS[repo.full_name] || null;
-		let zedStats = null;
-
-		if (zedExtension) {
-			zedStats = await fetchZedExtensionStats(zedExtension);
-		}
-
-		userProjects.push({
-			type: 'project',
-			name: repo.name,
-			fullName: repo.full_name,
-			description: repo.description || null,
-			url: repo.html_url,
-			homepage: repo.homepage || null,
-			topics: repo.topics || [],
-			stars: repo.stargazers_count,
-			forks: repo.forks_count,
-			languages: languages,
-			updated: repo.pushed_at,
-			pypiPackage: pypiPackage,
-			pypiStats: pypiStats,
-			npmPackage: npmPackage,
-			npmStats: npmStats,
-			cratesIOCrates: cratesIOCrates,
-			releaseDownloads: releaseDownloads,
-			zedExtension: zedExtension,
-			zedStats: zedStats
-		});
-	}
-
-	console.log(`Found ${userProjects.length} user projects`);
-
-	return userProjects;
+	return userRepos.filter((repo) => !repo.fork && repo.stargazers_count >= MIN_STARS);
 }
 
-/**
- * Fetch and transform projects from work organizations
- * @async
- * @returns {Promise<Project[]>} Array of project objects from work orgs
- */
-async function fetchWorkProjects() {
-	const workProjects = [];
-
+async function fetchProjectRepos(token) {
+	const projectRepos = await fetchUserProjectRepos(token);
 	for (const org of WORK_ORGS) {
-		const orgProjects = await fetchOrgProjects(org);
-		workProjects.push(...orgProjects);
+		projectRepos.push(...(await fetchOrgProjectRepos(org, token)));
 	}
-
-	console.log(`Found ${workProjects.length} total work projects`);
-	return workProjects;
-}
-/**
- * Fetch and transform projects for user, including from work organizations
- * @async
- * @returns {Promise<Project[]>} Array of project objects from work orgs
- */
-async function fetchProjects() {
-	const userProjects = await fetchUserProjects();
-	const workProjects = await fetchWorkProjects();
-	const projects = [...userProjects, ...workProjects];
-	projects.sort((a, b) => b.stars - a.stars);
-	return projects;
+	return projectRepos;
 }
 
-/**
- * Fetch comprehensive statistics across all user repositories
- * @async
- * @returns {Promise<ComprehensiveStats>} Stats object with totals
- */
-async function fetchComprehensiveStats() {
-	console.log('Fetching comprehensive GitHub stats...');
+async function enrichProject(repo, token, pypiStatsByPackage) {
+	const packages = PROJECT_PACKAGES[repo.full_name] || {};
+	const languages = await fetchRepoLanguages(repo.full_name, token);
+	const pypiPackage = packages.pypi || null;
+	const pypiStats = pypiPackage ? pypiStatsByPackage[pypiPackage] : null;
+	const npmPackage = packages.npm || null;
+	const npmStats = npmPackage ? await fetchNPMStats(npmPackage) : null;
+	const cratesIOCrates = [];
+	for (const name of packages.crates || []) {
+		cratesIOCrates.push({ name, stats: await fetchCratesIOStats(name) });
+	}
+	const releaseDownloads = await fetchReleaseDownloads(repo.full_name, token);
+	const zedExtension = packages.zed || null;
+	const zedStats = zedExtension ? await fetchZedExtensionStats(zedExtension) : null;
 
-	const allUserRepos = await fetchFromGitHubApi(
-		`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`
-	);
-
-	const originalRepos = allUserRepos.filter((repo) => !repo.fork);
-
-	const stats = {
-		totalRepos: originalRepos.length,
-		totalStars: originalRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
-		totalForks: originalRepos.reduce((sum, repo) => sum + repo.forks_count, 0)
+	return {
+		name: repo.name,
+		fullName: repo.full_name,
+		description: repo.description || null,
+		url: repo.html_url,
+		homepage: repo.homepage || null,
+		topics: repo.topics || [],
+		stars: repo.stargazers_count,
+		forks: repo.forks_count,
+		languages,
+		pypiPackage,
+		pypiStats,
+		npmPackage,
+		npmStats,
+		cratesIOCrates,
+		releaseDownloads,
+		zedExtension,
+		zedStats
 	};
-
-	console.log(
-		`OG Stats: ${stats.totalRepos} repos, ${stats.totalStars} stars, ${stats.totalForks} forks`
-	);
-
-	return stats;
 }
 
 /**
@@ -927,16 +478,22 @@ async function fetchComprehensiveStats() {
  * @async
  * @returns {Promise<PRContribution[]>} Array of PR contribution objects
  */
-async function fetchContributions() {
+async function fetchContributions(token) {
 	console.log('Fetching user GitHub contributions...');
 	const contributionSearch = await fetchFromGitHubApi(
-		`https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_PRS_TO_FETCH}`
+		`https://api.github.com/search/issues?q=type:pr+author:${GITHUB_USERNAME}+is:public+-user:${GITHUB_USERNAME}+is:merged&sort=created&order=desc&per_page=${MAX_PRS_TO_FETCH}`,
+		token
 	);
-	const contributedPRs = contributionSearch.items || [];
+	if (!contributionSearch || !Array.isArray(contributionSearch.items)) {
+		throw new TypeError('Expected an items array from the GitHub contribution search');
+	}
+	const contributedPRs = contributionSearch.items;
 	console.log(`Found ${contributedPRs.length} contributed PRs`);
 
 	const contributions = contributedPRs
 		.map((pr) => {
+			if (!pr.pull_request?.merged_at) return null;
+
 			const match = pr.repository_url?.match(/repos\/([^/]+)\/([^/]+)$/);
 			if (!match) return null;
 
@@ -953,15 +510,11 @@ async function fetchContributions() {
 			}
 
 			return {
-				type: 'pr',
 				title: pr.title,
 				url: pr.html_url,
-				repoName: repoName,
-				repoOwner: repoOwner,
 				repoFullName: repoFullName,
 				repoUrl: `https://github.com/${repoFullName}`,
-				number: pr.number,
-				merged: !!pr.pull_request?.merged_at
+				number: pr.number
 			};
 		})
 		.filter(Boolean);
@@ -975,21 +528,34 @@ async function fetchContributions() {
 	return topContributions;
 }
 
-/**
- * Main function to fetch and combine project data
- * @async
- * @returns {Promise<ProjectsData>} Object with items array and stats object
- */
-export default async function () {
+async function fetchOptionalContributions(token) {
 	try {
-		const stats = await fetchComprehensiveStats();
-		const projects = await fetchProjects();
-		const contributions = await fetchContributions();
-		const items = [...projects, ...contributions];
-
-		return { items, stats };
+		return await fetchContributions(token);
 	} catch (error) {
-		console.error('Error fetching GitHub projects:', error);
-		return { items: [], stats: { totalRepos: 0, totalStars: 0, totalForks: 0 } };
+		console.warn('Failed to fetch GitHub contributions:', error.message);
+		return [];
 	}
+}
+
+/**
+ * Fetch projects and optional contributions for the projects route.
+ * @async
+ * @param {string|undefined} token
+ * @param {KVNamespace|undefined} [packageStats]
+ * @returns {Promise<{projects: Project[], contributions: PRContribution[]}>}
+ */
+export default async function (token, packageStats) {
+	const projectRepos = await fetchProjectRepos(token);
+	const pypiPackages = projectRepos.flatMap((repo) => {
+		const packages = PROJECT_PACKAGES[repo.full_name];
+		return packages && 'pypi' in packages ? [packages.pypi] : [];
+	});
+	const pypiStatsByPackage =
+		pypiPackages.length > 0 ? await getPyPIStats(packageStats, pypiPackages) : {};
+	const projects = [];
+	for (const repo of projectRepos)
+		projects.push(await enrichProject(repo, token, pypiStatsByPackage));
+	projects.sort((a, b) => b.stars - a.stars);
+	const contributions = await fetchOptionalContributions(token);
+	return { projects, contributions };
 }

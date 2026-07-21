@@ -1,31 +1,19 @@
-# https://github.com/11ty/eleventy/blob/2571704f192036b8461afee3a157f396254e2613/.gitignore
-# Generated files
-package/generated*
-
-# Ignore installed npm modules
+# Dependencies
 node_modules/
 
-# Ignore build tool output, e.g. code coverage
-.nyc_output/
-coverage/
-docs/_data/coverage.json
-
-# Ignore API documentation
-api-docs/
-
-# Ignore folders from source code editors
-.vscode
-.idea
-
-# Ignore generated build output
+# Build and tool output
+.astro/
 .brokk/
+.cache/
+.wrangler/
+coverage/
 dist/
-.svelte-kit/
 
-# Ignore test files
-.cache
-test/stubs-layout-cache/_includes/*.js
+# Editors
+.idea/
+.vscode/
 
+# Local environment
 .env*
 !.env*.example
 .dev.vars*

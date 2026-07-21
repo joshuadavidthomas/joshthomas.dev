@@ -1,0 +1,110 @@
+---
+import BrandIcon from '@/components/BrandIcon.astro';
+import Meta from '@/components/Meta.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import favicon from '@/lib/assets/favicon.svg';
+import { themeBootstrap } from '@/lib/theme';
+import { ClientRouter } from 'astro:transitions';
+import '@/lib/styles/style.css';
+
+type Props = {
+	title?: string;
+	description: string;
+	type?: 'website' | 'article';
+	updated?: string;
+	wide?: boolean;
+};
+
+const { title, description, type, updated, wide = false } = Astro.props;
+const pathname = Astro.url.pathname;
+const active = (href: string) =>
+	href !== '/' && (pathname.startsWith(href) || (href === '/blog/' && pathname.startsWith('/til/')));
+const social = [
+	{ label: 'Mastodon', href: 'https://joshthomas.dev/@josh' },
+	{ label: 'Bluesky', href: 'https://bsky.app/profile/joshthomas.dev' },
+	{ label: 'GitHub', href: 'https://github.com/joshuadavidthomas' },
+	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/joshua-thomas-b1745a16/' }
+] as const;
+const sourceExceptions: Record<string, string> = {
+	'/': 'src/pages/index.astro',
+	'/projects': 'src/pages/projects/index.astro'
+};
+const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.routePattern}.astro`;
+---
+
+<!doctype html>
+<html lang="en" class="bg-gray-50 text-gray-950 dark:bg-gray-950 dark:text-gray-50" data-mode-state="system" data-theme="light">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<style is:inline>
+			:root { color-scheme: light; background: #fafafa; color: #09090b; }
+			:root[data-theme='dark'] { color-scheme: dark; background: #09090b; color: #fafafa; }
+		</style>
+		<script is:inline set:html={themeBootstrap}></script>
+		<Meta {title} {description} {type} {updated} />
+		<ClientRouter />
+		<link rel="icon" href={favicon.src} />
+		<link rel="alternate" type="application/atom+xml" title="Josh Thomas" href="/feeds/blog.xml" />
+		<meta name="author" content="Josh Thomas" />
+		<meta property="og:site_name" content="joshthomas.dev" />
+		<meta property="og:locale" content="en_US" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<link rel="preload" href="/static/fonts/BricolageGrotesque.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+		<link rel="preload" href="/static/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+		<link rel="preload" href="/static/fonts/InterVariable-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+		<link href="mailto:josh@joshthomas.dev" rel="me" />
+		<link href="https://github.com/joshuadavidthomas" rel="me" />
+		<link href="https://joshthomas.dev/@josh" rel="me" />
+		<link href="https://social.joshthomas.dev/@josh" rel="me" />
+		<script is:inline>
+			window.goatcounter = { no_onload: true };
+			document.addEventListener('astro:page-load', () => window.goatcounter?.count?.());
+		</script>
+		<script is:inline data-goatcounter="https://joshthomasdev.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+		{
+			type === 'article' && (
+				<>
+					<link rel="preload" href="/static/fonts/monolisa-v2.015/0-normal.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+					<link rel="preload" href="/static/fonts/monolisa-v2.015/1-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+				</>
+			)
+		}
+		<slot name="head" />
+	</head>
+	<body>
+		<div class="grid-layout px-2">
+			<header class="flex flex-col items-baseline justify-between gap-y-2 xs:flex-row" transition:name="site-header">
+				<div>
+					<h1 class="text-2xl"><a href="/">Josh Thomas</a></h1>
+					<nav class="flex items-center gap-4 text-sm" aria-label="Main navigation">
+						{[['/', 'HOME'], ['/blog/', 'BLOG'], ['/projects/', 'PROJECTS']].map(([href, label]) => (
+							<a href={href} class:list={['uppercase underline-offset-4 hover:underline', { 'font-semibold underline': active(href) }]}>{label}</a>
+						))}
+					</nav>
+				</div>
+				<div class="order-first mt-2 flex w-full items-center justify-between gap-2 xs:order-none xs:mt-0 xs:w-auto xs:justify-end">
+					<nav class="flex items-center gap-2 text-xs font-semibold" aria-label="Social media">
+						{social.map((item) => (
+							<a href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} title={item.label}><BrandIcon label={item.label} /></a>
+						))}
+					</nav>
+					<ThemeToggle />
+				</div>
+			</header>
+			<main id="skip" class:list={{ 'w-full': wide }}><slot /></main>
+			<footer class="mt-24 pb-4 text-xs" transition:name="site-footer">
+				<hr aria-hidden="true" class="mx-auto w-24 text-gray-300 dark:text-white/15" />
+				<div class="mt-4 flex items-center justify-between">
+					<nav class="flex items-center gap-2 uppercase" aria-label="Secondary navigation"><a href="/design-system/" class:list={['underline-offset-4', { 'font-semibold underline': pathname === '/design-system/' }]}>Design system</a></nav>
+					<div class="flex items-center gap-2 italic">
+						<span>Built with <a href="https://astro.build/" class="underline-offset-4">Astro</a></span>
+						<span>·</span>
+						<a href={`https://github.com/joshuadavidthomas/joshthomas.dev/tree/main/${sourcePath}`} class="underline-offset-4">Source</a>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

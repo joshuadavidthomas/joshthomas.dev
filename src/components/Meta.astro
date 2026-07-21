@@ -1,0 +1,28 @@
+---
+type Props = {
+	title?: string;
+	description: string;
+	type?: 'website' | 'article';
+	updated?: string;
+};
+
+const { title, description, type = 'website', updated } = Astro.props;
+const pageTitle = title ?? 'joshthomas.dev';
+const socialTitle = title ? `${title} - joshthomas.dev` : 'joshthomas.dev';
+if (!Astro.site) throw new Error('Astro.site is required to build page metadata URLs.');
+const url = new URL(Astro.url.pathname, Astro.site);
+const screenshotUrl = updated ? `${url}?updatedAt=${encodeURIComponent(updated)}` : url.toString();
+const image = `https://v1.screenshot.11ty.dev/${encodeURIComponent(screenshotUrl)}/opengraph/`;
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+<meta property="og:title" content={socialTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={image} />
+<meta name="twitter:title" content={socialTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />

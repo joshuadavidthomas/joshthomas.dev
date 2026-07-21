@@ -3,13 +3,13 @@
 	--code-color: var(--color-tokyonight-day-fg);
 }
 
-.dark {
+:root[data-theme='dark'] {
 	--code-background-color: var(--color-tokyonight-moon-bg);
 	--code-color: var(--color-tokyonight-moon-fg);
 }
 
-.dark .shiki,
-.dark .shiki span {
+[data-theme='dark'] .shiki,
+[data-theme='dark'] .shiki span {
 	color: var(--shiki-dark) !important;
 	background-color: var(--shiki-dark-bg) !important;
 	font-style: var(--shiki-dark-font-style) !important;
@@ -62,7 +62,7 @@
 	width: var(--text-lg);
 }
 
-.dark .shiki .code-icon {
+[data-theme='dark'] .shiki .code-icon {
 	opacity: 0.3;
 }
 

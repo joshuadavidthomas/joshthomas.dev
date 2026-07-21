@@ -1,4 +1,12 @@
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+}
 
 [data-mode-state] #theme-toggle [data-theme-state] {
 	display: none;
@@ -8,39 +16,6 @@
 [data-mode-state='dark'] #theme-toggle [data-theme-state='dark'],
 [data-mode-state='system'] #theme-toggle [data-theme-state='system'] {
 	display: block;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	@view-transition {
-		navigation: auto;
-	}
-
-	::view-transition-old(post-using-direnv-to-add-a-personal-gitignore-file-to-repos),
-	::view-transition-old(post-open-source-is-a-gift),
-	::view-transition-old(post-debugging-a-no-time-zone-found-error-while-using-the-official-playwright-docker-image),
-	::view-transition-old(post-how-i-organize-staticfiles-in-my-django-projects),
-	::view-transition-old(post-new-year-new-website) {
-		animation: fade 100ms ease-out forwards;
-		height: 100%;
-	}
-
-	::view-transition-new(post-using-direnv-to-add-a-personal-gitignore-file-to-repos),
-	::view-transition-new(post-open-source-is-a-gift),
-	::view-transition-new(post-debugging-a-no-time-zone-found-error-while-using-the-official-playwright-docker-image),
-	::view-transition-new(post-how-i-organize-staticfiles-in-my-django-projects),
-	::view-transition-new(post-new-year-new-website) {
-		animation: fade 200ms ease-in reverse;
-		height: 100%;
-	}
-}
-
-@keyframes fade {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-	}
 }
 
 @media (prefers-reduced-motion: no-preference) {
