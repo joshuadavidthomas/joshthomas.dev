@@ -91,7 +91,7 @@ const markdown: MarkdownIt = new MarkdownIt({
 });
 
 markdown.use(anchor, {
-	permalink: anchor.permalink.linkInsideHeader({ symbol: '#', placement: 'before' })
+	permalink: anchor.permalink.linkInsideHeader({ symbol: '#', placement: 'before', space: false })
 });
 markdown.use(attrs);
 markdown.use(footnote);

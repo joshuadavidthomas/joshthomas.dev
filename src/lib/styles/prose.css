@@ -1,73 +1,121 @@
 a {
-	--color-hover: var(--color-tokyonight-day-red);
+  --color-hover: var(--color-tokyonight-day-red);
 
-	@variant dark {
-		--color-hover: var(--color-tokyonight-moon-red);
-	}
+  @variant dark {
+    --color-hover: var(--color-tokyonight-moon-red);
+  }
 
-	color: inherit;
-	font-weight: inherit;
-	text-decoration-color: var(--color);
-	text-underline-offset: calc(var(--spacing) * 1.5);
+  color: inherit;
+  font-weight: inherit;
+  text-decoration-color: var(--color);
+  text-underline-offset: calc(var(--spacing) * 1.5);
 
-	&.footnote-backref {
-		color: var(--color);
-		text-decoration: none;
-		text-underline-offset: calc(var(--spacing) * 1);
-	}
+  &.footnote-backref {
+    color: var(--color);
+    text-decoration: none;
+    text-underline-offset: calc(var(--spacing) * 1);
+  }
 
-	&:hover {
-		color: var(--color-hover);
-		text-decoration-color: var(--color-hover);
+  &:hover {
+    color: var(--color-hover);
+    text-decoration-color: var(--color-hover);
 
-		> code {
-			color: inherit;
-		}
+    > code {
+      color: inherit;
+    }
 
-		&,
-		&.ha {
-			text-decoration: underline;
-		}
-	}
+    &,
+    &.ha {
+      text-decoration: underline;
+    }
+  }
 }
 
 /* tailwind-typography plugin adds backticks here, let's remove them */
 code {
-	&::before,
-	&::after {
-		content: '' !important;
-	}
+  &::before,
+  &::after {
+    content: "" !important;
+  }
 }
 
 sup {
-	margin: auto calc(var(--spacing) * 0.5);
+  margin: auto calc(var(--spacing) * 0.5);
 
-	> a {
-		color: var(--color);
-		text-decoration: none;
+  > a {
+    color: var(--color);
+    text-decoration: none;
 
-		&:hover {
-			text-decoration: underline;
-			text-underline-offset: calc(var(--spacing) * 1);
-		}
-	}
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: calc(var(--spacing) * 1);
+    }
+  }
 }
 
 table caption {
-	caption-side: bottom;
-	padding: 10px;
-	font-weight: bold;
+  caption-side: bottom;
+  padding: 10px;
+  font-weight: bold;
+}
+
+p:has(> img:only-child) {
+  margin-block: 0;
+}
+
+:is(.slide-pair, .slide-stack) {
+  margin-block: calc(var(--spacing) * 10);
+
+  > img {
+    margin-block: 0;
+    width: 100%;
+  }
+}
+
+.slide-wide,
+.slide-pair {
+  grid-column: 1 / 4 !important;
+  margin-inline: auto;
+  max-width: var(--container-7xl);
+  width: 100%;
+}
+
+.slide-wide {
+  margin-block: clamp(
+    calc(var(--spacing) * 10),
+    5vw,
+    calc(var(--spacing) * 16)
+  );
+}
+
+.slide-pair,
+.slide-stack {
+  display: grid;
+  gap: calc(var(--spacing) * 6);
+}
+
+.slide-pair {
+  grid-template-columns: minmax(0, 1fr);
+
+  @variant lg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--spacing) * 8);
+  }
+}
+
+.slide-stack {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .header-anchor {
-	margin-left: -1em;
-	padding-right: 0.35em;
-	color: var(--color-gray-400);
-	text-decoration: none;
-	opacity: 0;
+  margin-left: -1em;
+  padding-right: 0.35em;
+  color: var(--color-gray-400);
+  text-decoration: none;
+  opacity: 0;
 }
 
 :is(h2, h3, h4, h5, h6):hover .header-anchor,
 .header-anchor:focus {
-	opacity: 1;
+  opacity: 1;
 }

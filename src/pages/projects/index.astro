@@ -8,7 +8,7 @@ import getProjects from '@/lib/server/projects';
 export const prerender = false;
 if (Astro.url.search) return Astro.redirect('/projects/', 308);
 const { projects, contributions } = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS);
-Astro.cache.set({ maxAge: 86400, swr: 604800 });
+if (Astro.cache.enabled) Astro.cache.set({ maxAge: 86400, swr: 604800 });
 const number = new Intl.NumberFormat('en-US');
 ---
 

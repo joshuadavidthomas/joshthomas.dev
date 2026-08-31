@@ -35,6 +35,7 @@ describe('content rendering', () => {
 		);
 		expect(html).toContain('class="header-anchor"');
 		expect(html).toContain('href="#custom-heading"');
+		expect(html).toContain('</a>Heading</h2>');
 	});
 
 	it('renders standard and custom alerts with custom icons', async () => {

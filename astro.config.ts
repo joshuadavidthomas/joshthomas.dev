@@ -1,16 +1,16 @@
 import cloudflare from '@astrojs/cloudflare';
 import { cacheCloudflare } from '@astrojs/cloudflare/cache';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, memoryCache } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
-const cacheProvider = process.env.NODE_ENV === 'development' ? memoryCache() : cacheCloudflare();
+const cache = process.env.NODE_ENV === 'development' ? undefined : { provider: cacheCloudflare() };
 
 export default defineConfig({
 	site: 'https://joshthomas.dev',
 	output: 'static',
 	trailingSlash: 'always',
 	adapter: cloudflare({ imageService: 'compile' }),
-	cache: { provider: cacheProvider },
+	cache,
 	vite: {
 		plugins: [tailwindcss()]
 	}
