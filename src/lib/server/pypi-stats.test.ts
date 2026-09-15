@@ -37,6 +37,16 @@ describe('PyPI statistics snapshot', () => {
 		expect(kv.get).toHaveBeenCalledTimes(1);
 	});
 
+	it('omits missing package statistics when explicitly allowed', async () => {
+		const kv = namespace(previous);
+
+		await expect(
+			getPyPIStats(kv.namespace, ['mcp-django', 'django-language-server'], true)
+		).resolves.toEqual({
+			'mcp-django': { lastDay: 1, lastWeek: 7, lastMonth: 30 }
+		});
+	});
+
 	it('retains the last successful value when a refresh is rate limited', async () => {
 		const kv = namespace(previous);
 		vi.spyOn(globalThis, 'setTimeout').mockImplementation(((callback: () => void) => {

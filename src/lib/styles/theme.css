@@ -46,15 +46,12 @@
 @theme inline {
 	--breakpoint-xs: 24rem;
 
-	--font-brico:
-		BricolageGrotesque, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-		'Segoe UI Symbol', 'Noto Color Emoji';
 	--font-mono:
 		MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
 		'Courier New', monospace;
 	--font-sans:
-		InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-		'Segoe UI Symbol', 'Noto Color Emoji';
+		'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+		'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
 	--tracking-tightest: -0.1em;
 }
@@ -66,7 +63,7 @@
 	h4,
 	h5,
 	h6 {
-		font-family: var(--font-brico);
+		font-family: var(--font-sans);
 
 		code {
 			font-size: inherit;
@@ -74,19 +71,16 @@
 		}
 	}
 
-	h1 {
-		font-weight: 900;
-	}
-
+	h1,
 	h2,
 	h3,
 	h4 {
-		font-weight: 800;
+		font-weight: 700;
 	}
 
 	h5,
 	h6 {
-		font-weight: 700;
+		font-weight: 600;
 	}
 
 	a {

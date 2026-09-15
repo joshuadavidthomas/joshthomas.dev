@@ -117,13 +117,15 @@ export async function refreshPyPIStats(namespace: KVNamespace): Promise<void> {
 
 export async function getPyPIStats(
 	namespace: KVNamespace,
-	packageNames: string[]
+	packageNames: string[],
+	allowMissing = false
 ): Promise<Record<string, PyPIStats>> {
 	const snapshot = await readSnapshot(namespace);
 	const stats: Record<string, PyPIStats> = {};
 	for (const packageName of packageNames) {
 		const value = snapshot.packages[packageName];
 		if (!value) {
+			if (allowMissing) continue;
 			throw new Error(
 				`PyPI statistics are unavailable for ${packageName}; run the scheduled refresh first`
 			);

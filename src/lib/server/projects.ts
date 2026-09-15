@@ -542,16 +542,19 @@ async function fetchOptionalContributions(token) {
  * @async
  * @param {string|undefined} token
  * @param {KVNamespace|undefined} [packageStats]
+ * @param {boolean} [allowMissingPyPIStats]
  * @returns {Promise<{projects: Project[], contributions: PRContribution[]}>}
  */
-export default async function (token, packageStats) {
+export default async function (token, packageStats, allowMissingPyPIStats = false) {
 	const projectRepos = await fetchProjectRepos(token);
 	const pypiPackages = projectRepos.flatMap((repo) => {
 		const packages = PROJECT_PACKAGES[repo.full_name];
 		return packages && 'pypi' in packages ? [packages.pypi] : [];
 	});
 	const pypiStatsByPackage =
-		pypiPackages.length > 0 ? await getPyPIStats(packageStats, pypiPackages) : {};
+		pypiPackages.length > 0
+			? await getPyPIStats(packageStats, pypiPackages, allowMissingPyPIStats)
+			: {};
 	const projects = [];
 	for (const repo of projectRepos)
 		projects.push(await enrichProject(repo, token, pypiStatsByPackage));

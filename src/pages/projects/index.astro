@@ -4,16 +4,31 @@ import { Download, GitFork, Package, Star } from '@lucide/astro';
 import GitHubIcon from '@/components/GitHubIcon.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import getProjects from '@/lib/server/projects';
+import { developmentProjectData } from '@/lib/server/projects-dev';
 
 export const prerender = false;
 if (Astro.url.search) return Astro.redirect('/projects/', 308);
-const { projects, contributions } = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS);
+let githubRateLimited = false;
+let data;
+try {
+	data = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS, import.meta.env.DEV);
+} catch (error) {
+	const rateLimitError =
+		error instanceof Error &&
+		error.message.includes('rate limit exceeded for https://api.github.com/');
+	if (!import.meta.env.DEV || !rateLimitError) throw error;
+	console.warn('GitHub project data is unavailable in development because the API rate limit was reached.');
+	githubRateLimited = true;
+	data = developmentProjectData;
+}
+const { projects, contributions } = data;
 if (Astro.cache.enabled) Astro.cache.set({ maxAge: 86400, swr: 604800 });
 const number = new Intl.NumberFormat('en-US');
 ---
 
 <BaseLayout title="Projects" description="Open-source projects and contributions from Josh Thomas.">
 	<div class="space-y-16">
+		{githubRateLimited && <p role="status" class="text-sm text-gray-600 sm:text-base dark:text-gray-300">Showing development fixtures because the local GitHub API rate limit was reached.</p>}
 		{projects.length > 0 && <section aria-labelledby="projects">
 			<h2 id="projects" class="sr-only">Projects</h2>
 			<p class="text-sm leading-[1.75] text-gray-600 sm:text-base dark:text-gray-300">
