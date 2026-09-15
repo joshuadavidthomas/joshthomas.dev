@@ -2,6 +2,7 @@
 node_modules/
 
 # Build and tool output
+.amp/portals/*
 .astro/
 .brokk/
 .cache/
