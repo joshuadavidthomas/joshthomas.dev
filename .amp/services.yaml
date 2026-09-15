@@ -1,0 +1,9 @@
+services:
+  dev:
+    command: >-
+      export __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS="$(node -p "new URL(process.env.PUBLIC_URL).hostname")";
+      pnpm dev --host 0.0.0.0 --port "$PORT"
+    port: 4321
+    health: /
+    portal:
+      title: Site development
