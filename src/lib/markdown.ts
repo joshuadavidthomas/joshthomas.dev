@@ -97,6 +97,39 @@ markdown.use(attrs);
 markdown.use(footnote);
 markdown.use(alerts, { markers: '*' });
 markdown.use(tableCaptions);
+markdown.core.ruler.after('inline', 'task-lists', (state) => {
+	const listItems = [];
+	for (const token of state.tokens) {
+		if (token.type === 'list_item_open') {
+			listItems.push(token);
+			continue;
+		}
+		if (token.type === 'list_item_close') {
+			listItems.pop();
+			continue;
+		}
+		if (token.type !== 'inline' || !token.children) continue;
+
+		let startsLine = true;
+		for (let index = 0; index < token.children.length; index += 1) {
+			const child = token.children[index];
+			if (startsLine && child.type === 'text') {
+				const marker = child.content.match(/^\[([ xX-])\]\s+/);
+				if (marker) {
+					const checked =
+						marker[1].toLowerCase() === 'x' ? 'true' : marker[1] === '-' ? 'mixed' : 'false';
+					const checkbox = new state.Token('html_inline', '', 0);
+					checkbox.content = `<span class="task-list-checkbox" role="checkbox" aria-checked="${checked}" aria-disabled="true"></span>`;
+					child.content = child.content.slice(marker[0].length);
+					token.children.splice(index, 0, checkbox);
+					index += 1;
+					listItems.at(-1)?.attrJoin('class', 'task-list-item');
+				}
+			}
+			startsLine = child.type === 'softbreak' || child.type === 'hardbreak';
+		}
+	}
+});
 markdown.renderer.rules.table_open = () =>
 	'<div class="min-w-full overflow-x-auto"><table class="w-full">';
 markdown.renderer.rules.table_close = () => '</table></div>';

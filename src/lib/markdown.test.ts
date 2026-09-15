@@ -28,6 +28,19 @@ describe('content rendering', () => {
 		expect(html).toContain('First line<br>\nSecond line');
 	});
 
+	it('renders task list and standalone checkbox states', async () => {
+		const html = await renderMarkdown(
+			'- [ ] To do\n  - [X] Done\n- [-] In progress\n\n[ ] Standalone\n\nNot a task [x]'
+		);
+		expect(html.match(/class="task-list-checkbox"/g)).toHaveLength(4);
+		expect(html.match(/class="task-list-item"/g)).toHaveLength(3);
+		expect(html).toContain('aria-checked="false"');
+		expect(html).toContain('aria-checked="true"');
+		expect(html).toContain('aria-checked="mixed"');
+		expect(html).toContain('Not a task [x]');
+		expect(html).not.toContain('[ ] To do');
+	});
+
 	it('renders heading permalinks and general attributes', async () => {
 		const html = await renderMarkdown('## Heading {#custom-heading .featured data-kind=example}');
 		expect(html).toContain(
