@@ -15,7 +15,8 @@ try {
 } catch (error) {
 	const rateLimitError =
 		error instanceof Error &&
-		error.message.includes('rate limit exceeded for https://api.github.com/');
+		(error.message.includes('rate limit exceeded for https://api.github.com/') ||
+			error.message.startsWith('403 '));
 	if (!import.meta.env.DEV || !rateLimitError) throw error;
 	console.warn('GitHub project data is unavailable in development because the API rate limit was reached.');
 	githubRateLimited = true;
