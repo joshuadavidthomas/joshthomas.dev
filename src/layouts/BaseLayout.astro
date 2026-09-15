@@ -4,9 +4,10 @@ import Meta from '@/components/Meta.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import favicon from '@/lib/assets/favicon.svg';
 import { themeBootstrap } from '@/lib/theme';
+import instrumentSansItalic from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-italic.woff2?url';
 import instrumentSansNormal from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { ClientRouter } from 'astro:transitions';
-import '@/lib/styles/style.css';
+import stylesheet from '@/lib/styles/style.css?url';
 
 type Props = {
 	title?: string;
@@ -45,7 +46,7 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		</style>
 		<script is:inline set:html={themeBootstrap}></script>
 		<Meta {title} {description} {type} {updated} />
-		<ClientRouter />
+		{import.meta.env.PROD && <ClientRouter />}
 		<link rel="icon" href={favicon.src} />
 		<link rel="alternate" type="application/atom+xml" title="Josh Thomas" href="/feeds/blog.xml" />
 		<meta name="author" content="Josh Thomas" />
@@ -53,15 +54,23 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		<meta property="og:locale" content="en_US" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<link rel="preload" href={instrumentSansNormal} as="font" type="font/woff2" crossorigin="anonymous" />
+		{import.meta.env.DEV && <link rel="preload" href={instrumentSansItalic} as="font" type="font/woff2" crossorigin="anonymous" />}
+		<link rel="stylesheet" href={stylesheet} />
 		<link href="mailto:josh@joshthomas.dev" rel="me" />
 		<link href="https://github.com/joshuadavidthomas" rel="me" />
 		<link href="https://joshthomas.dev/@josh" rel="me" />
 		<link href="https://social.joshthomas.dev/@josh" rel="me" />
-		<script is:inline>
-			window.goatcounter = { no_onload: true };
-			document.addEventListener('astro:page-load', () => window.goatcounter?.count?.());
-		</script>
-		<script is:inline data-goatcounter="https://joshthomasdev.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+		{
+			import.meta.env.PROD && (
+				<>
+					<script is:inline>
+						window.goatcounter = { no_onload: true };
+						document.addEventListener('astro:page-load', () => window.goatcounter?.count?.());
+					</script>
+					<script is:inline data-goatcounter="https://joshthomasdev.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+				</>
+			)
+		}
 		{
 			type === 'article' && (
 				<>
