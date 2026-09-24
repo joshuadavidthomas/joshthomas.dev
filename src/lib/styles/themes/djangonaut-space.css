@@ -1,0 +1,170 @@
+/* Palette, fonts, and roles: https://djangonaut.space/ */
+@layer base {
+	:root[data-theme-name='djangonaut-space'] {
+		--paper: var(--color-djangonaut-lavender);
+		--ink: var(--color-djangonaut-ink);
+		--heading: var(--ink);
+		--muted: var(--color-djangonaut-gray-600);
+		--accent: var(--color-djangonaut-purple);
+		--rule: color-mix(in oklch, var(--color-djangonaut-purple) 30%, var(--paper));
+		--underline: var(--accent);
+		--focus-ring: var(--accent);
+		--menu-background: var(--color-djangonaut-white);
+		--tag-background: var(--color-djangonaut-white);
+		--selection-background: var(--color-djangonaut-purple);
+		--selection-text: var(--color-djangonaut-white);
+		--code-background-color: var(--color-djangonaut-white);
+		--inline-code-background: var(--color-djangonaut-white);
+		--inline-code-text: var(--accent);
+		--table-heading-border: var(--rule);
+		--table-row-border: var(--rule);
+		--checkbox-checked: var(--accent);
+		--checkbox-mixed: var(--color-djangonaut-yellow);
+		--anchor-color: var(--muted);
+		--anchor-placeholder: var(--heading);
+		--stat-star: var(--color-djangonaut-yellow-dark);
+		--stat-fork: var(--accent);
+		--stat-icon: var(--muted);
+		--stat-icon-strong: var(--muted);
+		--stat-number: var(--ink);
+		--section-rule: var(--rule);
+		--color-caution: var(--color-djangonaut-red);
+		--color-documentation: var(--color-djangonaut-blue);
+		--color-important: var(--color-djangonaut-fuchsia);
+		--color-note: var(--accent);
+		--color-tip: var(--color-djangonaut-green);
+		--color-warning: var(--color-djangonaut-yellow);
+		--body-font:
+			'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+			'Segoe UI Symbol', 'Noto Color Emoji';
+		--heading-font:
+			'Fraunces Variable', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+		--control-radius: 4px;
+
+		/* Out in the space hero. */
+		@variant dark {
+			--paper: var(--color-djangonaut-space);
+			--ink: var(--color-djangonaut-gray-100);
+			--heading: var(--color-djangonaut-white);
+			--muted: var(--color-djangonaut-gray-300);
+			--accent: var(--color-djangonaut-purple-400);
+			--menu-background: var(--color-djangonaut-hull);
+			--tag-background: var(--color-djangonaut-orbit);
+			--code-background-color: var(--color-djangonaut-orbit);
+			--inline-code-background: var(--color-djangonaut-orbit);
+			--checkbox-checked: var(--color-djangonaut-purple-500);
+			--checkbox-mixed: var(--color-djangonaut-yellow-dark);
+			--color-caution: var(--color-djangonaut-red-dark);
+			--color-documentation: var(--color-djangonaut-blue-dark);
+			--color-important: var(--color-djangonaut-fuchsia-dark);
+			--color-tip: var(--color-djangonaut-green-dark);
+			--color-warning: var(--color-djangonaut-yellow-dark);
+		}
+	}
+}
+
+:root[data-theme-name='djangonaut-space'] {
+	/* Content links are purple, underlined in their own color. */
+	main a:not(.header-anchor, .footnote-backref, :is(h1, h2, h3, h4, h5, h6) a) {
+		color: var(--accent);
+		text-decoration-color: currentColor;
+	}
+
+	/* The "Get Involved" button. */
+	#theme-toggle {
+		border: 0;
+		background: var(--color-djangonaut-purple);
+		color: var(--color-djangonaut-white);
+
+		&:hover {
+			background: var(--color-djangonaut-purple-500);
+			color: var(--color-djangonaut-white);
+		}
+	}
+
+	/* White cards with a faint purple border, like "Get Involved". */
+	.prose pre,
+	.markdown-alert {
+		border: 1px solid var(--rule);
+		border-radius: 8px;
+		background: var(--code-background-color);
+	}
+
+	.markdown-alert {
+		padding: 16px 20px;
+	}
+
+	.prose blockquote {
+		border-left-color: var(--accent);
+	}
+}
+
+/* Only the Djangonaut Space dark theme shows the hero's sky. */
+.djangonaut-sky {
+	display: none;
+}
+
+:root[data-theme-name='djangonaut-space'][data-theme='dark'] .djangonaut-sky {
+	display: block;
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+
+	/* The hero's .landing-page-overlay: Earth at night, dimmer than the hero's 60% so text stays readable. */
+	&::before {
+		content: '';
+		position: absolute;
+		inset: auto 0 0;
+		height: 22%;
+		background: url('../../assets/djangonaut-earth.webp') top / cover no-repeat;
+		opacity: 0.35;
+		mask-image: linear-gradient(to bottom, transparent, black 20%);
+		animation: djangonaut-earth-rise 1.5s ease-out;
+	}
+
+	/* The purple haze the hero casts over the planet. */
+	&::after {
+		content: '';
+		position: absolute;
+		inset: auto 0 0;
+		height: 22%;
+		background: radial-gradient(ellipse 100% 80% at 50% 100%, rgb(92 2 135 / 25%), transparent 75%);
+	}
+
+	canvas {
+		z-index: 1;
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+@keyframes djangonaut-earth-rise {
+	from {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root[data-theme-name='djangonaut-space'][data-theme='dark'] .djangonaut-sky::before {
+		animation: none;
+	}
+}
+
+:root[data-theme-name='djangonaut-space'][data-theme='light'] :is(.shiki, .shiki span) {
+	color: var(--shiki-djangonaut) !important;
+	background-color: var(--shiki-djangonaut-bg) !important;
+	font-style: var(--shiki-djangonaut-font-style) !important;
+	font-weight: var(--shiki-djangonaut-font-weight) !important;
+	text-decoration: var(--shiki-djangonaut-text-decoration) !important;
+}
+
+:root[data-theme-name='djangonaut-space'][data-theme='dark'] :is(.shiki, .shiki span) {
+	color: var(--shiki-djangonaut-dark) !important;
+	background-color: var(--shiki-djangonaut-dark-bg) !important;
+	font-style: var(--shiki-djangonaut-dark-font-style) !important;
+	font-weight: var(--shiki-djangonaut-dark-font-weight) !important;
+	text-decoration: var(--shiki-djangonaut-dark-text-decoration) !important;
+}

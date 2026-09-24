@@ -53,7 +53,8 @@ function codeTheme<Role extends string>(
 	name: string,
 	mode: 'light' | 'dark',
 	palette: Record<NoInfer<Role> | 'background' | 'variable', string>,
-	scopes: Record<Role, string[]>
+	scopes: Record<Role, string[]>,
+	bold: NoInfer<Role>[] = []
 ): ThemeRegistrationRaw {
 	return {
 		name,
@@ -63,7 +64,8 @@ function codeTheme<Role extends string>(
 			scope: scopes[role as Role],
 			settings: {
 				foreground: palette[role as Role],
-				...(role === 'comment' ? { fontStyle: 'italic' } : {})
+				...(role === 'comment' ? { fontStyle: 'italic' } : {}),
+				...(bold.includes(role as Role) ? { fontStyle: 'bold' } : {})
 			}
 		}))
 	};
@@ -147,6 +149,132 @@ const codeThemes = [
 			deleted: '#ff757f'
 		},
 		tokyoSyntaxScopes
+	),
+	codeTheme(
+		'alucard',
+		'light',
+		{
+			background: '#fffbeb',
+			variable: '#1f1f1f',
+			comment: '#6c664b',
+			keyword: '#a3144d',
+			string: '#846e15',
+			constant: '#a34d14',
+			function: '#14710a',
+			type: '#036a96',
+			punctuation: '#1f1f1f',
+			operator: '#a3144d',
+			property: '#1f1f1f',
+			parameter: '#a34d14',
+			builtin: '#644ac9',
+			tag: '#a3144d',
+			deleted: '#cb3a2a'
+		},
+		tokyoSyntaxScopes
+	),
+	codeTheme(
+		'django',
+		'light',
+		{
+			background: '#f8f8f8',
+			variable: '#0c4b33',
+			comment: '#3d7a7a',
+			keyword: '#008000',
+			string: '#ba2121',
+			constant: '#666666',
+			function: '#0000ff',
+			type: '#0000ff',
+			punctuation: '#666666',
+			deleted: '#ba2121'
+		},
+		syntaxScopes,
+		['keyword', 'type']
+	),
+	codeTheme(
+		'django-dark',
+		'dark',
+		{
+			background: '#181d27',
+			variable: '#f8f8f8',
+			comment: '#8b949e',
+			keyword: '#ff7b72',
+			string: '#a5d6ff',
+			constant: '#79c0ff',
+			function: '#d2a8ff',
+			type: '#f0883e',
+			punctuation: '#c9d1d9',
+			deleted: '#ffa198'
+		},
+		syntaxScopes,
+		['keyword', 'function', 'type']
+	),
+	codeTheme(
+		'django-admin-light',
+		'light',
+		{
+			background: '#f8f8f8',
+			variable: '#333333',
+			comment: '#707070',
+			keyword: '#205067',
+			string: '#3d7a14',
+			constant: '#a0521f',
+			function: '#417893',
+			type: '#6b4f9e',
+			punctuation: '#555555',
+			deleted: '#ba2121'
+		},
+		syntaxScopes
+	),
+	codeTheme(
+		'django-admin-dark',
+		'dark',
+		{
+			background: '#212121',
+			variable: '#eeeeee',
+			comment: '#9e9e9e',
+			keyword: '#81d4fa',
+			string: '#a5d6a7',
+			constant: '#f5dd5d',
+			function: '#79aec8',
+			type: '#ce93d8',
+			punctuation: '#bdbdbd',
+			deleted: '#e35f5f'
+		},
+		syntaxScopes
+	),
+	codeTheme(
+		'djangonaut-space',
+		'light',
+		{
+			background: '#ffffff',
+			variable: '#202020',
+			comment: '#6b7280',
+			keyword: '#5c0287',
+			string: '#15803d',
+			constant: '#b45309',
+			function: '#1d4ed8',
+			type: '#9d174d',
+			punctuation: '#4b5563',
+			deleted: '#b91c1c'
+		},
+		syntaxScopes
+	),
+	codeTheme(
+		'djangonaut-space-dark',
+		'dark',
+		{
+			background: '#1a1025',
+			variable: '#f3f4f6',
+			comment: '#9ca3af',
+			keyword: '#c084fc',
+			string: '#86efac',
+			constant: '#fcd34d',
+			function: '#93c5fd',
+			type: '#f9a8d4',
+			punctuation: '#d1d5db',
+			deleted: '#f87171'
+		},
+		syntaxScopes
 	)
 ];
 
@@ -185,7 +313,14 @@ const markdown: MarkdownIt = new MarkdownIt({
 				'tokyo-moon': 'tokyo-night-moon',
 				latte: 'catppuccin-latte',
 				mocha: 'catppuccin-mocha',
-				dracula: 'dracula'
+				dracula: 'dracula',
+				alucard: 'alucard',
+				django: 'django',
+				'django-dark': 'django-dark',
+				admin: 'django-admin-light',
+				'admin-dark': 'django-admin-dark',
+				djangonaut: 'djangonaut-space',
+				'djangonaut-dark': 'djangonaut-space-dark'
 			}
 		});
 		const icon =

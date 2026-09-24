@@ -1,0 +1,236 @@
+/* Palette and roles: https://github.com/django/djangoproject.com/tree/main/djangoproject/scss */
+@layer base {
+	:root[data-theme-name='django'] {
+		--paper: var(--color-white);
+		--ink: var(--color-django-text);
+		--heading: var(--ink);
+		--muted: var(--color-django-text-light);
+		--accent: var(--color-django-text-l20);
+		--rule: var(--color-django-gray-line);
+		--underline: var(--color-django-green);
+		--focus-ring: currentColor;
+		/* _utils.scss sans-serif and monospace mixins */
+		--body-font: 'Roboto Variable', Corbel, Avenir, 'Lucida Grande', 'Lucida Sans', sans-serif;
+		--code-font: 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace;
+		--menu-background: var(--paper);
+		--tag-background: var(--color-django-green-very-light);
+		--selection-background: var(--color-django-green-very-light);
+		--selection-text: var(--ink);
+		--code-background-color: var(--color-django-white-dark);
+		--code-color: var(--color-django-green-dark);
+		--inline-code-background: transparent;
+		--inline-code-text: var(--color-django-green-dark);
+		--table-heading-border: var(--rule);
+		--table-row-border: var(--rule);
+		--checkbox-checked: var(--color-django-green-medium);
+		--checkbox-mixed: var(--color-django-warning-icon);
+		--anchor-color: var(--color-django-green);
+		--anchor-placeholder: var(--color-django-green);
+		--stat-star: var(--color-django-warning-icon);
+		--stat-fork: var(--color-django-green-medium-dark);
+		--stat-icon: var(--muted);
+		--stat-icon-strong: var(--muted);
+		--stat-number: var(--ink);
+		--section-rule: var(--rule);
+		--color-caution: var(--color-django-red);
+		--color-documentation: var(--color-django-green-dark);
+		--color-important: var(--color-django-violet);
+		--color-note: var(--color-django-green-dark);
+		--color-tip: var(--color-django-green-medium-dark);
+		--color-warning: var(--color-django-orange);
+
+		/* Roles from _dark-mode.scss that have no shared token. */
+		--django-body-bg: var(--color-django-white);
+		--django-sidebar-bg: var(--color-django-white-dark);
+		--django-secondary-accent: var(--color-django-green-very-light);
+		--django-link: var(--color-django-green);
+		--django-code-border: var(--color-django-code-border);
+		--django-doc-link: var(--color-django-red-dark);
+		--django-doc-link-hover: var(--color-django-red-dark-l10);
+		--django-doc-link-border: var(--color-django-text-light);
+		--django-entry-link-hover: var(--django-doc-link);
+		--django-warning-bg: var(--color-django-warning-yellow);
+		--django-warning-link: var(--color-django-red-medium);
+
+		@variant dark {
+			--paper: var(--color-django-black);
+			--ink: var(--color-django-body-fg-dark);
+			--muted: var(--color-django-text-light-l20);
+			--accent: var(--color-django-green-very-light);
+			--underline: var(--color-django-green-light);
+			--menu-background: var(--color-django-black-light-5);
+			--tag-background: var(--color-django-green-dark);
+			--selection-background: var(--color-django-green-dark);
+			--code-background-color: var(--color-django-black-light-5);
+			--code-color: var(--color-django-white-dark);
+			--inline-code-text: var(--color-django-white-dark);
+			--anchor-color: var(--color-django-green-light);
+			--anchor-placeholder: var(--color-django-green-light);
+			--stat-fork: var(--color-django-green-light);
+			--color-caution: var(--color-django-red-medium);
+			--color-documentation: var(--color-django-green-light);
+			--color-important: var(--color-django-violet-dark);
+			--color-note: var(--color-django-green-light);
+			--color-tip: var(--color-django-green-medium);
+			--color-warning: var(--color-django-warning-icon);
+
+			--django-body-bg: var(--color-django-black);
+			--django-sidebar-bg: var(--color-django-black-light-5);
+			--django-secondary-accent: var(--color-django-green-medium);
+			--django-link: var(--color-django-green-light);
+			--django-code-border: var(--color-django-black-light-5);
+			--django-doc-link: var(--color-django-red-medium);
+			--django-doc-link-border: var(--color-django-text-light-l20);
+			/* The hover background matches the page here, so darken like the docs do. */
+			--django-entry-link-hover: var(--django-doc-link-hover);
+			--django-warning-bg: transparent;
+			--django-warning-link: var(--color-django-red);
+		}
+	}
+}
+
+:root[data-theme-name='django'] {
+	main :is(h1, h2) {
+		font-weight: 400;
+	}
+
+	.section-nav a {
+		color: var(--django-link);
+		text-decoration-line: underline;
+		text-decoration-color: currentColor;
+
+		&:hover {
+			color: var(--accent);
+		}
+
+		/* The docs sidebar's "You are here" entry takes the body text color. */
+		&[aria-current] {
+			color: var(--ink);
+		}
+	}
+
+	.prose {
+		--tw-prose-bullets: var(--ink);
+		--tw-prose-counters: var(--ink);
+	}
+
+	/* Docs references: red text over a dotted line that clears descenders. */
+	main a:not(.footnote-backref, .header-anchor, :is(h1, h2, h3, h4, h5, h6, sup) a) {
+		color: var(--django-doc-link);
+		text-decoration: underline dotted 1px var(--django-doc-link-border);
+		text-decoration-skip-ink: none;
+		text-underline-offset: 0.3em;
+
+		&:visited {
+			text-decoration-color: var(--color-django-red-dark-l10);
+		}
+
+		&:is(:hover, :focus, :active) {
+			background: var(--django-body-bg);
+			color: var(--django-doc-link-hover);
+		}
+	}
+
+	/* Heading and list-entry links: red without the dotted line until hover, and no color shift. */
+	main :is(h1, h2, h3, h4, h5, h6) a:not(.header-anchor),
+	main .dated-entry a {
+		color: var(--django-doc-link);
+		text-decoration: underline dotted 1px transparent;
+		text-decoration-skip-ink: none;
+		text-underline-offset: 0.3em;
+
+		&:is(:hover, :focus, :active) {
+			background: var(--django-body-bg);
+			color: var(--django-entry-link-hover);
+			text-decoration-color: var(--django-doc-link-border);
+		}
+	}
+
+	/* Keep the hover background to the title rather than the whole row. */
+	main .dated-entry a {
+		width: fit-content;
+	}
+
+	:not(pre) > code {
+		padding: 0;
+		font-weight: 700;
+	}
+
+	.prose pre {
+		border: 1px solid var(--django-code-border);
+		border-radius: 4px;
+	}
+
+	.prose blockquote,
+	.markdown-alert {
+		border: 1px solid var(--django-secondary-accent);
+		border-radius: 4px;
+		background: var(--django-body-bg);
+		padding: 15px 20px;
+		color: var(--ink);
+		font-style: normal;
+		font-weight: inherit;
+
+		> :first-child {
+			margin-top: 0;
+		}
+
+		> :last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.prose blockquote p:first-of-type::before,
+	.prose blockquote p:last-of-type::after {
+		content: none;
+	}
+
+	.markdown-alert .markdown-alert-title {
+		color: var(--ink);
+		font-weight: 700;
+
+		:is(.octicon, .alert-icon) {
+			opacity: 0.5;
+		}
+	}
+
+	.markdown-alert:is(.markdown-alert-warning, .markdown-alert-caution) {
+		border-color: var(--color-django-warning-dark-yellow);
+		background: var(--django-warning-bg);
+
+		:is(.octicon, .alert-icon) {
+			color: var(--color-django-warning-icon);
+			opacity: 1;
+		}
+
+		a:not(.footnote-backref) {
+			color: var(--django-warning-link);
+		}
+	}
+
+	.prose th {
+		background: var(--django-sidebar-bg);
+		font-weight: 700;
+		text-align: left;
+	}
+
+	.prose :is(th, td) {
+		padding: 0.5em 1em;
+	}
+}
+
+:root[data-theme-name='django'][data-theme='light'] :is(.shiki, .shiki span) {
+	color: var(--shiki-django) !important;
+	background-color: var(--shiki-django-bg) !important;
+	font-style: var(--shiki-django-font-style) !important;
+	font-weight: var(--shiki-django-font-weight) !important;
+	text-decoration: var(--shiki-django-text-decoration) !important;
+}
+
+:root[data-theme-name='django'][data-theme='dark'] :is(.shiki, .shiki span) {
+	color: var(--shiki-django-dark) !important;
+	background-color: var(--shiki-django-dark-bg) !important;
+	font-style: var(--shiki-django-dark-font-style) !important;
+	font-weight: var(--shiki-django-dark-font-weight) !important;
+	text-decoration: var(--shiki-django-dark-text-decoration) !important;
+}

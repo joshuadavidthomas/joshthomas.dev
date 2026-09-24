@@ -90,7 +90,7 @@ a {
 
 		&,
 		&.ha {
-			text-decoration: underline;
+			text-decoration-line: underline;
 		}
 	}
 }

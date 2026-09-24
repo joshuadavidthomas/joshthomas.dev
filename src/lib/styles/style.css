@@ -12,6 +12,9 @@
 @import './themes/tokyo-night.css';
 @import './themes/catppuccin.css';
 @import './themes/dracula.css';
+@import './themes/django.css';
+@import './themes/django-admin.css';
+@import './themes/djangonaut-space.css';
 
 .prose {
 	@import './prose.css';

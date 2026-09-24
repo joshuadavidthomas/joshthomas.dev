@@ -527,3 +527,75 @@
 	src: url('/static/fonts/monolisa-v2.015/63-italic.woff2') format('woff2');
 	unicode-range: U+E000-F8FF;
 }
+
+/* djangoproject.com's faces, fetched only while the Django theme uses them. */
+@font-face {
+	font-display: swap;
+	font-family: 'Roboto Variable';
+	font-style: normal;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/roboto/files/roboto-latin-wght-normal.woff2')
+		format('woff2-variations');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Roboto Variable';
+	font-style: italic;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/roboto/files/roboto-latin-wght-italic.woff2')
+		format('woff2-variations');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Fira Mono';
+	font-style: normal;
+	font-weight: 400;
+	src: url('@fontsource/fira-mono/files/fira-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Fira Mono';
+	font-style: normal;
+	font-weight: 700;
+	src: url('@fontsource/fira-mono/files/fira-mono-latin-700-normal.woff2') format('woff2');
+}
+
+/* djangonaut.space's faces, fetched only while the Djangonaut Space theme uses them. */
+@font-face {
+	font-display: swap;
+	font-family: 'Inter Variable';
+	font-style: normal;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+		format('woff2-variations');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Inter Variable';
+	font-style: italic;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-wght-italic.woff2')
+		format('woff2-variations');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Fraunces Variable';
+	font-style: normal;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/fraunces/files/fraunces-latin-standard-normal.woff2')
+		format('woff2-variations');
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Fraunces Variable';
+	font-style: italic;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/fraunces/files/fraunces-latin-standard-italic.woff2')
+		format('woff2-variations');
+}

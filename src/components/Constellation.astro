@@ -1,0 +1,109 @@
+<div class="djangonaut-sky" aria-hidden="true" transition:persist>
+	<canvas id="constellation"></canvas>
+</div>
+
+<script>
+	// A small take on djangonaut.space's particles.js hero: drifting stars that link up when close.
+	const LINK_DISTANCE = 150;
+	const STARS_PER_PIXEL = 14 / 800_000;
+	const SPEED = 30;
+
+	type Star = { x: number; y: number; vx: number; vy: number; radius: number };
+
+	const root = document.documentElement;
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+	let stars: Star[] = [];
+	let width = 0;
+	let height = 0;
+	let frame = 0;
+	let last = 0;
+
+	const canvas = () => document.getElementById('constellation') as HTMLCanvasElement | null;
+	const active = () => root.dataset.themeName === 'djangonaut-space' && root.dataset.theme === 'dark';
+
+	function star(): Star {
+		return {
+			x: Math.random() * width,
+			y: Math.random() * height,
+			vx: (Math.random() - 0.5) * SPEED,
+			vy: (Math.random() - 0.5) * SPEED,
+			radius: 0.5 + Math.random() * 2.5
+		};
+	}
+
+	function resize(element: HTMLCanvasElement) {
+		const ratio = devicePixelRatio || 1;
+		width = innerWidth;
+		height = innerHeight;
+		element.width = Math.round(width * ratio);
+		element.height = Math.round(height * ratio);
+		element.getContext('2d')?.setTransform(ratio, 0, 0, ratio, 0, 0);
+		const count = Math.max(8, Math.round(width * height * STARS_PER_PIXEL));
+		stars = stars.filter((s) => s.x <= width && s.y <= height).slice(0, count);
+		while (stars.length < count) stars.push(star());
+	}
+
+	function draw(element: HTMLCanvasElement) {
+		const context = element.getContext('2d');
+		if (!context) return;
+		context.clearRect(0, 0, width, height);
+		context.lineWidth = 1;
+		for (let i = 0; i < stars.length; i++) {
+			for (let j = i + 1; j < stars.length; j++) {
+				const distance = Math.hypot(stars[i].x - stars[j].x, stars[i].y - stars[j].y);
+				if (distance > LINK_DISTANCE) continue;
+				context.strokeStyle = `rgb(255 255 255 / ${0.4 * (1 - distance / LINK_DISTANCE)})`;
+				context.beginPath();
+				context.moveTo(stars[i].x, stars[i].y);
+				context.lineTo(stars[j].x, stars[j].y);
+				context.stroke();
+			}
+		}
+		context.fillStyle = 'rgb(255 255 255 / 0.4)';
+		for (const s of stars) {
+			context.beginPath();
+			context.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+			context.fill();
+		}
+	}
+
+	function tick(now: number) {
+		const element = canvas();
+		if (!element) return;
+		const seconds = Math.min((now - last) / 1000, 0.1);
+		last = now;
+		for (const s of stars) {
+			s.x += s.vx * seconds;
+			s.y += s.vy * seconds;
+			// Drift off one edge and back in the opposite one, like particles.js "out" mode.
+			if (s.x < -s.radius) s.x = width + s.radius;
+			else if (s.x > width + s.radius) s.x = -s.radius;
+			if (s.y < -s.radius) s.y = height + s.radius;
+			else if (s.y > height + s.radius) s.y = -s.radius;
+		}
+		draw(element);
+		frame = requestAnimationFrame(tick);
+	}
+
+	function sync() {
+		cancelAnimationFrame(frame);
+		frame = 0;
+		const element = canvas();
+		if (!element || !active()) return;
+		resize(element);
+		draw(element);
+		if (reducedMotion.matches || document.hidden) return;
+		last = performance.now();
+		frame = requestAnimationFrame(tick);
+	}
+
+	new MutationObserver(sync).observe(root, {
+		attributes: true,
+		attributeFilter: ['data-theme', 'data-theme-name']
+	});
+	addEventListener('resize', sync);
+	document.addEventListener('visibilitychange', sync);
+	document.addEventListener('astro:after-swap', sync);
+	reducedMotion.addEventListener('change', sync);
+	sync();
+</script>
