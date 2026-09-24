@@ -67,7 +67,7 @@ Define navigation in Python and render it in Django templates, with URL resoluti
 
 ## [django-bird](https://github.com/joshuadavidthomas/django-bird)
 
-Reusable components defined entirely in Django templates, with properties, slots, and their own CSS and JavaScript. I wanted the ergonomics of a component system without leaving Django’s template language. I’m not actively maintaining it these days; most of that time now goes into the language server. High-flying components for perfectionists with deadlines.
+High-flying components for perfectionists with deadlines. Reusable components defined entirely in Django templates, with properties, slots, and their own CSS and JavaScript. I wanted the ergonomics of a component system without leaving Django’s template language. I’m not actively maintaining it these days; most of that time now goes into the language server.
 
 ## [django-bird-playground](https://github.com/joshuadavidthomas/django-bird-playground)
 
@@ -157,7 +157,7 @@ A Svelte 5 port of Cloudflare’s Kumo component library.
 
 A fork of @sveltejs/adapter-cloudflare with support for scheduled, queue, and email handlers.
 
-## [sonner-web-component](https://github.com/joshuadavidthomas/sonner-web-component)
+## [sonner-web-component](https://sonner-web-component.joshthomas.dev)
 
 A web-component port of Emil Kowalski’s Sonner toast library.
 
