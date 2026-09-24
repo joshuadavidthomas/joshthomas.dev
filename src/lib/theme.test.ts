@@ -19,6 +19,10 @@ function runTheme({
 	const mediaListeners: Listener[] = [];
 	const attributes = new Map<string, string>();
 	const storage = new Map<string, string>();
+	const variables = new Map<string, string>([
+		['--paper', '#fcfbf8'],
+		['--accent', '#8b4933']
+	]);
 	if (stored !== null) storage.set('theme', stored);
 	if (storedName !== null) storage.set('theme-name', storedName);
 	const root = { dataset: { themeName: 'default', modeState: 'system', theme: 'light' } };
@@ -26,6 +30,7 @@ function runTheme({
 		focus: vi.fn(),
 		setAttribute: (name: string, value: string) => attributes.set(name, value)
 	};
+	const favicon = { href: '' };
 	const options = [
 		['system', 'default'],
 		['light', 'default'],
@@ -56,7 +61,8 @@ function runTheme({
 	const document = {
 		documentElement: root,
 		readyState: 'loading',
-		querySelector: (selector: string) => (selector === '#theme-toggle' ? button : null),
+		querySelector: (selector: string) =>
+			selector === '#theme-toggle' ? button : selector === 'link[rel="icon"]' ? favicon : null,
 		querySelectorAll: () => options,
 		addEventListener: (name: string, listener: Listener) => documentListeners.set(name, listener)
 	};
@@ -76,6 +82,9 @@ function runTheme({
 		localStorage,
 		matchMedia,
 		window,
+		getComputedStyle: () => ({
+			getPropertyValue: (name: string) => variables.get(name) ?? ''
+		}),
 		setTimeout: vi.fn()
 	});
 	documentListeners.get('DOMContentLoaded')?.();
@@ -83,12 +92,14 @@ function runTheme({
 	return {
 		attributes,
 		choose,
+		favicon,
 		options,
 		documentListeners,
 		media,
 		mediaListeners,
 		root,
 		storage,
+		variables,
 		windowListeners
 	};
 }
@@ -155,6 +166,19 @@ describe('theme bootstrap', () => {
 		expect(runtime.root.dataset.themeName).toBe('default');
 		expect(runtime.root.dataset.theme).toBe('dark');
 		expect(runtime.storage.size).toBe(0);
+	});
+
+	it('repaints the favicon with the active theme colors', () => {
+		const runtime = runTheme();
+		expect(runtime.favicon.href).toContain(encodeURIComponent('#fcfbf8'));
+		expect(runtime.favicon.href).toContain(encodeURIComponent('#8b4933'));
+
+		runtime.variables.set('--paper', '#eff1f5');
+		runtime.variables.set('--accent', '#8839ef');
+		runtime.choose('light', 'catppuccin');
+		expect(runtime.favicon.href).toContain(encodeURIComponent('#eff1f5'));
+		expect(runtime.favicon.href).toContain(encodeURIComponent('#8839ef'));
+		expect(runtime.favicon.href).toContain('data:image/svg+xml');
 	});
 
 	it('applies a saved dark theme before the toggle initializes', () => {

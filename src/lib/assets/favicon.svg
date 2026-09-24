@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 	<title>Josh Thomas</title>
-	<rect width="64" height="64" rx="12" fill="#1a1b26" />
-	<path d="M20 15h9v28c0 9-5 14-14 14h-3v-8h2c4 0 6-2 6-6V15Zm13 0h24v8h-8v34h-9V23h-7v-8Z" fill="#7aa2f7" />
+	<style>
+		rect { fill: #fcfbf8; }
+		path { fill: #8b4933; }
+		@media (prefers-color-scheme: dark) {
+			rect { fill: #201f1d; }
+			path { fill: #dca58b; }
+		}
+	</style>
+	<rect width="64" height="64" rx="12" />
+	<path d="M20 15h9v28c0 9-5 14-14 14h-3v-8h2c4 0 6-2 6-6V15Zm13 0h24v8h-8v34h-9V23h-7v-8Z" />
 </svg>

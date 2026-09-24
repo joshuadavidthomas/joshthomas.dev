@@ -40,11 +40,30 @@ export const themeBootstrap = String.raw`
 			option.setAttribute('aria-pressed', String(selected));
 		}
 	};
+	const syncFavicon = () => {
+		const link = document.querySelector('link[rel="icon"]');
+		if (!link) return;
+		const style = getComputedStyle(root);
+		const paper = style.getPropertyValue('--paper').trim();
+		const accent = style.getPropertyValue('--accent').trim();
+		if (!paper || !accent) return;
+		const glyph = 'M20 15h9v28c0 9-5 14-14 14h-3v-8h2c4 0 6-2 6-6V15Zm13 0h24v8h-8v34h-9V23h-7v-8Z';
+		const svg =
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="' +
+			paper +
+			'"/><path d="' +
+			glyph +
+			'" fill="' +
+			accent +
+			'"/></svg>';
+		link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+	};
 	const apply = (preference) => {
 		const mode = resolved(preference);
 		root.dataset.modeState = preference;
 		root.dataset.theme = mode;
 		syncButton();
+		syncFavicon();
 	};
 	const save = (preference) => {
 		try {
@@ -61,6 +80,7 @@ export const themeBootstrap = String.raw`
 	};
 	const setup = () => {
 		syncButton();
+		syncFavicon();
 	};
 
 	document.addEventListener('click', (event) => {
