@@ -1,0 +1,76 @@
+@layer base {
+	:root[data-theme-name='tokyo-night'] {
+		--paper: var(--color-tokyonight-day-bg);
+		--ink: var(--color-tokyonight-day-fg);
+		--heading: var(--color-tokyonight-day-blue);
+		--muted: var(--color-tokyonight-day-fg-dark);
+		--rule: var(--color-tokyonight-day-border);
+		--underline: var(--color-tokyonight-day-dark3);
+		--accent: var(--color-tokyonight-day-blue);
+		--focus-ring: var(--color-tokyonight-day-border-highlight);
+		--menu-background: var(--color-tokyonight-day-bg-popup);
+		--tag-background: var(--color-tokyonight-day-bg-highlight);
+		--selection-background: var(--color-tokyonight-day-bg-visual);
+		--selection-text: var(--ink);
+		--code-background-color: var(--color-tokyonight-day-bg-dark);
+		--inline-code-text: var(--ink);
+		--checkbox-border: var(--muted);
+		--checkbox-checked: var(--color-tokyonight-day-green);
+		--checkbox-mixed: var(--color-tokyonight-day-yellow);
+		--anchor-color: var(--muted);
+		--anchor-placeholder: var(--heading);
+		--stat-star: var(--color-tokyonight-day-yellow);
+		--stat-fork: var(--color-tokyonight-day-orange);
+		--stat-icon: var(--muted);
+		--stat-icon-strong: var(--muted);
+		--stat-number: var(--ink);
+		--section-rule: var(--rule);
+		--color-caution: var(--color-tokyonight-day-red1);
+		--color-documentation: var(--color-tokyonight-day-green);
+		--color-important: var(--color-tokyonight-day-magenta);
+		--color-note: var(--color-tokyonight-day-blue);
+		--color-tip: var(--color-tokyonight-day-green1);
+		--color-warning: var(--color-tokyonight-day-yellow);
+
+		@variant dark {
+			--paper: var(--color-tokyonight-moon-bg);
+			--ink: var(--color-tokyonight-moon-fg);
+			--heading: var(--color-tokyonight-moon-blue);
+			--muted: var(--color-tokyonight-moon-fg-dark);
+			--rule: var(--color-tokyonight-moon-border);
+			--underline: var(--color-tokyonight-moon-dark3);
+			--accent: var(--color-tokyonight-moon-blue);
+			--focus-ring: var(--color-tokyonight-moon-border-highlight);
+			--menu-background: var(--color-tokyonight-moon-bg-popup);
+			--tag-background: var(--color-tokyonight-moon-bg-highlight);
+			--selection-background: var(--color-tokyonight-moon-bg-visual);
+			--code-background-color: var(--color-tokyonight-moon-bg-dark);
+			--checkbox-checked: var(--color-tokyonight-moon-green);
+			--checkbox-mixed: var(--color-tokyonight-moon-yellow);
+			--stat-star: var(--color-tokyonight-moon-yellow);
+			--stat-fork: var(--color-tokyonight-moon-orange);
+			--color-caution: var(--color-tokyonight-moon-red);
+			--color-documentation: var(--color-tokyonight-moon-green);
+			--color-important: var(--color-tokyonight-moon-magenta);
+			--color-note: var(--color-tokyonight-moon-blue);
+			--color-tip: var(--color-tokyonight-moon-teal);
+			--color-warning: var(--color-tokyonight-moon-yellow);
+		}
+	}
+}
+
+:root[data-theme-name='tokyo-night'][data-theme='light'] :is(.shiki, .shiki span) {
+	color: var(--shiki-tokyo-day) !important;
+	background-color: var(--shiki-tokyo-day-bg) !important;
+	font-style: var(--shiki-tokyo-day-font-style) !important;
+	font-weight: var(--shiki-tokyo-day-font-weight) !important;
+	text-decoration: var(--shiki-tokyo-day-text-decoration) !important;
+}
+
+:root[data-theme-name='tokyo-night'][data-theme='dark'] :is(.shiki, .shiki span) {
+	color: var(--shiki-tokyo-moon) !important;
+	background-color: var(--shiki-tokyo-moon-bg) !important;
+	font-style: var(--shiki-tokyo-moon-font-style) !important;
+	font-weight: var(--shiki-tokyo-moon-font-weight) !important;
+	text-decoration: var(--shiki-tokyo-moon-text-decoration) !important;
+}

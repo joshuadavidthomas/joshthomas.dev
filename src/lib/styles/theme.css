@@ -1,69 +1,67 @@
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
-
-:root {
-	color-scheme: light;
-}
-
-:root[data-theme='dark'] {
-	color-scheme: dark;
-}
-
-[data-mode-state] #theme-toggle [data-theme-state] {
-	display: none;
-}
-
-[data-mode-state='light'] #theme-toggle [data-theme-state='light'],
-[data-mode-state='dark'] #theme-toggle [data-theme-state='dark'],
-[data-mode-state='system'] #theme-toggle [data-theme-state='system'] {
-	display: block;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	#theme-toggle {
-		transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-	}
-
-	#theme-toggle.rotating {
-		transform: rotate(10deg);
-	}
-
-	[data-theme-state] {
-		transition: opacity 200ms ease-in-out;
-	}
-
-	#theme-toggle.rotating [data-theme-state] {
-		opacity: 0;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	#theme-toggle,
-	[data-theme-state] {
-		transition: none !important;
-	}
-}
+@custom-variant compact (@media (max-width: 600px));
 
 @theme inline {
 	--breakpoint-xs: 24rem;
-
-	--font-mono:
-		MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-		'Courier New', monospace;
-	--font-sans:
-		'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-		'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+	--color-paper: var(--paper);
+	--color-ink: var(--ink);
+	--color-heading: var(--heading);
+	--color-muted: var(--muted);
+	--color-rule: var(--rule);
+	--color-underline: var(--underline);
+	--color-accent: var(--accent);
+	--color-tag-background: var(--tag-background);
+	--color-tag-text: var(--tag-text);
+	--color-menu-background: var(--menu-background);
+	--color-toggle-light: var(--toggle-light);
+	--color-toggle-dark: var(--toggle-dark);
+	--color-toggle-system: var(--toggle-system);
+	--color-stat-star: var(--stat-star);
+	--color-stat-fork: var(--stat-fork);
+	--color-stat-icon: var(--stat-icon);
+	--color-stat-icon-strong: var(--stat-icon-strong);
+	--color-stat-number: var(--stat-number);
+	--color-section-rule: var(--section-rule);
+	--font-mono: var(--code-font);
+	--font-sans: var(--body-font);
+	--font-heading: var(--heading-font);
+	--radius-control: var(--control-radius);
+	--radius-portrait: var(--portrait-radius);
 
 	--tracking-tightest: -0.1em;
 }
 
 @layer base {
+	::selection {
+		background-color: var(--selection-background);
+		color: var(--selection-text);
+	}
+
+	html {
+		color-scheme: light;
+		background: var(--paper);
+		color: var(--ink);
+		font-family: var(--font-sans);
+		font-size: var(--text-base);
+		-webkit-font-smoothing: antialiased;
+
+		@variant dark {
+			color-scheme: dark;
+		}
+	}
+
+	code {
+		font-family: var(--font-mono);
+		font-size: 0.875em;
+	}
+
 	h1,
 	h2,
 	h3,
 	h4,
 	h5,
 	h6 {
-		font-family: var(--font-sans);
+		font-family: var(--font-heading);
 
 		code {
 			font-size: inherit;
@@ -84,17 +82,13 @@
 	}
 
 	a {
-		--color: var(--color-tokyonight-day-blue);
-		--color-hover: var(--color-tokyonight-day-blue);
-
-		@variant dark {
-			--color: var(--color-tokyonight-moon-blue);
-			--color-hover: var(--color-tokyonight-moon-blue);
-		}
-
+		--color: var(--underline);
+		--color-hover: var(--accent);
+		color: inherit;
+		text-decoration: underline;
 		text-decoration-color: var(--color);
-		text-decoration-thickness: from-font;
-		text-underline-offset: calc(var(--spacing) * 1);
+		text-decoration-thickness: var(--link-thickness);
+		text-underline-offset: var(--link-offset);
 
 		&:hover {
 			color: var(--color-hover);
@@ -103,7 +97,27 @@
 		}
 	}
 
-	:is(h1, h2, h3, h4, h5, h6) a:hover {
-		text-decoration: none;
+	a:focus-visible,
+	button:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: var(--spacing);
 	}
+}
+
+@utility page-title {
+	margin: 0 0 calc(var(--spacing) * 6);
+	color: var(--heading);
+	font-size: 1.625rem;
+	font-weight: 650;
+	line-height: 1.2;
+	letter-spacing: -0.6px;
+
+	@variant compact {
+		font-size: 1.4375rem;
+	}
+}
+
+@utility inline-icon {
+	display: inline-block;
+	vertical-align: -2px;
 }

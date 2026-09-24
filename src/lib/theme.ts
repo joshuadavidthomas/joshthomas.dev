@@ -5,6 +5,12 @@ export const themeBootstrap = String.raw`
 	const root = document.documentElement;
 	const media = matchMedia('(prefers-color-scheme: dark)');
 	const storageKey = 'theme';
+	const nameKey = 'theme-name';
+	const normalizeName = (value) => ['tokyo-night', 'catppuccin', 'dracula'].includes(value) ? value : 'default';
+	const readName = () => {
+		try { return normalizeName(localStorage.getItem(nameKey)); }
+		catch { return 'default'; }
+	};
 
 	const normalize = (value) => value === 'light' || value === 'dark' ? value : 'system';
 	const current = () => normalize(root.dataset.modeState);
@@ -17,10 +23,10 @@ export const themeBootstrap = String.raw`
 	};
 	const resolved = (preference) => preference === 'dark' || (preference === 'system' && media.matches) ? 'dark' : 'light';
 	const label = (preference, mode) => preference === 'light'
-		? 'Theme: Light. Click to switch to dark mode.'
+		? 'Appearance: Light. Choose appearance.'
 		: preference === 'dark'
-			? 'Theme: Dark. Click to use system theme.'
-			: 'Theme: Auto (currently ' + mode + '). Click to switch to light mode.';
+			? 'Appearance: Dark. Choose appearance.'
+			: 'Appearance: System (currently ' + mode + '). Choose appearance.';
 	const syncButton = () => {
 		const button = document.querySelector('#theme-toggle');
 		if (!button) return;
@@ -28,6 +34,11 @@ export const themeBootstrap = String.raw`
 		const text = label(preference, resolved(preference));
 		button.setAttribute('aria-label', text);
 		button.setAttribute('title', text);
+		for (const option of document.querySelectorAll('[data-theme-preference]')) {
+			const selected = option.dataset.themePreference === preference &&
+				(preference === 'system' || normalizeName(option.dataset.themeName) === root.dataset.themeName);
+			option.setAttribute('aria-pressed', String(selected));
+		}
 	};
 	const apply = (preference) => {
 		const mode = resolved(preference);
@@ -37,7 +48,13 @@ export const themeBootstrap = String.raw`
 	};
 	const save = (preference) => {
 		try {
-			localStorage.setItem(storageKey, preference);
+			if (preference === 'system') {
+				localStorage.removeItem(storageKey);
+				localStorage.removeItem(nameKey);
+			} else {
+				localStorage.setItem(nameKey, root.dataset.themeName);
+				localStorage.setItem(storageKey, preference);
+			}
 		} catch {
 			// The selected theme still applies when storage is unavailable.
 		}
@@ -47,30 +64,39 @@ export const themeBootstrap = String.raw`
 	};
 
 	document.addEventListener('click', (event) => {
-		const button = event.target?.closest?.('#theme-toggle');
-		if (!button || button.classList.contains('rotating')) return;
-		const preference = current();
-		const next = preference === 'system' ? 'light' : preference === 'light' ? 'dark' : 'system';
-		const animate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (animate) button.classList.add('rotating');
-		save(next);
-		apply(next);
-		if (animate) setTimeout(() => button.classList.remove('rotating'), 300);
+		const option = event.target?.closest?.('[data-theme-preference]');
+		if (!option) return;
+		const preference = normalize(option.dataset.themePreference);
+		root.dataset.themeName = normalizeName(option.dataset.themeName);
+		save(preference);
+		apply(preference);
+		document.querySelector('#theme-menu')?.hidePopover();
+		document.querySelector('#theme-toggle')?.focus();
 	});
+	root.dataset.themeName = readName();
 	apply(read());
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', setup, { once: true });
 	} else {
 		setup();
 	}
+	// Theme identity is independent of the persisted light/dark/system preference.
+	document.addEventListener('astro:before-swap', (event) => {
+		event.newDocument.documentElement.dataset.themeName = root.dataset.themeName;
+	});
 	document.addEventListener('astro:after-swap', () => apply(read()));
 	media.addEventListener('change', () => {
 		if (current() === 'system') apply('system');
 	});
-	window.addEventListener('pageshow', () => apply(read()));
+	window.addEventListener('pageshow', () => {
+		root.dataset.themeName = readName();
+		apply(read());
+	});
 	window.addEventListener('storage', (event) => {
-		if (event.key === storageKey) apply(normalize(event.newValue));
-		else if (event.key === null) apply(read());
+		if (event.key === storageKey || event.key === nameKey || event.key === null) {
+			root.dataset.themeName = readName();
+			apply(read());
+		}
 	});
 })();
 `;

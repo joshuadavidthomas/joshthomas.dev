@@ -1,0 +1,75 @@
+/* Palette and roles: https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md */
+@layer base {
+	:root[data-theme-name='catppuccin'] {
+		--paper: var(--color-catppuccin-latte-base);
+		--ink: var(--color-catppuccin-latte-text);
+		--heading: var(--ink);
+		--muted: var(--color-catppuccin-latte-subtext-0);
+		--accent: var(--color-catppuccin-latte-mauve);
+		--rule: var(--color-catppuccin-latte-overlay-0);
+		--underline: var(--rule);
+		--menu-background: var(--color-catppuccin-latte-surface-0);
+		--tag-background: var(--color-catppuccin-latte-surface-1);
+		--selection-background: oklch(from var(--color-catppuccin-latte-overlay-2) l c h / 25%);
+		--selection-text: var(--ink);
+		--code-background-color: var(--color-catppuccin-latte-mantle);
+		--inline-code-background: var(--menu-background);
+		--inline-code-text: var(--ink);
+		--checkbox-mixed: var(--color-catppuccin-latte-yellow);
+		--anchor-color: var(--muted);
+		--anchor-placeholder: var(--heading);
+		--stat-star: var(--color-catppuccin-latte-yellow);
+		--stat-fork: var(--color-catppuccin-latte-peach);
+		--stat-icon: var(--muted);
+		--stat-icon-strong: var(--muted);
+		--stat-number: var(--ink);
+		--section-rule: var(--rule);
+		--color-caution: var(--color-catppuccin-latte-red);
+		--color-documentation: var(--color-catppuccin-latte-green);
+		--color-important: var(--accent);
+		--color-note: var(--color-catppuccin-latte-blue);
+		--color-tip: var(--color-catppuccin-latte-teal);
+		--color-warning: var(--color-catppuccin-latte-yellow);
+
+		@variant dark {
+			--paper: var(--color-catppuccin-mocha-surface-0);
+			--ink: var(--color-catppuccin-mocha-text);
+			--muted: var(--color-catppuccin-mocha-subtext-0);
+			--accent: var(--color-catppuccin-mocha-mauve);
+			--rule: var(--color-catppuccin-mocha-overlay-0);
+			--menu-background: var(--color-catppuccin-mocha-mantle);
+			--code-background-color: var(--color-catppuccin-mocha-base);
+			--tag-background: var(--color-catppuccin-mocha-surface-1);
+			--selection-background: oklch(from var(--color-catppuccin-mocha-overlay-2) l c h / 25%);
+			--checkbox-mixed: var(--color-catppuccin-mocha-yellow);
+			--stat-star: var(--color-catppuccin-mocha-yellow);
+			--stat-fork: var(--color-catppuccin-mocha-peach);
+			--color-caution: var(--color-catppuccin-mocha-red);
+			--color-documentation: var(--color-catppuccin-mocha-green);
+			--color-note: var(--color-catppuccin-mocha-blue);
+			--color-tip: var(--color-catppuccin-mocha-teal);
+			--color-warning: var(--color-catppuccin-mocha-yellow);
+		}
+	}
+}
+
+:root[data-theme-name='catppuccin'][data-theme='light'] :is(.shiki, .shiki span) {
+	color: var(--shiki-latte) !important;
+	background-color: var(--shiki-latte-bg) !important;
+	font-style: var(--shiki-latte-font-style) !important;
+	font-weight: var(--shiki-latte-font-weight) !important;
+	text-decoration: var(--shiki-latte-text-decoration) !important;
+}
+
+:root[data-theme-name='catppuccin'][data-theme='dark'] :is(.shiki, .shiki span) {
+	color: var(--shiki-mocha) !important;
+	background-color: var(--shiki-mocha-bg) !important;
+	font-style: var(--shiki-mocha-font-style) !important;
+	font-weight: var(--shiki-mocha-font-weight) !important;
+	text-decoration: var(--shiki-mocha-text-decoration) !important;
+}
+
+/* The page's code surface takes precedence over Shiki's default editor background. */
+:root[data-theme-name='catppuccin'][data-theme='light'] pre.shiki {
+	--shiki-latte-bg: var(--code-background-color) !important;
+}

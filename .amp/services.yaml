@@ -5,5 +5,4 @@ services:
       pnpm dev --host 0.0.0.0 --port "$PORT"
     port: 4321
     health: /
-    portal:
-      title: Site development
+    portal: true

@@ -1,28 +1,11 @@
-:root {
-	--code-background-color: var(--color-tokyonight-day-bg);
-	--code-color: var(--color-tokyonight-day-fg);
-}
-
-:root[data-theme='dark'] {
-	--code-background-color: var(--color-tokyonight-moon-bg);
-	--code-color: var(--color-tokyonight-moon-fg);
-}
-
-[data-theme='dark'] .shiki,
-[data-theme='dark'] .shiki span {
-	color: var(--shiki-dark) !important;
-	background-color: var(--shiki-dark-bg) !important;
-	font-style: var(--shiki-dark-font-style) !important;
-	font-weight: var(--shiki-dark-font-weight) !important;
-	text-decoration: var(--shiki-dark-text-decoration) !important;
-}
-
 :is(code, pre) {
 	background-color: var(--code-background-color);
 	color: var(--code-color);
 }
 
 :not(pre) > code {
+	background-color: var(--inline-code-background);
+	color: var(--inline-code-text);
 	border-radius: var(--radius-sm);
 	padding: 0 calc(var(--spacing) * 1);
 }

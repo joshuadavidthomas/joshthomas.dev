@@ -4,6 +4,6 @@ import { renderDesignSystem } from '@/lib/design-system';
 const html = await renderDesignSystem();
 ---
 
-<BaseLayout title="Design system" description="The visual language and content styles used on joshthomas.dev." wide>
-	<article class="prose grid max-w-none grid-container-2xl xl:prose-xl dark:prose-invert"><Fragment set:html={html} /></article>
+<BaseLayout title="Design system" description="The visual language and content styles used on joshthomas.dev.">
+	<article class="prose reading"><Fragment set:html={html} /></article>
 </BaseLayout>

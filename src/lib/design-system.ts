@@ -22,7 +22,7 @@ function renderColorSwatches() {
 						`<div class="color-swatch"><div class="size-16 rounded-md shadow-${name}-md" style="background-color:var(--color-${name},${value})"></div><div class="mt-2"><p class="truncate font-mono text-sm">${name.replace('tokyonight-', '')}</p></div></div>`
 				)
 				.join('');
-			return `<h3 class="capitalize">${group} <span class="text-sm font-normal text-gray-500 dark:text-gray-400">(${groupColors.length} colors)</span></h3><div class="grid grid-cols-2 gap-x-4 gap-y-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">${swatches}</div>`;
+			return `<h3 class="capitalize">${group} <span class="text-sm font-normal text-muted">(${groupColors.length} colors)</span></h3><div class="grid grid-cols-2 gap-x-4 gap-y-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">${swatches}</div>`;
 		})
 		.join('');
 }

@@ -11,11 +11,14 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 
 const { page } = Astro.props as { page: Page<Entry> };
 const isFirstPage = page.currentPage === 1;
-const title = isFirstPage ? 'Blog' : `Blog · Page ${page.currentPage}`;
-const heading = isFirstPage ? 'Blog' : `Blog page ${page.currentPage}`;
+const title = isFirstPage ? 'Writing' : `Writing — Page ${page.currentPage}`;
+const heading = isFirstPage ? 'Writing' : `Writing page ${page.currentPage}`;
 ---
 
 <BaseLayout {title} description="Writing and Today I Learned notes from Josh Thomas.">
-	<header class="flex"><h1 class="sr-only">{heading}</h1><a class="group ml-auto flex items-center gap-1 underline-offset-4" href="/feeds/blog.xml"><Rss class="size-4 text-tokyonight-day-orange group-hover:text-inherit dark:text-tokyonight-moon-orange" aria-hidden="true" /> RSS</a></header>
+	<h1 class="sr-only">{heading}</h1>
+	<div class="mb-6 text-right">
+		<a href="/feeds/blog.xml" class="inline-block text-[13px] text-muted"><Rss size={14} class="inline-icon" aria-hidden="true" /> Feed</a>
+	</div>
 	<BlogList {page} />
 </BaseLayout>

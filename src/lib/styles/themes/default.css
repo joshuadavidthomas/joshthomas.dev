@@ -1,0 +1,108 @@
+/* The current design. :root supplies defaults for themes that override only a subset. */
+@layer base {
+	:root {
+		--light-paper: #fcfbf8;
+		--light-ink: #47443f;
+		--light-muted: #706b62;
+		--light-accent: #8b4933;
+		--dark-paper: #201f1d;
+		--dark-ink: #d6d1c8;
+		--dark-muted: #aaa398;
+		--dark-accent: #dca58b;
+		--paper: var(--light-paper);
+		--ink: var(--light-ink);
+		--heading: #26251f;
+		--muted: var(--light-muted);
+		--rule: #dcd7ce;
+		--underline: #b9b1a5;
+		--accent: var(--light-accent);
+		--focus-ring: var(--accent);
+		--selection-background: color-mix(in oklch, var(--accent) 25%, var(--paper));
+		--selection-text: var(--heading);
+		--tag-background: var(--rule);
+		--tag-text: var(--ink);
+		--menu-background: var(--paper);
+		--table-heading-border: var(--rule);
+		--table-row-border: var(--rule);
+		--kbd-text: var(--heading);
+		--kbd-shadow: color-mix(in srgb, var(--heading) 10%, transparent);
+		--body-font:
+			'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+			'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+		--heading-font: var(--body-font);
+		--code-font:
+			MonoLisa, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+			'Courier New', monospace;
+		--link-thickness: 1px;
+		--link-offset: calc(var(--spacing) * 0.75);
+		--prose-link-offset: calc(var(--spacing) * 1.5);
+		--control-radius: 50%;
+		--portrait-radius: 50%;
+		--code-background-color: #f1eee7;
+		--code-color: var(--ink);
+		--inline-code-background: var(--code-background-color);
+		--inline-code-text: var(--accent);
+		--checkbox-border: var(--muted);
+		--checkbox-checked: var(--accent);
+		--checkbox-mixed: #786448;
+		--checkbox-mark: var(--paper);
+		--anchor-color: var(--color-gray-400);
+		--anchor-placeholder: var(--color-gray-950);
+		--alert-border: var(--muted);
+		--toggle-light: #ff8c00;
+		--toggle-dark: #f1c40f;
+		--toggle-system: #3498db;
+		--stat-star: var(--color-yellow-400);
+		--stat-fork: var(--color-tokyonight-day-orange);
+		--stat-icon: var(--color-gray-500);
+		--stat-icon-strong: var(--color-gray-500);
+		--stat-number: var(--color-gray-800);
+		--section-rule: var(--color-gray-300);
+		--color-caution: var(--accent);
+		--color-caution-body: var(--ink);
+		--color-documentation: #536444;
+		--color-documentation-body: var(--ink);
+		--color-important: #775568;
+		--color-important-body: var(--ink);
+		--color-note: #52676d;
+		--color-note-body: var(--ink);
+		--color-tip: #48665b;
+		--color-tip-body: var(--ink);
+		--color-tldr: var(--heading);
+		--color-tldr-body: var(--ink);
+		--color-warning: var(--checkbox-mixed);
+		--color-warning-body: var(--ink);
+
+		@variant dark {
+			--paper: var(--dark-paper);
+			--ink: var(--dark-ink);
+			--heading: #f1ece3;
+			--muted: var(--dark-muted);
+			--rule: #45413b;
+			--underline: #797165;
+			--accent: var(--dark-accent);
+			--anchor-placeholder: var(--color-gray-50);
+			--stat-star: var(--color-yellow-300);
+			--stat-fork: var(--color-tokyonight-moon-orange);
+			--stat-icon-strong: var(--color-gray-400);
+			--stat-number: var(--color-gray-300);
+			--section-rule: rgb(255 255 255 / 15%);
+			--code-background-color: #2c2925;
+			--checkbox-mixed: #c4ad88;
+			--color-documentation: #b3bf9c;
+			--color-important: #c6a7ba;
+			--color-note: #a4bdc2;
+			--color-tip: #a3bfb0;
+		}
+	}
+}
+
+/* Shiki emits the paired warm palettes, including font styles. */
+[data-theme='dark'] .shiki,
+[data-theme='dark'] .shiki span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}

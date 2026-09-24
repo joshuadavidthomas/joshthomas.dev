@@ -13,6 +13,91 @@
 }
 
 @theme inline {
+	/* https://github.com/catppuccin/palette/blob/main/palette.json */
+	--color-catppuccin-latte-rosewater: oklch(from #dc8a78 l c h);
+	--color-catppuccin-latte-flamingo: oklch(from #dd7878 l c h);
+	--color-catppuccin-latte-pink: oklch(from #ea76cb l c h);
+	--color-catppuccin-latte-mauve: oklch(from #8839ef l c h);
+	--color-catppuccin-latte-red: oklch(from #d20f39 l c h);
+	--color-catppuccin-latte-maroon: oklch(from #e64553 l c h);
+	--color-catppuccin-latte-peach: oklch(from #fe640b l c h);
+	--color-catppuccin-latte-yellow: oklch(from #df8e1d l c h);
+	--color-catppuccin-latte-green: oklch(from #40a02b l c h);
+	--color-catppuccin-latte-teal: oklch(from #179299 l c h);
+	--color-catppuccin-latte-sky: oklch(from #04a5e5 l c h);
+	--color-catppuccin-latte-sapphire: oklch(from #209fb5 l c h);
+	--color-catppuccin-latte-blue: oklch(from #1e66f5 l c h);
+	--color-catppuccin-latte-lavender: oklch(from #7287fd l c h);
+	--color-catppuccin-latte-text: oklch(from #4c4f69 l c h);
+	--color-catppuccin-latte-subtext-1: oklch(from #5c5f77 l c h);
+	--color-catppuccin-latte-subtext-0: oklch(from #6c6f85 l c h);
+	--color-catppuccin-latte-overlay-2: oklch(from #7c7f93 l c h);
+	--color-catppuccin-latte-overlay-1: oklch(from #8c8fa1 l c h);
+	--color-catppuccin-latte-overlay-0: oklch(from #9ca0b0 l c h);
+	--color-catppuccin-latte-surface-2: oklch(from #acb0be l c h);
+	--color-catppuccin-latte-surface-1: oklch(from #bcc0cc l c h);
+	--color-catppuccin-latte-surface-0: oklch(from #ccd0da l c h);
+	--color-catppuccin-latte-base: oklch(from #eff1f5 l c h);
+	--color-catppuccin-latte-mantle: oklch(from #e6e9ef l c h);
+	--color-catppuccin-latte-crust: oklch(from #dce0e8 l c h);
+
+	--color-catppuccin-mocha-rosewater: oklch(from #f5e0dc l c h);
+	--color-catppuccin-mocha-flamingo: oklch(from #f2cdcd l c h);
+	--color-catppuccin-mocha-pink: oklch(from #f5c2e7 l c h);
+	--color-catppuccin-mocha-mauve: oklch(from #cba6f7 l c h);
+	--color-catppuccin-mocha-red: oklch(from #f38ba8 l c h);
+	--color-catppuccin-mocha-maroon: oklch(from #eba0ac l c h);
+	--color-catppuccin-mocha-peach: oklch(from #fab387 l c h);
+	--color-catppuccin-mocha-yellow: oklch(from #f9e2af l c h);
+	--color-catppuccin-mocha-green: oklch(from #a6e3a1 l c h);
+	--color-catppuccin-mocha-teal: oklch(from #94e2d5 l c h);
+	--color-catppuccin-mocha-sky: oklch(from #89dceb l c h);
+	--color-catppuccin-mocha-sapphire: oklch(from #74c7ec l c h);
+	--color-catppuccin-mocha-blue: oklch(from #89b4fa l c h);
+	--color-catppuccin-mocha-lavender: oklch(from #b4befe l c h);
+	--color-catppuccin-mocha-text: oklch(from #cdd6f4 l c h);
+	--color-catppuccin-mocha-subtext-1: oklch(from #bac2de l c h);
+	--color-catppuccin-mocha-subtext-0: oklch(from #a6adc8 l c h);
+	--color-catppuccin-mocha-overlay-2: oklch(from #9399b2 l c h);
+	--color-catppuccin-mocha-overlay-1: oklch(from #7f849c l c h);
+	--color-catppuccin-mocha-overlay-0: oklch(from #6c7086 l c h);
+	--color-catppuccin-mocha-surface-2: oklch(from #585b70 l c h);
+	--color-catppuccin-mocha-surface-1: oklch(from #45475a l c h);
+	--color-catppuccin-mocha-surface-0: oklch(from #313244 l c h);
+	--color-catppuccin-mocha-base: oklch(from #1e1e2e l c h);
+	--color-catppuccin-mocha-mantle: oklch(from #181825 l c h);
+	--color-catppuccin-mocha-crust: oklch(from #11111b l c h);
+
+	/* https://github.com/dracula/vim/blob/master/autoload/dracula.vim */
+	--color-dracula-fg: oklch(from #f8f8f2 l c h);
+	--color-dracula-bglighter: oklch(from #424450 l c h);
+	--color-dracula-bglight: oklch(from #343746 l c h);
+	--color-dracula-bg: oklch(from #282a36 l c h);
+	--color-dracula-bgdark: oklch(from #21222c l c h);
+	--color-dracula-bgdarker: oklch(from #191a21 l c h);
+	--color-dracula-comment: oklch(from #6272a4 l c h);
+	--color-dracula-selection: oklch(from #44475a l c h);
+	--color-dracula-subtle: var(--color-dracula-bglighter);
+	--color-dracula-cyan: oklch(from #8be9fd l c h);
+	--color-dracula-green: oklch(from #50fa7b l c h);
+	--color-dracula-orange: oklch(from #ffb86c l c h);
+	--color-dracula-pink: oklch(from #ff79c6 l c h);
+	--color-dracula-purple: oklch(from #bd93f9 l c h);
+	--color-dracula-red: oklch(from #ff5555 l c h);
+	--color-dracula-yellow: oklch(from #f1fa8c l c h);
+	--color-dracula-black: var(--color-dracula-bgdark);
+	--color-dracula-blue: var(--color-dracula-purple);
+	--color-dracula-magenta: var(--color-dracula-pink);
+	--color-dracula-white: var(--color-dracula-fg);
+	--color-dracula-bright-black: var(--color-dracula-comment);
+	--color-dracula-bright-red: oklch(from #ff6e6e l c h);
+	--color-dracula-bright-green: oklch(from #69ff94 l c h);
+	--color-dracula-bright-yellow: oklch(from #ffffa5 l c h);
+	--color-dracula-bright-blue: oklch(from #d6acff l c h);
+	--color-dracula-bright-magenta: oklch(from #ff92df l c h);
+	--color-dracula-bright-cyan: oklch(from #a4ffff l c h);
+	--color-dracula-bright-white: oklch(from #ffffff l c h);
+
 	--color-tokyonight-day-bg: oklch(from #e1e2e7 l c h);
 	--color-tokyonight-day-bg-dark: oklch(from #d0d5e3 l c h);
 	--color-tokyonight-day-bg-dark1: oklch(from #c1c9df l c h);

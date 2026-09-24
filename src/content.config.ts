@@ -9,6 +9,36 @@ const datedEntry = z.object({
 });
 
 export const collections = {
+	home: defineCollection({
+		loader: glob({ pattern: '*.md', base: './content/home', deferRender: true }),
+		schema: z.object({
+			title: z.string(),
+			order: z.number(),
+			kind: z.enum([
+				'intro',
+				'prose',
+				'projects',
+				'community',
+				'writing',
+				'dated-list',
+				'links',
+				'contact'
+			]),
+			subtitle: z.string().optional(),
+			items: z
+				.array(
+					z.object({
+						title: z.string(),
+						subtitle: z.string().optional(),
+						date: z.string(),
+						href: z.string()
+					})
+				)
+				.optional(),
+			links: z.array(z.object({ label: z.string(), href: z.string() })).optional(),
+			link: z.object({ label: z.string(), href: z.string() }).optional()
+		})
+	}),
 	posts: defineCollection({
 		loader: glob({ pattern: '**/*.md', base: './content/posts', deferRender: true }),
 		schema: datedEntry

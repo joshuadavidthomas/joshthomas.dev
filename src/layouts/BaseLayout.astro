@@ -1,5 +1,7 @@
 ---
-import BrandIcon from '@/components/BrandIcon.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import avatar from '@/lib/assets/me.png';
 import Meta from '@/components/Meta.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import favicon from '@/lib/assets/favicon.svg';
@@ -14,19 +16,17 @@ type Props = {
 	description: string;
 	type?: 'website' | 'article';
 	updated?: string;
-	wide?: boolean;
 };
 
-const { title, description, type, updated, wide = false } = Astro.props;
+const { title, description, type, updated } = Astro.props;
 const pathname = Astro.url.pathname;
-const active = (href: string) =>
-	href !== '/' && (pathname.startsWith(href) || (href === '/blog/' && pathname.startsWith('/til/')));
-const social = [
-	{ label: 'Mastodon', href: 'https://joshthomas.dev/@josh' },
-	{ label: 'Bluesky', href: 'https://bsky.app/profile/joshthomas.dev' },
-	{ label: 'GitHub', href: 'https://github.com/joshuadavidthomas' },
-	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/joshua-thomas-b1745a16/' }
-] as const;
+const isWriting = pathname.startsWith('/blog/') || pathname.startsWith('/til/');
+const home = (await getCollection('home')).sort((a, b) => a.data.order - b.data.order);
+const intro = home.find(({ data }) => data.kind === 'intro');
+const navigation = home.filter(({ data }) => !['intro', 'contact'].includes(data.kind));
+const homeAnchor = (id: string) => `${pathname === '/' ? '' : '/'}#${id}`;
+const navLink = 'no-underline hover:text-accent hover:underline hover:decoration-current aria-[current=location]:text-accent';
+const Name = pathname === '/' ? 'h1' : 'p';
 const sourceExceptions: Record<string, string> = {
 	'/': 'src/pages/index.astro',
 	'/projects': 'src/pages/projects/index.astro'
@@ -35,15 +35,11 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 ---
 
 <!doctype html>
-<html lang="en" class="bg-gray-50 text-gray-950 dark:bg-gray-950 dark:text-gray-50" data-mode-state="system" data-theme="light">
+<html lang="en" data-theme-name="default" data-mode-state="system" data-theme="light">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
-		<style is:inline>
-			:root { color-scheme: light; background: #fafafa; color: #09090b; }
-			:root[data-theme='dark'] { color-scheme: dark; background: #09090b; color: #fafafa; }
-		</style>
 		<script is:inline set:html={themeBootstrap}></script>
 		<Meta {title} {description} {type} {updated} />
 		{import.meta.env.PROD && <ClientRouter />}
@@ -82,37 +78,65 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		<slot name="head" />
 	</head>
 	<body>
-		<div class="grid-layout px-2">
-			<header class="flex flex-col items-baseline justify-between gap-y-2 xs:flex-row" transition:name="site-header">
-				<div>
-					<h1 class="text-2xl"><a href="/">Josh Thomas</a></h1>
-					<nav class="flex items-center gap-4 text-sm" aria-label="Main navigation">
-						{[['/', 'HOME'], ['/blog/', 'BLOG'], ['/projects/', 'PROJECTS']].map(([href, label]) => (
-							<a href={href} class:list={['uppercase underline-offset-4 hover:underline', { 'font-semibold underline': active(href) }]}>{label}</a>
-						))}
-					</nav>
-				</div>
-				<div class="order-first mt-2 flex w-full items-center justify-between gap-2 xs:order-none xs:mt-0 xs:w-auto xs:justify-end">
-					<nav class="flex items-center gap-2 text-xs font-semibold" aria-label="Social media">
-						{social.map((item) => (
-							<a href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} title={item.label}><BrandIcon label={item.label} /></a>
-						))}
-					</nav>
-					<ThemeToggle />
-				</div>
-			</header>
-			<main id="skip" class:list={{ 'w-full': wide }}><slot /></main>
-			<footer class="mt-24 pb-4 text-xs" transition:name="site-footer">
-				<hr aria-hidden="true" class="mx-auto w-24 text-gray-300 dark:text-white/15" />
-				<div class="mt-4 flex items-center justify-between">
-					<nav class="flex items-center gap-2 uppercase" aria-label="Secondary navigation"><a href="/design-system/" class:list={['underline-offset-4', { 'font-semibold underline': pathname === '/design-system/' }]}>Design system</a></nav>
-					<div class="flex items-center gap-2 italic">
-						<span>Built with <a href="https://astro.build/" class="underline-offset-4">Astro</a></span>
-						<span>·</span>
-						<a href={`https://github.com/joshuadavidthomas/joshthomas.dev/tree/main/${sourcePath}`} class="underline-offset-4">Source</a>
-					</div>
-				</div>
+		<a class="fixed top-3 left-3 z-20 -translate-y-[200%] bg-paper px-3 py-2 focus:translate-y-0" href="#skip">Skip to content</a>
+		<ThemeToggle />
+		<div class="page">
+			<aside class="sidebar" aria-label="Identity and navigation" transition:name="site-sidebar">
+				<a href="/" aria-label="Back to home"><Image src={avatar} width={64} height={64} alt="" class="block size-14 rounded-portrait" /></a>
+				<Name class="mt-4 font-heading text-[21px]/[1.2] font-[650] tracking-[-0.7px] text-heading compact:mt-0"><a class="no-underline hover:no-underline" href="/">{intro?.data.title}</a></Name>
+				<nav class="section-nav mt-8 flex flex-col gap-2 text-[14px] compact:col-span-2 compact:mt-6 compact:flex-row compact:flex-wrap compact:gap-x-4" aria-label="Main navigation">
+					<a class={navLink} href={homeAnchor('about')}>About</a>
+					{navigation.map((entry) => <a class={navLink} href={entry.data.kind === 'writing' && pathname !== '/' ? '/blog/' : homeAnchor(entry.id)} aria-current={entry.data.kind === 'writing' && isWriting ? 'location' : undefined}>{entry.data.title}</a>)}
+				</nav>
+			</aside>
+			<main id="skip" class="col-start-2 min-w-0 wrap-anywhere compact:col-start-1" tabindex="-1"><slot /></main>
+			<footer class="col-start-2 mt-13 flex flex-wrap gap-x-5 gap-y-2 border-t border-rule pt-5 text-[12px] text-muted compact:col-start-1" transition:name="site-footer">
+				<a href="/design-system/">Design system</a>
+				<span>Built with <a href="https://astro.build/">Astro</a></span>
+				<a href={`https://github.com/joshuadavidthomas/joshthomas.dev/tree/main/${sourcePath}`}>Source</a>
 			</footer>
 		</div>
 	</body>
 </html>
+
+<script>
+	let cleanup = () => {};
+	function trackSection() {
+		cleanup();
+		if (location.pathname !== '/') return;
+		const sections = Array.from(document.querySelectorAll<HTMLAnchorElement>('.section-nav a'))
+			.map((link) => ({ link, target: document.getElementById(link.hash.slice(1)) }))
+			.filter((entry) => entry.target !== null);
+		let frame = 0;
+		function update() {
+			frame = 0;
+			// Keep a long section active until the next heading reaches the reading area.
+			let active: (typeof sections)[number] | undefined;
+			for (const section of sections) {
+				if (section.target!.getBoundingClientRect().top <= innerHeight * 0.25) active = section;
+			}
+			// Short final sections cannot always reach the top quarter of the viewport.
+			if (scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) {
+				active = sections[sections.length - 1];
+			}
+			for (const section of sections) {
+				if (section === active) section.link.setAttribute('aria-current', 'location');
+				else section.link.removeAttribute('aria-current');
+			}
+		}
+		function schedule() {
+			if (!frame) frame = requestAnimationFrame(update);
+		}
+		window.addEventListener('scroll', schedule, { passive: true });
+		window.addEventListener('resize', schedule);
+		cleanup = () => {
+			window.removeEventListener('scroll', schedule);
+			window.removeEventListener('resize', schedule);
+			cancelAnimationFrame(frame);
+		};
+		update();
+	}
+	trackSection();
+	document.addEventListener('astro:page-load', trackSection);
+	document.addEventListener('astro:before-swap', () => cleanup());
+</script>

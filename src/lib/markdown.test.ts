@@ -83,17 +83,59 @@ describe('content rendering', () => {
 			{ length: 5 },
 			(_, index) => `${'#'.repeat(index + 1)} Heading ${index + 1}`
 		).join('\n\n');
-		const html = await renderMarkdown(markdown, true);
+		const html = await renderMarkdown(markdown, 1);
 		for (let level = 2; level <= 6; level += 1) {
 			expect(html).toContain(`<h${level} id="heading-${level - 1}" tabindex="-1">`);
 		}
 		expect(html).not.toContain('<h1');
 	});
 
+	it('places section headings at the requested depth without changing anchors or code', async () => {
+		const source =
+			'# Group {#stable}\n\n## Project\n\n##### Deep\n\n###### Deepest\n\n```text\n# Not a heading\n```';
+		const html = await renderMarkdown(source, 2);
+		expect(html).toContain('<h3 id="stable"');
+		expect(html).toContain('href="#stable"');
+		expect(html).toContain('Group</h3>');
+		expect(html).toContain('<h4 id="project"');
+		expect(html).toContain('Project</h4>');
+		expect(html).toContain('<h6 id="deep"');
+		expect(html).toContain('<h6 id="deepest"');
+		expect(html).not.toMatch(/<\/?h[78]/);
+		expect(html).toContain('# Not a heading');
+		const unshifted = await renderMarkdown('# Group {#stable}');
+		expect(unshifted).toContain('<h1 id="stable"');
+	});
+
 	it('renders code blocks with paired Shiki themes and the code icon', async () => {
 		const html = await renderMarkdown('```typescript\nconst answer = 42;\n```');
-		expect(html).toContain('shiki-themes tokyo-night-day tokyo-night');
+		expect(html).toContain('shiki-themes warm-light warm-dark');
 		expect(html).toContain('--shiki-dark');
+		expect(html).toMatch(/color:#8B4933;--shiki-dark:#DCA58B[^>]*>const</);
+		expect(html).toMatch(/color:#806032;--shiki-dark:#D4B381[^>]*>\s*42</);
+		expect(html).toMatch(/--shiki-tokyo-day:#7847BD;--shiki-tokyo-moon:#FCA7EA[^>]*>const</);
+		expect(html).toMatch(/--shiki-tokyo-day:#B15C00;--shiki-tokyo-moon:#FF966C[^>]*>\s*42</);
+		expect(html).toContain('--shiki-tokyo-moon-bg:#1e2030');
+		expect(html).toContain('--shiki-latte-bg:#eff1f5');
+		expect(html).toContain('--shiki-mocha-bg:#1e1e2e');
+		expect(html).toMatch(/--shiki-dracula-bg:#282a36/i);
+		expect(html).toMatch(
+			/--shiki-latte:#FE640B;--shiki-mocha:#FAB387;--shiki-dracula:#BD93F9[^>]*>\s*42</
+		);
 		expect(html).toContain('<svg class="code-icon"');
+	});
+
+	it('keeps TokyoNight comments, types, and parameters distinct', async () => {
+		const html = await renderMarkdown(
+			'```typescript\n// A comment\ninterface Person {}\nfunction greet(name: string) { return true; }\n```'
+		);
+		expect(html).toMatch(
+			/--shiki-tokyo-day:#848CB5;--shiki-tokyo-day-font-style:italic;--shiki-tokyo-moon:#636DA6;--shiki-tokyo-moon-font-style:italic[^>]*>\/\/ A comment</
+		);
+		expect(html).toMatch(
+			/--shiki-tokyo-day:#188092;[^>]*--shiki-tokyo-moon:#65BCFF[^>]*>\s*Person</
+		);
+		expect(html).toMatch(/--shiki-tokyo-day:#8C6C3E;[^>]*--shiki-tokyo-moon:#FFC777[^>]*>name</);
+		expect(html).toMatch(/--shiki-tokyo-day:#B15C00;--shiki-tokyo-moon:#FF966C[^>]*>\s*true</);
 	});
 });

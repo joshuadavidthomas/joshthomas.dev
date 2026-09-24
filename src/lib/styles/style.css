@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 @import 'devicon/devicon.min.css';
 @import 'markdown-it-github-alerts/styles/github-base.css';
-@import 'markdown-it-github-alerts/styles/github-colors-light.css';
-@import 'markdown-it-github-alerts/styles/github-colors-dark-class.css';
 @plugin "@tailwindcss/typography";
 
 @import './fonts.css';
@@ -10,6 +8,10 @@
 @import './colors.css';
 @import './layout.css';
 @import './theme.css';
+@import './themes/default.css';
+@import './themes/tokyo-night.css';
+@import './themes/catppuccin.css';
+@import './themes/dracula.css';
 
 .prose {
 	@import './prose.css';
@@ -71,63 +73,16 @@ heading-anchors .ha {
 }
 
 heading-anchors .ha-placeholder {
-	color: var(--color-gray-950) !important;
-
-	@variant dark {
-		color: var(--color-gray-50) !important;
-	}
+	color: var(--anchor-placeholder) !important;
 }
 
 .markdown-alert {
-	--color-caution: var(--color-tokyonight-day-red);
-	--color-caution-body: var(--color-tokyonight-day-black-red);
-
-	--color-documentation: var(--color-tokyonight-day-green);
-	--color-documentation-body: var(--color-tokyonight-day-black-green);
-
-	--color-important: var(--color-tokyonight-day-magenta);
-	--color-important-body: var(--color-tokyonight-day-black-magenta);
-
-	--color-note: var(--color-tokyonight-day-blue2);
-	--color-note-body: var(--color-tokyonight-day-black-blue2);
-
-	--color-tip: var(--color-tokyonight-day-teal);
-	--color-tip-body: var(--color-tokyonight-day-black-teal);
-
-	--color-tldr: color-mix(in oklch, var(--color-tokyonight-day-fg), var(--color-gray-950) 40%);
-	--color-tldr-body: color-mix(in oklch, var(--color-tokyonight-day-fg), var(--color-gray-950) 75%);
-
-	--color-warning: var(--color-tokyonight-day-yellow);
-	--color-warning-body: var(--color-tokyonight-day-black-yellow);
-
-	@variant dark {
-		--color-caution: var(--color-tokyonight-moon-red);
-		--color-caution-body: var(--color-tokyonight-moon-white-red);
-
-		--color-documentation: var(--color-tokyonight-moon-green);
-		--color-documentation-body: var(--color-tokyonight-moon-white-green);
-
-		--color-important: var(--color-tokyonight-moon-magenta);
-		--color-important-body: var(--color-tokyonight-moon-white-magenta);
-
-		--color-note: var(--color-tokyonight-moon-blue2);
-		--color-note-body: var(--color-tokyonight-moon-white-blue2);
-
-		--color-tip: var(--color-tokyonight-moon-teal);
-		--color-tip-body: var(--color-tokyonight-moon-white-teal);
-
-		--color-tldr: var(--color-tokyonight-moon-fg);
-		--color-tldr-body: var(--color-gray-50);
-
-		--color-warning: var(--color-tokyonight-moon-yellow);
-		--color-warning-body: var(--color-tokyonight-moon-white-yellow);
-	}
-
-	@apply border-accent-l-gray-500;
+	border-left: 0.25rem solid var(--alert-border);
 	color: inherit;
 	font-size: var(--text-sm);
 	margin-bottom: calc(var(--spacing) * 4);
 	padding-bottom: calc(var(--spacing) * 4);
+	padding-right: var(--spacing);
 	padding-top: calc(var(--spacing) * 3);
 	padding-inline-start: calc(var(--spacing) * 4);
 

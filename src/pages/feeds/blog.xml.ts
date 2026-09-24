@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
 		await Promise.all(
 			posts.map(async (post) => {
 				const url = new URL(post.url, site).href;
-				const html = await renderMarkdown(post.body, true);
+				const html = await renderMarkdown(post.body, 1);
 				return `<entry><title>${escape(post.title)}</title><link href="${url}"/><updated>${post.date}</updated><id>${url}</id><content type="html"><![CDATA[${absoluteHtml(html, site)}]]></content></entry>`;
 			})
 		)

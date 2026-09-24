@@ -1,33 +1,100 @@
 ---
-import { CalendarDays, Newspaper, Rss } from '@lucide/astro';
-import { getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 import { entries } from '@/lib/content';
-import avatar from '@/lib/assets/me.png';
+import { renderMarkdown } from '@/lib/markdown';
+import DatedEntry from '@/components/DatedEntry.astro';
+import { ArrowUpRight, Mail, Rss } from '@lucide/astro';
 
-const latest = (await entries()).find((entry) => entry.type === 'post');
-const avatarImage = await getImage({ src: avatar, width: 250, height: 250, format: 'webp' });
+const writing = (await entries()).slice(0, 5);
+const sections = await Promise.all(
+	(await getCollection('home'))
+		.sort((a, b) => a.data.order - b.data.order)
+		.map(async (entry) => ({
+			...entry,
+			html: await renderMarkdown(entry.body ?? '', entry.data.kind === 'intro' ? 1 : 2)
+		}))
+);
 ---
 
 <BaseLayout description="The personal website of Josh Thomas, a web developer living in Alabama.">
-	<link slot="head" rel="preload" as="image" href={avatarImage.src} fetchpriority="high" />
-	<section class="mt-10 text-center sm:mt-16">
-		<img src={avatarImage.src} width={avatarImage.attributes.width} height={avatarImage.attributes.height} alt="Josh Thomas" fetchpriority="high" class="mx-auto size-56 rounded-full drop-shadow-md sm:size-72" />
-		<p class="mt-6 text-4xl/8 font-bold tracking-tight sm:text-5xl/8">👋 Hi, my name is Josh</p>
-		<p class="mt-2 text-base sm:mt-4 sm:text-2xl">I'm a web developer living in Alabama</p>
-	</section>
-	{latest && <section class="mt-24">
-		<header class="flex flex-col justify-between sm:flex-row">
-			<h2 class="text-lg font-medium sm:text-xl">Latest blog post</h2>
-			<div class="flex items-center gap-4 text-sm font-medium tracking-tighter text-gray-600 dark:text-gray-200">
-				<a href="/feeds/blog.xml" class="group flex items-center gap-1 underline-offset-4"><Rss class="size-4 text-tokyonight-day-orange group-hover:text-inherit dark:text-tokyonight-moon-orange" aria-hidden="true" /> RSS</a>
-				<a href="/blog/" class="group order-first flex items-center gap-1 underline-offset-4 xs:order-none"><Newspaper class="size-4 group-hover:text-inherit" aria-hidden="true" /> View all posts</a>
-			</div>
-		</header>
-		<article class="group relative mt-6">
-			<time datetime={latest.date.slice(0, 10)} class="flex items-baseline gap-2 text-xs text-gray-600 sm:text-sm dark:text-gray-300"><CalendarDays class="size-3 text-gray-700 sm:size-4 dark:text-gray-300" aria-hidden="true" />{new Date(latest.date).toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })}</time>
-			<h3 class="mt-2 text-xl/6 font-semibold text-gray-900 group-hover:text-gray-600 sm:text-2xl/7 dark:text-gray-50 dark:group-hover:text-gray-400"><a href={latest.url}><span class="absolute inset-0"></span><Fragment set:html={latest.titleHtml} /></a></h3>
-			<p class="mt-4 text-sm text-gray-600 sm:text-base dark:text-gray-300">{latest.summary}</p>
-		</article>
-	</section>}
+			{sections.map(({ id, data, html }) => data.kind === 'intro' ? (
+				<header class="intro" id="about">
+					{data.subtitle && <p class="location">{data.subtitle}</p>}
+					<div class="markdown intro-copy" set:html={html} />
+				</header>
+			) : data.kind === 'contact' ? (
+				<footer>
+					<div class="markdown" set:html={html} />{' '}
+					{data.link && <a href={data.link.href}><Mail size={14} class="inline-icon" aria-hidden="true" /> {data.link.label}</a>}
+				</footer>
+			) : (
+				<section aria-labelledby={id}>
+					<div class="section-heading">
+						<h2 id={id}>{data.title}</h2>
+						{data.subtitle && <span>{data.subtitle}</span>}
+						{data.kind === 'writing' && data.link && <a href={data.link.href}><Rss size={14} class="inline-icon" aria-hidden="true" /> {data.link.label}</a>}
+					</div>
+					<div class={`markdown ${data.kind === 'prose' ? 'work-prose' : data.kind}`} set:html={html} />
+					{data.kind === 'links' && <ul class="flex flex-wrap gap-x-6 gap-y-3">{data.links?.map((link) => (
+						<li><a href={link.href} rel="me">{link.label}</a></li>
+					))}</ul>}
+					{data.kind === 'dated-list' && <ul>{data.items?.map((item) => (
+						<li><DatedEntry {...item} /></li>
+					))}</ul>}
+					{data.kind === 'writing' && <ul class="writing-list">{writing.map((entry) => (
+						<li><DatedEntry title={entry.title} href={entry.url} subtitle={entry.type === 'til' ? `TIL / ${entry.category}` : undefined} date={String(new Date(entry.date).getUTCFullYear())} datetime={entry.date.slice(0, 10)} /></li>
+					))}</ul>}
+					{data.kind === 'writing' && <p class="more"><a href="/blog/">Writing archive <ArrowUpRight size={14} class="inline-icon" aria-hidden="true" /></a></p>}
+					{data.kind === 'projects' && <p class="more"><a href="/projects/">Project statistics & contributions <ArrowUpRight size={14} class="inline-icon" aria-hidden="true" /></a></p>}
+					{data.kind !== 'writing' && data.link && <p class="more"><a href={data.link.href}>{data.link.label} <ArrowUpRight size={14} class="inline-icon" aria-hidden="true" /></a></p>}
+				</section>
+			))}
 </BaseLayout>
+
+<style>
+	h2, p, .markdown :global(p), .markdown :global(h3), .markdown :global(h4) { margin: 0; }
+	.markdown :global(h3), .markdown :global(h4) { line-height: 1.3; }
+	h2 { color: var(--heading); }
+	.location { color: var(--heading); font-size: 21px; line-height: 1.4; letter-spacing: -.3px; }
+	.intro-copy :global(p) { margin-top: 20px; }
+	.markdown :global(.header-anchor) { display: none; }
+	.markdown :global(strong) { color: var(--heading); font-weight: 600; }
+	section { margin-top: 52px; }
+	.section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--rule); padding-bottom: 11px; margin-bottom: 20px; }
+	h2 { font-size: 21px; font-weight: 650; letter-spacing: -.4px; }
+	.section-heading > a, .section-heading > span { font-size: 13px; color: var(--muted); }
+	.work-prose { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 20px; align-items: baseline; }
+	.work-prose :global(> *) { grid-column: 1 / -1; }
+	.work-prose :global(h3) { font-size: 16px; font-weight: 600; color: var(--heading); }
+	.work-prose :global(h3:not(:first-child)) { margin-top: 36px; }
+	.work-prose :global(h3 a) { text-decoration: none; }
+	.work-prose :global(h4) { grid-column: 1; margin-top: 28px; font-size: 15px; font-weight: 600; color: var(--heading); }
+	.work-prose :global(p) { margin-top: 16px; font-size: 15px; }
+	.work-prose :global(h4 + p) { grid-column: 2; font-size: 12px; color: var(--muted); margin-top: 28px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+	.work-prose :global(h3 + h4), .work-prose :global(h3 + h4 + p) { margin-top: 12px; }
+	.projects :global(h3) { margin: 30px 0 8px; font-size: 13px; font-weight: 500; color: var(--accent); }
+	.projects :global(h4) { margin-top: 15px; font-size: 15px; font-weight: 600; color: var(--heading); overflow-wrap: anywhere; }
+	.projects :global(h3 + h4) { margin-top: 0; }
+	.projects :global(h4 a) { text-decoration: none; }
+	.projects :global(h4 a:hover) { text-decoration: underline; }
+	.projects :global(p) { font-size: 14px; line-height: 1.55; color: var(--muted); margin-top: 1px; }
+	.projects :global(h3 + p) { margin-bottom: 20px; color: var(--ink); }
+	.projects :global(> p:first-child) { margin: 0 0 24px; font-size: 15px; line-height: 1.65; color: inherit; }
+	.community :global(h3) { font-size: 15px; font-weight: 600; margin-top: 16px; }
+	.community :global(h3:first-child) { margin-top: 0; }
+	.community :global(h3 a) { text-decoration: none; }
+	.community :global(p) { font-size: 14px; color: var(--muted); }
+	.community :global(p + p) { margin-top: 20px; font-size: 15px; color: inherit; }
+	.more { margin-top: 26px; font-size: 14px; }
+	ul { list-style: none; margin: 0; padding: 0; }
+	footer { margin-top: 52px; font-size: 14px; }
+	footer .markdown, footer .markdown :global(p) { display: inline; }
+	footer > a { white-space: nowrap; }
+	@media (max-width: 600px) {
+		.location { font-size: 18px; }
+		.work-prose { column-gap: 10px; }
+		.section-heading { flex-wrap: wrap; gap: 4px 16px; }
+		section { margin-top: 40px; }
+	}
+</style>

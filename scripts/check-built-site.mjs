@@ -37,6 +37,46 @@ async function checkPage(outputPath, pathname, sourcePath) {
 		`${outputPath} must link to source file ${sourcePath}`
 	);
 	assert.ok(await exists(path.join(root, sourcePath)), `${sourcePath} must exist`);
+	assert.match(
+		html,
+		/<html[^>]*data-theme-name="default"/,
+		`${outputPath} must declare its visual theme`
+	);
+	assert.match(html, /<aside[^>]*class="sidebar"/, `${outputPath} must use the shared sidebar`);
+	assert.equal(
+		(html.match(/id="theme-toggle"/g) ?? []).length,
+		1,
+		`${outputPath} must have one theme control`
+	);
+	assert.equal(
+		(html.match(/<h1(?:\s|>)/g) ?? []).length,
+		pathname === '/design-system/' ? 2 : 1,
+		`${outputPath} must have one page heading (plus the design system's heading specimen)`
+	);
+	assert.doesNotMatch(
+		html,
+		/name="robots" content="noindex/,
+		`${outputPath} must not inherit study noindex`
+	);
+	for (const id of ['about', 'work', 'projects', 'community', 'talks']) {
+		assert.ok(
+			html.includes(`href="${pathname === '/' ? '' : '/'}#${id}"`),
+			`${outputPath} must link to homepage ${id}`
+		);
+	}
+	const navigation = html.match(
+		/<nav[^>]*aria-label="Main navigation"[^>]*>([\s\S]*?)<\/nav>/
+	)?.[1];
+	assert.match(
+		navigation ?? '',
+		pathname === '/' ? /href="#writing"[^>]*>Writing<\/a>/ : /href="\/blog\/"[^>]*>Writing<\/a>/,
+		`${outputPath} Writing navigation must target ${pathname === '/' ? 'the homepage section' : 'the archive'}`
+	);
+	assert.equal(
+		/aria-current="location"[^>]*>Writing<\/a>/.test(navigation ?? ''),
+		pathname.startsWith('/blog/') || pathname.startsWith('/til/'),
+		`${outputPath} must highlight Writing only on archive, post, and TIL pages`
+	);
 	return html;
 }
 
@@ -48,7 +88,15 @@ async function directDirectories(directory) {
 }
 
 async function check() {
-	await checkPage('index.html', '/', 'src/pages/index.astro');
+	const homeHtml = await checkPage('index.html', '/', 'src/pages/index.astro');
+	for (const id of ['about', 'work', 'projects', 'community', 'talks', 'writing']) {
+		assert.ok(homeHtml.includes(`id="${id}"`), `homepage must render ${id}`);
+	}
+	assert.ok(
+		homeHtml.includes('href="/projects/"'),
+		'homepage must expose runtime project statistics'
+	);
+	assert.ok(homeHtml.includes('href="/blog/"'), 'homepage must expose the writing archive');
 	await checkPage('blog/index.html', '/blog/', 'src/pages/blog/[...page].astro');
 	const designSystemHtml = await checkPage(
 		'design-system/index.html',

@@ -23,36 +23,132 @@ const languages = [
 	'yaml'
 ] satisfies BundledLanguage[];
 
-const tokyoNightDay = {
-	name: 'tokyo-night-day',
-	type: 'light',
-	colors: {
-		'editor.background': '#e1e2e7',
-		'editor.foreground': '#3760bf'
-	},
-	settings: [
+const syntaxScopes = {
+	comment: ['comment', 'punctuation.definition.comment'],
+	keyword: ['keyword', 'storage', 'storage.type'],
+	string: ['string', 'string.quoted', 'constant.character', 'markup.inserted'],
+	constant: ['constant.numeric', 'constant.language', 'variable.language'],
+	function: ['entity.name.function', 'support.function'],
+	type: ['entity.name.type', 'support.type', 'support.class', 'entity.name.tag'],
+	variable: ['variable', 'meta.definition.variable'],
+	punctuation: ['keyword.operator', 'punctuation'],
+	deleted: ['markup.deleted']
+};
+
+// TokyoNight's Vim/Tree-sitter roles, adapted to TextMate scopes for Shiki.
+// See folke/tokyonight.nvim: groups/treesitter.lua and extra/prism.lua.
+const tokyoSyntaxScopes = {
+	...syntaxScopes,
+	constant: ['constant.numeric', 'constant.language', 'support.constant'],
+	type: ['entity.name.type', 'support.type', 'support.class'],
+	punctuation: ['punctuation'],
+	operator: ['keyword.operator', 'punctuation.separator'],
+	property: ['variable.other.property', 'variable.object.property', 'entity.other.attribute-name'],
+	parameter: ['variable.parameter'],
+	builtin: ['variable.language', 'support.variable'],
+	tag: ['entity.name.tag']
+};
+
+function codeTheme<Role extends string>(
+	name: string,
+	mode: 'light' | 'dark',
+	palette: Record<NoInfer<Role> | 'background' | 'variable', string>,
+	scopes: Record<Role, string[]>
+): ThemeRegistrationRaw {
+	return {
+		name,
+		type: mode,
+		colors: { 'editor.background': palette.background, 'editor.foreground': palette.variable },
+		settings: Object.keys(scopes).map((role) => ({
+			scope: scopes[role as Role],
+			settings: {
+				foreground: palette[role as Role],
+				...(role === 'comment' ? { fontStyle: 'italic' } : {})
+			}
+		}))
+	};
+}
+
+const codeThemes = [
+	codeTheme(
+		'warm-light',
+		'light',
 		{
-			scope: ['comment', 'punctuation.definition.comment'],
-			settings: { foreground: '#6172b0', fontStyle: 'italic' }
+			background: '#f1eee7',
+			variable: '#47443f',
+			comment: '#706b62',
+			keyword: '#8b4933',
+			string: '#536444',
+			constant: '#806032',
+			function: '#52676d',
+			type: '#775568',
+			punctuation: '#665e53',
+			deleted: '#99483e'
 		},
-		{ scope: ['keyword', 'storage', 'storage.type'], settings: { foreground: '#7847bd' } },
+		syntaxScopes
+	),
+	codeTheme(
+		'warm-dark',
+		'dark',
 		{
-			scope: ['string', 'string.quoted', 'constant.character'],
-			settings: { foreground: '#587539' }
+			background: '#2c2925',
+			variable: '#d6d1c8',
+			comment: '#aaa398',
+			keyword: '#dca58b',
+			string: '#b3bf9c',
+			constant: '#d4b381',
+			function: '#a4bdc2',
+			type: '#c6a7ba',
+			punctuation: '#b8afa1',
+			deleted: '#e2a096'
 		},
+		syntaxScopes
+	),
+	codeTheme(
+		'tokyo-night-day',
+		'light',
 		{
-			scope: ['constant.numeric', 'constant.language', 'variable.language'],
-			settings: { foreground: '#b15c00' }
+			background: '#d0d5e3',
+			variable: '#3760bf',
+			comment: '#848cb5',
+			keyword: '#7847bd',
+			string: '#587539',
+			constant: '#b15c00',
+			function: '#2e7de9',
+			type: '#188092',
+			punctuation: '#6172b0',
+			operator: '#006a83',
+			property: '#387068',
+			parameter: '#8c6c3e',
+			builtin: '#f52a65',
+			tag: '#587539',
+			deleted: '#c64343'
 		},
-		{ scope: ['entity.name.function', 'support.function'], settings: { foreground: '#2e7de9' } },
+		tokyoSyntaxScopes
+	),
+	codeTheme(
+		'tokyo-night-moon',
+		'dark',
 		{
-			scope: ['entity.name.type', 'support.type', 'support.class'],
-			settings: { foreground: '#f52a65' }
+			background: '#1e2030',
+			variable: '#c8d3f5',
+			comment: '#636da6',
+			keyword: '#fca7ea',
+			string: '#c3e88d',
+			constant: '#ff966c',
+			function: '#82aaff',
+			type: '#65bcff',
+			punctuation: '#828bb8',
+			operator: '#89ddff',
+			property: '#4fd6be',
+			parameter: '#ffc777',
+			builtin: '#ff757f',
+			tag: '#c3e88d',
+			deleted: '#ff757f'
 		},
-		{ scope: ['variable', 'meta.definition.variable'], settings: { foreground: '#3760bf' } },
-		{ scope: ['keyword.operator', 'punctuation'], settings: { foreground: '#006a83' } }
-	]
-} satisfies ThemeRegistrationRaw;
+		tokyoSyntaxScopes
+	)
+];
 
 const loadedLanguages = new Set<string>(languages);
 let highlighter: Awaited<ReturnType<typeof createHighlighter>> | undefined;
@@ -60,7 +156,7 @@ let highlighterPromise: ReturnType<typeof createHighlighter> | undefined;
 
 function initializeHighlighter() {
 	highlighterPromise ??= createHighlighter({
-		themes: [tokyoNightDay, 'tokyo-night'],
+		themes: [...codeThemes, 'catppuccin-latte', 'catppuccin-mocha', 'dracula'],
 		langs: languages,
 		engine: createJavaScriptRegexEngine()
 	}).then((loadedHighlighter) => {
@@ -82,7 +178,15 @@ const markdown: MarkdownIt = new MarkdownIt({
 			lang: loadedLanguages.has(normalizedLanguage)
 				? (normalizedLanguage as BundledLanguage)
 				: 'text',
-			themes: { light: 'tokyo-night-day', dark: 'tokyo-night' }
+			themes: {
+				light: 'warm-light',
+				dark: 'warm-dark',
+				'tokyo-day': 'tokyo-night-day',
+				'tokyo-moon': 'tokyo-night-moon',
+				latte: 'catppuccin-latte',
+				mocha: 'catppuccin-mocha',
+				dracula: 'dracula'
+			}
 		});
 		const icon =
 			'<svg class="code-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>';
@@ -160,16 +264,16 @@ export function renderInline(content: string) {
 	return markdown.renderInline(content);
 }
 
-export async function renderMarkdown(content: string, shiftPostHeadings = false) {
+export async function renderMarkdown(content: string, headingOffset = 0) {
 	await initializeHighlighter();
 	const tokens = markdown.parse(normalizeCustomAlerts(content), {});
-	if (shiftPostHeadings) {
+	if (headingOffset) {
 		for (const token of tokens) {
 			if (
 				(token.type === 'heading_open' || token.type === 'heading_close') &&
-				/^h[1-5]$/.test(token.tag)
+				/^h[1-6]$/.test(token.tag)
 			) {
-				token.tag = `h${Number(token.tag.slice(1)) + 1}`;
+				token.tag = `h${Math.min(6, Number(token.tag.slice(1)) + headingOffset)}`;
 			}
 		}
 	}

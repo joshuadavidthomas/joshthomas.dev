@@ -1,0 +1,43 @@
+/* Palette: https://github.com/dracula/vim/blob/master/autoload/dracula.vim */
+@layer base {
+	:root[data-theme-name='dracula'] {
+		--paper: var(--color-dracula-bglight);
+		--ink: var(--color-dracula-fg);
+		--heading: var(--color-dracula-purple);
+		/* Comment is too dim for prose; use the palette's readable foreground. */
+		--muted: var(--color-dracula-fg);
+		--accent: var(--color-dracula-purple);
+		--rule: var(--color-dracula-selection);
+		--underline: var(--color-dracula-comment);
+		--menu-background: var(--color-dracula-bgdark);
+		--tag-background: var(--color-dracula-selection);
+		--selection-background: var(--color-dracula-selection);
+		--selection-text: var(--ink);
+		--code-background-color: var(--color-dracula-bg);
+		--inline-code-background: var(--tag-background);
+		--inline-code-text: var(--ink);
+		--checkbox-mixed: var(--color-dracula-orange);
+		--anchor-color: var(--muted);
+		--anchor-placeholder: var(--heading);
+		--stat-star: var(--color-dracula-yellow);
+		--stat-fork: var(--color-dracula-orange);
+		--stat-icon: var(--muted);
+		--stat-icon-strong: var(--muted);
+		--stat-number: var(--ink);
+		--section-rule: var(--rule);
+		--color-caution: var(--color-dracula-red);
+		--color-documentation: var(--color-dracula-green);
+		--color-important: var(--color-dracula-pink);
+		--color-note: var(--color-dracula-cyan);
+		--color-tip: var(--color-dracula-green);
+		--color-warning: var(--color-dracula-orange);
+	}
+}
+
+:root[data-theme-name='dracula'] :is(.shiki, .shiki span) {
+	color: var(--shiki-dracula) !important;
+	background-color: var(--shiki-dracula-bg) !important;
+	font-style: var(--shiki-dracula-font-style) !important;
+	font-weight: var(--shiki-dracula-font-weight) !important;
+	text-decoration: var(--shiki-dracula-text-decoration) !important;
+}
