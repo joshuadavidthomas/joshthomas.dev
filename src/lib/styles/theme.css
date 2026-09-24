@@ -62,11 +62,19 @@
 	h5,
 	h6 {
 		font-family: var(--font-heading);
+		text-wrap: balance;
 
 		code {
 			font-size: inherit;
 			letter-spacing: var(--tracking-tightest);
 		}
+	}
+
+	p,
+	li,
+	figcaption,
+	dd {
+		text-wrap: pretty;
 	}
 
 	h1,
