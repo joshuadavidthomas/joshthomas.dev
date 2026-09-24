@@ -33,8 +33,8 @@
 
 	function resize(element: HTMLCanvasElement) {
 		const ratio = devicePixelRatio || 1;
-		width = innerWidth;
-		height = innerHeight;
+		width = element.clientWidth;
+		height = element.clientHeight;
 		element.width = Math.round(width * ratio);
 		element.height = Math.round(height * ratio);
 		element.getContext('2d')?.setTransform(ratio, 0, 0, ratio, 0, 0);

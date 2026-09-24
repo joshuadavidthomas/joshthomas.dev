@@ -12,8 +12,8 @@ const themes = [
 	{ name: 'Tokyo Night', theme: 'tokyo-night', light: ['--color-tokyonight-day-blue', '--color-tokyonight-day-bg', '--color-tokyonight-day-fg', '--color-tokyonight-day-fg-dark'], dark: ['--color-tokyonight-moon-blue', '--color-tokyonight-moon-bg', '--color-tokyonight-moon-fg', '--color-tokyonight-moon-fg-dark'] },
 	{ name: 'Catppuccin', theme: 'catppuccin', light: ['--color-catppuccin-latte-mauve', '--color-catppuccin-latte-base', '--color-catppuccin-latte-text', '--color-catppuccin-latte-subtext-0'], dark: ['--color-catppuccin-mocha-mauve', '--color-catppuccin-mocha-surface-0', '--color-catppuccin-mocha-text', '--color-catppuccin-mocha-subtext-0'] },
 	{ name: 'Dracula', theme: 'dracula', light: ['--color-alucard-purple', '--color-alucard-floating', '--color-alucard-fg', '--color-alucard-selection'], dark: ['--color-dracula-purple', '--color-dracula-bglight', '--color-dracula-fg', '--color-dracula-selection'] },
-	{ name: 'Django', theme: 'django', light: ['--color-django-green-dark', '--color-white', '--color-django-green-medium', '--color-django-text'], dark: ['--color-django-green-dark', '--color-django-black', '--color-django-green-medium', '--color-django-body-fg-dark'] },
-	{ name: 'Django Admin', theme: 'django-admin', light: ['--color-django-admin-secondary', '--color-django-admin-accent', '--color-django-admin-primary', '--color-django-admin-body-bg'], dark: ['--color-django-admin-dark-link', '--color-django-admin-dark-body-bg', '--color-django-admin-dark-primary', '--color-django-admin-accent'] },
+	{ name: 'djangoproject.com', theme: 'django', light: ['--color-django-green-dark', '--color-white', '--color-django-green-medium', '--color-django-text'], dark: ['--color-django-green-dark', '--color-django-black', '--color-django-green-medium', '--color-django-body-fg-dark'] },
+	{ name: 'django.contrib.admin', code: true, theme: 'django-admin', light: ['--color-django-admin-secondary', '--color-django-admin-accent', '--color-django-admin-primary', '--color-django-admin-body-bg'], dark: ['--color-django-admin-dark-link', '--color-django-admin-dark-body-bg', '--color-django-admin-dark-primary', '--color-django-admin-accent'] },
 	{ name: 'Djangonaut Space', theme: 'djangonaut-space', light: ['--color-djangonaut-purple', '--color-djangonaut-lavender', '--color-djangonaut-ink', '--color-djangonaut-white'], dark: ['--color-djangonaut-purple', '--color-djangonaut-space', '--color-djangonaut-gray-100', '--color-djangonaut-purple-400'] }
 ];
 ---
@@ -32,14 +32,14 @@ const themes = [
 		))}
 	</div>
 	<div class="min-h-0 overflow-y-auto border-y border-rule py-1.5 my-1.5" role="group" aria-label="Theme">
-		{themes.map(({ name, theme, light, dark }) => (
+		{themes.map(({ name, code, theme, light, dark }) => (
 			<button type="button" data-theme-choice={theme} class="theme-option theme-choice">
 				{[['light', light], ['dark', dark]].map(([mode, colors]) => (
 					<span class={`swatches swatches-${mode}`} aria-hidden="true">
 						{(colors as string[]).map((color, index) => <span class="swatch" style={`background: var(${color}); z-index: ${4 - index}`} />)}
 					</span>
 				))}
-				<span>{name}</span>
+				<span>{code ? <code>{name}</code> : name}</span>
 			</button>
 		))}
 	</div>

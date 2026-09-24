@@ -1,5 +1,6 @@
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 @custom-variant compact (@media (max-width: 600px));
+@custom-variant short (@media (max-height: 30rem));
 
 @theme inline {
 	--breakpoint-xs: 24rem;
