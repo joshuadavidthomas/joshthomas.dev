@@ -11,8 +11,9 @@ const pageTitle = title ?? 'joshthomas.dev';
 const socialTitle = title ? `${title} - joshthomas.dev` : 'joshthomas.dev';
 if (!Astro.site) throw new Error('Astro.site is required to build page metadata URLs.');
 const url = new URL(Astro.url.pathname, Astro.site);
-const screenshotUrl = updated ? `${url}?updatedAt=${encodeURIComponent(updated)}` : url.toString();
-const image = `https://v1.screenshot.11ty.dev/${encodeURIComponent(screenshotUrl)}/opengraph/`;
+const screenshotUrl = new URL(`/og${url.pathname}`, Astro.site);
+if (updated) screenshotUrl.searchParams.set('updatedAt', updated);
+const image = `https://v1.screenshot.11ty.dev/${encodeURIComponent(screenshotUrl.href)}/opengraph/`;
 ---
 
 <title>{pageTitle}</title>

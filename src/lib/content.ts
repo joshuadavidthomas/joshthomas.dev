@@ -6,6 +6,7 @@ export type Entry = {
 	title: string;
 	titleHtml: string;
 	summary?: string;
+	ogSummary?: string;
 	date: string;
 	slug: string;
 	category?: string;
@@ -27,6 +28,7 @@ export async function entries(): Promise<Entry[]> {
 				title,
 				titleHtml: renderInline(title),
 				summary: entry.data.summary,
+				ogSummary: entry.data.ogSummary,
 				date,
 				slug,
 				url: `/blog/${date.slice(0, 4)}/${slug}/`,
@@ -44,6 +46,7 @@ export async function entries(): Promise<Entry[]> {
 				title,
 				titleHtml: renderInline(title),
 				summary: entry.data.summary,
+				ogSummary: entry.data.ogSummary,
 				date,
 				slug,
 				category,

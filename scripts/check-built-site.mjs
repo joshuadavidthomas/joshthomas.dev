@@ -32,6 +32,24 @@ async function checkPage(outputPath, pathname, sourcePath) {
 		html.includes(`<meta property="og:url" content="${url}">`),
 		`${outputPath} must have og:url ${url}`
 	);
+	const image = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+	assert.ok(image, `${outputPath} must have an OG image`);
+	assert.equal(new URL(image).origin, 'https://v1.screenshot.11ty.dev');
+	const target = new URL(
+		decodeURIComponent(new URL(image).pathname.slice(1, -'/opengraph/'.length))
+	);
+	assert.equal(target.origin, site, 'OG screenshots must use the production origin');
+	assert.equal(target.pathname, `/og${pathname}`, 'OG screenshots must use dedicated layouts');
+	assert.ok(html.includes(`<meta name="twitter:image" content="${image}">`));
+	const card = await read(path.join(clientDir, target.pathname, 'index.html'));
+	assert.match(card, /name="robots" content="noindex"/, 'OG layouts must not be indexed');
+	assert.doesNotMatch(
+		card,
+		/<aside|<nav|id="theme-toggle"/,
+		'OG layouts must omit site navigation'
+	);
+	assert.equal((card.match(/<h1(?:\s|>)/g) ?? []).length, 1, 'OG layouts must have one title');
+	if (pathname.startsWith('/til/')) assert.match(card, />TIL /, 'TIL cards must have a TIL label');
 	assert.ok(
 		html.includes(`href="${sourceBase}${sourcePath}"`),
 		`${outputPath} must link to source file ${sourcePath}`
@@ -232,6 +250,7 @@ async function check() {
 	);
 
 	const sitemap = await read(path.join(clientDir, 'sitemap.xml'));
+	assert.doesNotMatch(sitemap, /<loc>[^<]*\/og\//, 'OG layouts must stay out of the sitemap');
 	const sitemapEntries = new Map();
 	for (const match of sitemap.matchAll(
 		/<url><loc>([^<]+)<\/loc>(?:<lastmod>([^<]+)<\/lastmod>)?<\/url>/g
@@ -265,6 +284,20 @@ async function check() {
 		assert.ok(
 			html.includes(`datetime="${lastmod.slice(0, 10)}"`),
 			`sitemap lastmod must match the rendered content date for ${loc}`
+		);
+		const image = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+		const target = new URL(
+			decodeURIComponent(new URL(image).pathname.slice(1, -'/opengraph/'.length))
+		);
+		assert.equal(
+			target.searchParams.get('updatedAt'),
+			lastmod,
+			'cache busting must be on the captured URL'
+		);
+		const card = await read(path.join(clientDir, target.pathname, 'index.html'));
+		assert.ok(
+			card.includes(`datetime="${lastmod.slice(0, 10)}"`),
+			'OG card date must match its article'
 		);
 	}
 

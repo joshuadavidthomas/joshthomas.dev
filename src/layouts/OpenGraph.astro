@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '@/lib/assets/me.png';
+import { renderInline } from '@/lib/markdown';
+import stylesheet from '@/lib/styles/style.css?url';
+import font from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
+
+type Props = {
+	title: string;
+	summary?: string;
+	date?: string;
+	til?: boolean;
+};
+
+const { title, summary, date, til = false } = Astro.props;
+const longTitle = title.split(/\s+/).length >= 10;
+const formattedDate = date && new Intl.DateTimeFormat('en-US', {
+	month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
+}).format(new Date(date));
+Astro.response.headers.set('X-Amp-Review-Widget', 'off');
+---
+
+<!doctype html>
+<html lang="en" data-theme-name="default" data-theme="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=1200" />
+		<meta name="robots" content="noindex" />
+		<title>{title} — Josh Thomas</title>
+		<link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+		<link rel="stylesheet" href={stylesheet} />
+	</head>
+	<body>
+		<header>
+			<Image src={avatar} alt="Josh Thomas" width={96} height={96} loading="eager" fetchpriority="high" />
+			<p>Josh Thomas</p>
+		</header>
+		<main>
+			<h1 class:list={{ 'long-title': longTitle }}>
+				{til && <span class="til">TIL </span>}<Fragment set:html={renderInline(title)} />
+			</h1>
+			{summary && <p class="summary" set:html={renderInline(summary)} />}
+			<slot />
+		</main>
+		<footer>
+			{date && <time datetime={date.slice(0, 10)}>{formattedDate}</time>}
+			<p>joshthomas.dev</p>
+		</footer>
+	</body>
+</html>
+
+<style>
+	body { box-sizing: border-box; width: 1200px; height: 630px; margin: 0; padding: 32px 48px; display: grid; grid-template-rows: 96px 1fr 44px; gap: 24px; background: var(--paper); color: var(--ink); font-family: var(--body-font); }
+	header { display: flex; align-items: center; gap: 32px; font-size: 36px; font-weight: 500; }
+	header :global(img) { width: 96px; height: 96px; border-radius: 50%; }
+	main { display: flex; flex-direction: column; justify-content: center; gap: 20px; min-height: 0; }
+	h1 { margin: 0; color: var(--heading); font-size: 88px; line-height: 1.08; font-weight: 600; letter-spacing: -2px; overflow-wrap: anywhere; }
+	h1.long-title { font-size: 64px; }
+	.til { color: var(--accent); }
+	.summary { font-size: 32px; line-height: 1.3; }
+	p { margin: 0; }
+	:global(h1 code), .summary :global(code) { font-family: var(--code-font); font-size: .85em; }
+	footer { display: flex; justify-content: space-between; align-items: center; font-size: 32px; }
+	footer p { margin-left: auto; }
+</style>

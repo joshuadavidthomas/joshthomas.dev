@@ -1,0 +1,28 @@
+---
+import OpenGraph from '@/layouts/OpenGraph.astro';
+import { BLOG_PAGE_SIZE, entries } from '@/lib/content';
+
+export async function getStaticPaths() {
+	const content = await entries();
+	return [
+		{ params: { path: undefined }, props: { title: 'Josh Thomas', summary: 'Web developer living in Alabama.' } },
+		{ params: { path: 'blog' }, props: { title: 'Writing', summary: 'Articles and Today I Learned notes.' } },
+		{ params: { path: 'design-system' }, props: { title: 'Design system' } },
+		{ params: { path: '404' }, props: { title: 'Page not found' } },
+		...Array.from({ length: Math.max(0, Math.ceil(content.length / BLOG_PAGE_SIZE) - 1) }, (_, index) => ({
+			params: { path: `blog/${index + 2}` }, props: { title: `Writing — Page ${index + 2}` }
+		})),
+		...content.map((entry) => ({
+			params: { path: entry.url.slice(1, -1) },
+			props: {
+				title: entry.title,
+				summary: entry.ogSummary ?? (entry.type === 'til' ? entry.summary : undefined),
+				date: entry.date,
+				til: entry.type === 'til'
+			}
+		}))
+	];
+}
+---
+
+<OpenGraph {...Astro.props} />

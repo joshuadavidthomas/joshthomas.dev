@@ -17,7 +17,7 @@ pnpm preview
 
 ## Architecture
 
-This site uses Astro content collections and Astro components. Astro prerenders ordinary routes. The `/projects/` page alone exports `prerender = false` and runs in the Cloudflare Worker through `@astrojs/cloudflare`.
+This site uses Astro content collections and Astro components. Astro prerenders ordinary routes. `/projects/` and its `/og/projects/` card export `prerender = false` and run in the Cloudflare Worker through `@astrojs/cloudflare`.
 
 ### Core technologies
 
@@ -56,6 +56,10 @@ This site uses Astro content collections and Astro components. Astro prerenders 
 - `/feeds/blog.xml`
 - `/sitemap.xml`
 - `/robots.txt`
+
+### Social cards
+
+`src/layouts/OpenGraph.astro` renders dedicated 1200 × 630 cards at `/og/` plus each page's path. Metadata sends those URLs to Eleventy's screenshot service, with article dates in the captured URL's `updatedAt` query parameter. Cards are `noindex` and excluded from the sitemap. Posts can supply `ogSummary`; TIL cards fall back to `summary`. The projects card uses the same runtime data and cache lifetimes as `/projects/`.
 
 ### Content
 

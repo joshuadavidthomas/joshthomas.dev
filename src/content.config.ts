@@ -5,6 +5,7 @@ import { z } from 'astro/zod';
 const datedEntry = z.object({
 	title: z.string(),
 	summary: z.string().optional(),
+	ogSummary: z.string().optional(),
 	date: z.coerce.date().optional()
 });
 

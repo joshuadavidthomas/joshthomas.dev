@@ -1,0 +1,42 @@
+---
+import { env } from 'cloudflare:workers';
+import { Download, GitFork, GitBranch, Star } from '@lucide/astro';
+import OpenGraph from '@/layouts/OpenGraph.astro';
+import getProjects from '@/lib/server/projects';
+import { developmentProjectData } from '@/lib/server/projects-dev';
+
+export const prerender = false;
+let data;
+let fixtures = false;
+try {
+	data = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS, import.meta.env.DEV);
+} catch (error) {
+	const rateLimited = error instanceof Error && (error.message.includes('rate limit exceeded for https://api.github.com/') || error.message.startsWith('403 '));
+	if (!import.meta.env.DEV || !rateLimited) throw error;
+	data = developmentProjectData;
+	fixtures = true;
+}
+if (Astro.cache.enabled) Astro.cache.set({ maxAge: 86400, swr: 604800 });
+const totals = data.projects.reduce((sum, project) => ({
+	stars: sum.stars + project.stars,
+	forks: sum.forks + project.forks,
+	downloads: sum.downloads + (project.pypiStats?.lastMonth ?? 0) + (project.npmStats?.lastMonth ?? 0)
+}), { stars: 0, forks: 0, downloads: 0 });
+const number = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+---
+
+<OpenGraph title="Projects" summary="Open source projects I’ve built and shared">
+	<div class="stats">
+		<span><GitBranch size={32} aria-hidden="true" /> {number.format(data.projects.length)} projects</span>
+		<span><Star size={32} aria-hidden="true" /> {number.format(totals.stars)} stars</span>
+		<span><GitFork size={32} aria-hidden="true" /> {number.format(totals.forks)} forks</span>
+		{totals.downloads > 0 && <span><Download size={32} aria-hidden="true" /> {number.format(totals.downloads)}/month</span>}
+	</div>
+	{fixtures && <p class="fixture-note">Development fixture statistics</p>}
+</OpenGraph>
+
+<style>
+	.stats { display: flex; flex-wrap: wrap; gap: 32px; font-size: 28px; }
+	.stats span { display: inline-flex; align-items: center; gap: 10px; }
+	.fixture-note { color: var(--muted); font-size: 18px; }
+</style>
