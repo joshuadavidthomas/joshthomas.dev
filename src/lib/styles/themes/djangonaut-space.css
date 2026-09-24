@@ -107,7 +107,9 @@
 :root[data-theme-name='djangonaut-space'][data-theme='dark'] .djangonaut-sky {
 	display: block;
 	position: fixed;
-	inset: 0;
+	/* The large viewport, so Earth sits at the screen's bottom edge behind mobile browser toolbars. */
+	inset: 0 0 auto;
+	height: 100lvh;
 	z-index: -1;
 	pointer-events: none;
 
