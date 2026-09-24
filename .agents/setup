@@ -11,3 +11,7 @@ echo "Preparing local environment"
 if [[ ! -f .dev.vars ]]; then
   cp -- .dev.vars.example .dev.vars
 fi
+
+# Generate Astro's content types so TypeScript checks pass before `astro dev`
+# or `astro build` has ever run.
+npx astro sync --force > /dev/null
