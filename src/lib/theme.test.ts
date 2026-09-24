@@ -31,29 +31,36 @@ function runTheme({
 		setAttribute: (name: string, value: string) => attributes.set(name, value)
 	};
 	const favicon = { href: '' };
-	const options = [
-		['system', 'default'],
-		['light', 'default'],
-		['dark', 'default'],
-		['light', 'tokyo-night'],
-		['dark', 'tokyo-night'],
-		['light', 'catppuccin'],
-		['dark', 'catppuccin'],
-		['dark', 'dracula']
-	].map(([themePreference, themeName]) => ({
-		dataset: { themePreference, themeName },
+	type Control = {
+		dataset: Record<string, string>;
+		setAttribute: ReturnType<typeof vi.fn>;
+	};
+	const control = (dataset: Record<string, string>): Control => ({
+		dataset,
 		setAttribute: vi.fn()
-	}));
-	const choose = (preference: string, name = 'default') =>
-		documentListeners.get('click')?.({
-			target: {
-				closest: () =>
-					options.find(
-						(option) =>
-							option.dataset.themePreference === preference && option.dataset.themeName === name
-					)
-			}
-		});
+	});
+	const modeControls = ['system', 'light', 'dark'].map((modeChoice) => control({ modeChoice }));
+	const themeControls = [
+		'default',
+		'tokyo-night',
+		'catppuccin',
+		'dracula',
+		'django',
+		'django-admin',
+		'djangonaut-space'
+	].map((themeChoice) => control({ themeChoice }));
+	const resetControl = control({ themeReset: '' });
+	const click = (target: Control | undefined) =>
+		documentListeners.get('click')?.({ target: { closest: () => target } });
+	const chooseMode = (mode: string) =>
+		click(modeControls.find((option) => option.dataset.modeChoice === mode));
+	const chooseTheme = (name: string) =>
+		click(themeControls.find((option) => option.dataset.themeChoice === name));
+	const reset = () => click(resetControl);
+	const modeControl = (mode: string) =>
+		modeControls.find((option) => option.dataset.modeChoice === mode)!;
+	const themeControl = (name: string) =>
+		themeControls.find((option) => option.dataset.themeChoice === name)!;
 	const media = {
 		matches: systemDark,
 		addEventListener: (_name: string, listener: Listener) => mediaListeners.push(listener)
@@ -63,7 +70,8 @@ function runTheme({
 		readyState: 'loading',
 		querySelector: (selector: string) =>
 			selector === '#theme-toggle' ? button : selector === 'link[rel="icon"]' ? favicon : null,
-		querySelectorAll: () => options,
+		querySelectorAll: (selector: string) =>
+			selector.includes('mode-choice') ? modeControls : themeControls,
 		addEventListener: (name: string, listener: Listener) => documentListeners.set(name, listener)
 	};
 	const localStorage = {
@@ -91,9 +99,12 @@ function runTheme({
 
 	return {
 		attributes,
-		choose,
+		chooseMode,
+		chooseTheme,
+		reset,
+		modeControl,
+		themeControl,
 		favicon,
-		options,
 		documentListeners,
 		media,
 		mediaListeners,
@@ -108,64 +119,91 @@ describe('theme bootstrap', () => {
 	it.each([
 		['catppuccin', 'light'],
 		['catppuccin', 'dark'],
-		['dracula', 'dark']
+		['dracula', 'light'],
+		['dracula', 'dark'],
+		['django', 'light'],
+		['django', 'dark'],
+		['django-admin', 'light'],
+		['django-admin', 'dark'],
+		['djangonaut-space', 'light'],
+		['djangonaut-space', 'dark']
 	])('persists and restores %s %s independently of the OS, then resets', (name, mode) => {
 		const runtime = runTheme({ systemDark: mode === 'light' });
-		runtime.choose(mode, name);
+		runtime.chooseTheme(name);
+		runtime.chooseMode(mode);
 		expect(runtime.storage.get('theme-name')).toBe(name);
 		expect(runtime.storage.get('theme')).toBe(mode);
 		const restored = runTheme({ storedName: name, stored: mode, systemDark: mode === 'light' });
 		expect(restored.root.dataset.themeName).toBe(name);
 		expect(restored.root.dataset.theme).toBe(mode);
-		expect(
-			restored.options.find(
-				(option) => option.dataset.themeName === name && option.dataset.themePreference === mode
-			)?.setAttribute
-		).toHaveBeenLastCalledWith('aria-pressed', 'true');
+		expect(restored.themeControl(name).setAttribute).toHaveBeenLastCalledWith(
+			'aria-pressed',
+			'true'
+		);
+		expect(restored.modeControl(mode).setAttribute).toHaveBeenLastCalledWith(
+			'aria-pressed',
+			'true'
+		);
 		restored.mediaListeners[0]?.();
 		expect(restored.root.dataset.theme).toBe(mode);
-		restored.choose('system');
+		restored.reset();
 		expect(restored.storage.size).toBe(0);
 		expect(restored.root.dataset.themeName).toBe('default');
 		expect(restored.root.dataset.theme).toBe(mode === 'light' ? 'dark' : 'light');
 	});
 
+	it('changes the theme without touching the mode, and the mode without touching the theme', () => {
+		const runtime = runTheme({ systemDark: true });
+		runtime.chooseTheme('tokyo-night');
+		expect(runtime.root.dataset.modeState).toBe('system');
+		expect(runtime.root.dataset.theme).toBe('dark');
+		expect(runtime.storage.has('theme')).toBe(false);
+		expect(runtime.storage.get('theme-name')).toBe('tokyo-night');
+		runtime.chooseMode('light');
+		expect(runtime.root.dataset.themeName).toBe('tokyo-night');
+		expect(runtime.root.dataset.theme).toBe('light');
+		runtime.chooseTheme('default');
+		expect(runtime.root.dataset.theme).toBe('light');
+		expect(runtime.storage.has('theme-name')).toBe(false);
+		expect(runtime.storage.get('theme')).toBe('light');
+	});
+
 	it('keeps theme identity separate from mode changes and carries it into an Astro swap', () => {
 		const runtime = runTheme();
-		runtime.root.dataset.themeName = 'test-theme';
+		runtime.root.dataset.themeName = 'tokyo-night';
 		runtime.mediaListeners[0]?.();
 		expect(runtime.root.dataset.modeState).toBe('system');
 		expect(runtime.root.dataset.theme).toBe('light');
-		expect(runtime.root.dataset.themeName).toBe('test-theme');
+		expect(runtime.root.dataset.themeName).toBe('tokyo-night');
 		const newDocument = { documentElement: { dataset: { themeName: 'default' } } };
 		runtime.documentListeners.get('astro:before-swap')?.({ newDocument });
-		expect(newDocument.documentElement.dataset.themeName).toBe('test-theme');
+		expect(newDocument.documentElement.dataset.themeName).toBe('tokyo-night');
 		runtime.documentListeners.get('astro:after-swap')?.();
-		expect(runtime.root.dataset.themeName).toBe('test-theme');
+		expect(runtime.root.dataset.themeName).toBe('tokyo-night');
 		expect(runtime.storage.has('theme')).toBe(false);
 	});
 
-	it('restores Tokyo Moon before paint and distinguishes it from Ember', () => {
+	it('restores Tokyo Moon before paint and marks its controls pressed', () => {
 		const runtime = runTheme({ stored: 'dark', storedName: 'tokyo-night' });
 		expect(runtime.root.dataset.themeName).toBe('tokyo-night');
 		expect(runtime.root.dataset.theme).toBe('dark');
-		expect(runtime.options[4].setAttribute).toHaveBeenLastCalledWith('aria-pressed', 'true');
-		expect(runtime.options[2].setAttribute).toHaveBeenLastCalledWith('aria-pressed', 'false');
-		runtime.choose('dark');
-		expect(runtime.root.dataset.themeName).toBe('default');
-		expect(runtime.storage.get('theme-name')).toBe('default');
+		expect(runtime.themeControl('tokyo-night').setAttribute).toHaveBeenLastCalledWith(
+			'aria-pressed',
+			'true'
+		);
+		expect(runtime.themeControl('default').setAttribute).toHaveBeenLastCalledWith(
+			'aria-pressed',
+			'false'
+		);
+		expect(runtime.modeControl('dark').setAttribute).toHaveBeenLastCalledWith(
+			'aria-pressed',
+			'true'
+		);
 	});
 
-	it('persists Tokyo Day and reset clears both overrides, returning to system default', () => {
-		const runtime = runTheme({ systemDark: true });
-		runtime.choose('light', 'tokyo-night');
-		expect(runtime.root.dataset.theme).toBe('light');
-		expect(runtime.storage.get('theme')).toBe('light');
-		expect(runtime.storage.get('theme-name')).toBe('tokyo-night');
-		runtime.choose('system');
+	it('ignores an unknown stored theme name', () => {
+		const runtime = runTheme({ storedName: 'pony' });
 		expect(runtime.root.dataset.themeName).toBe('default');
-		expect(runtime.root.dataset.theme).toBe('dark');
-		expect(runtime.storage.size).toBe(0);
 	});
 
 	it('repaints the favicon with the active theme colors', () => {
@@ -175,7 +213,7 @@ describe('theme bootstrap', () => {
 
 		runtime.variables.set('--paper', '#eff1f5');
 		runtime.variables.set('--accent', '#8839ef');
-		runtime.choose('light', 'catppuccin');
+		runtime.chooseTheme('catppuccin');
 		expect(runtime.favicon.href).toContain(encodeURIComponent('#eff1f5'));
 		expect(runtime.favicon.href).toContain(encodeURIComponent('#8839ef'));
 		expect(runtime.favicon.href).toContain('data:image/svg+xml');
@@ -188,22 +226,22 @@ describe('theme bootstrap', () => {
 		expect(runtime.attributes.get('aria-label')).toBe('Appearance: Dark. Choose appearance.');
 	});
 
-	it('saves explicit choices and removes the override when reset to system', () => {
+	it('saves explicit modes and removes the override for system', () => {
 		const runtime = runTheme({ systemDark: true });
 		expect(runtime.root.dataset.modeState).toBe('system');
 		expect(runtime.root.dataset.theme).toBe('dark');
 
-		runtime.choose('light');
+		runtime.chooseMode('light');
 		expect(runtime.root.dataset.modeState).toBe('light');
 		expect(runtime.root.dataset.theme).toBe('light');
 		expect(runtime.storage.get('theme')).toBe('light');
 
-		runtime.choose('dark');
+		runtime.chooseMode('dark');
 		expect(runtime.root.dataset.modeState).toBe('dark');
 		expect(runtime.root.dataset.theme).toBe('dark');
 		expect(runtime.storage.get('theme')).toBe('dark');
 
-		runtime.choose('system');
+		runtime.chooseMode('system');
 		expect(runtime.root.dataset.modeState).toBe('system');
 		expect(runtime.root.dataset.theme).toBe('dark');
 		expect(runtime.storage.has('theme')).toBe(false);
@@ -215,7 +253,7 @@ describe('theme bootstrap', () => {
 		runtime.mediaListeners[0]?.();
 		expect(runtime.root.dataset.theme).toBe('dark');
 
-		runtime.choose('dark');
+		runtime.chooseMode('dark');
 		runtime.media.matches = false;
 		runtime.mediaListeners[0]?.();
 		expect(runtime.root.dataset.modeState).toBe('dark');

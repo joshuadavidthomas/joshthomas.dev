@@ -6,7 +6,7 @@ export const themeBootstrap = String.raw`
 	const media = matchMedia('(prefers-color-scheme: dark)');
 	const storageKey = 'theme';
 	const nameKey = 'theme-name';
-	const normalizeName = (value) => ['tokyo-night', 'catppuccin', 'dracula'].includes(value) ? value : 'default';
+	const normalizeName = (value) => ['tokyo-night', 'catppuccin', 'dracula', 'django', 'django-admin', 'djangonaut-space'].includes(value) ? value : 'default';
 	const readName = () => {
 		try { return normalizeName(localStorage.getItem(nameKey)); }
 		catch { return 'default'; }
@@ -27,17 +27,19 @@ export const themeBootstrap = String.raw`
 		: preference === 'dark'
 			? 'Appearance: Dark. Choose appearance.'
 			: 'Appearance: System (currently ' + mode + '). Choose appearance.';
-	const syncButton = () => {
+	const syncControls = () => {
 		const button = document.querySelector('#theme-toggle');
 		if (!button) return;
 		const preference = current();
+		const name = normalizeName(root.dataset.themeName);
 		const text = label(preference, resolved(preference));
 		button.setAttribute('aria-label', text);
 		button.setAttribute('title', text);
-		for (const option of document.querySelectorAll('[data-theme-preference]')) {
-			const selected = option.dataset.themePreference === preference &&
-				(preference === 'system' || normalizeName(option.dataset.themeName) === root.dataset.themeName);
-			option.setAttribute('aria-pressed', String(selected));
+		for (const control of document.querySelectorAll('[data-mode-choice]')) {
+			control.setAttribute('aria-pressed', String(control.dataset.modeChoice === preference));
+		}
+		for (const control of document.querySelectorAll('[data-theme-choice]')) {
+			control.setAttribute('aria-pressed', String(control.dataset.themeChoice === name));
 		}
 	};
 	const syncFavicon = () => {
@@ -59,39 +61,41 @@ export const themeBootstrap = String.raw`
 		link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
 	};
 	const apply = (preference) => {
-		const mode = resolved(preference);
 		root.dataset.modeState = preference;
-		root.dataset.theme = mode;
-		syncButton();
+		root.dataset.theme = resolved(preference);
+		syncControls();
 		syncFavicon();
 	};
-	const save = (preference) => {
+	const store = (key, value, fallback) => {
 		try {
-			if (preference === 'system') {
-				localStorage.removeItem(storageKey);
-				localStorage.removeItem(nameKey);
-			} else {
-				localStorage.setItem(nameKey, root.dataset.themeName);
-				localStorage.setItem(storageKey, preference);
-			}
+			if (value === fallback) localStorage.removeItem(key);
+			else localStorage.setItem(key, value);
 		} catch {
 			// The selected theme still applies when storage is unavailable.
 		}
 	};
 	const setup = () => {
-		syncButton();
+		syncControls();
 		syncFavicon();
 	};
 
 	document.addEventListener('click', (event) => {
-		const option = event.target?.closest?.('[data-theme-preference]');
-		if (!option) return;
-		const preference = normalize(option.dataset.themePreference);
-		root.dataset.themeName = normalizeName(option.dataset.themeName);
-		save(preference);
-		apply(preference);
-		document.querySelector('#theme-menu')?.hidePopover();
-		document.querySelector('#theme-toggle')?.focus();
+		const control = event.target?.closest?.('[data-mode-choice], [data-theme-choice], [data-theme-reset]');
+		if (!control) return;
+		if (control.dataset.modeChoice) {
+			const preference = normalize(control.dataset.modeChoice);
+			store(storageKey, preference, 'system');
+			apply(preference);
+		} else if (control.dataset.themeChoice) {
+			root.dataset.themeName = normalizeName(control.dataset.themeChoice);
+			store(nameKey, root.dataset.themeName, 'default');
+			apply(current());
+		} else {
+			root.dataset.themeName = 'default';
+			store(nameKey, 'default', 'default');
+			store(storageKey, 'system', 'system');
+			apply('system');
+		}
 	});
 	root.dataset.themeName = readName();
 	apply(read());

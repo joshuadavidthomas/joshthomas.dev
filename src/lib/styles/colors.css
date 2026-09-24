@@ -98,6 +98,23 @@
 	--color-dracula-bright-cyan: oklch(from #a4ffff l c h);
 	--color-dracula-bright-white: oklch(from #ffffff l c h);
 
+	/* Alucard, Dracula's light counterpart: https://draculatheme.com/spec */
+	--color-alucard-bg: oklch(from #fffbeb l c h);
+	--color-alucard-floating: oklch(from #efeddc l c h);
+	--color-alucard-bglighter: oklch(from #ece9df l c h);
+	--color-alucard-bglight: oklch(from #dedccf l c h);
+	--color-alucard-bgdark: oklch(from #ceccc0 l c h);
+	--color-alucard-selection: oklch(from #cfcfde l c h);
+	--color-alucard-fg: oklch(from #1f1f1f l c h);
+	--color-alucard-comment: oklch(from #6c664b l c h);
+	--color-alucard-red: oklch(from #cb3a2a l c h);
+	--color-alucard-orange: oklch(from #a34d14 l c h);
+	--color-alucard-yellow: oklch(from #846e15 l c h);
+	--color-alucard-green: oklch(from #14710a l c h);
+	--color-alucard-cyan: oklch(from #036a96 l c h);
+	--color-alucard-purple: oklch(from #644ac9 l c h);
+	--color-alucard-pink: oklch(from #a3144d l c h);
+
 	--color-tokyonight-day-bg: oklch(from #e1e2e7 l c h);
 	--color-tokyonight-day-bg-dark: oklch(from #d0d5e3 l c h);
 	--color-tokyonight-day-bg-dark1: oklch(from #c1c9df l c h);
@@ -304,4 +321,113 @@
 		var(--color-tokyonight-moon-yellow),
 		var(--color-white) 95%
 	);
+}
+
+@theme inline {
+	/* https://github.com/django/djangoproject.com/blob/main/djangoproject/scss/_utils.scss */
+	--color-django-text: oklch(from #0c3c26 l c h);
+	--color-django-text-l20: oklch(from #1d915a l c h);
+	--color-django-text-light: oklch(from #798780 l c h);
+	--color-django-text-light-l20: oklch(from #afb7b3 l c h);
+	--color-django-gray-line: oklch(from #cfe3dc l c h);
+	--color-django-green-very-light: oklch(from #c9f0dd l c h);
+	--color-django-green-light: oklch(from #93d7b7 l c h);
+	--color-django-green-medium: oklch(from #44b78b l c h);
+	--color-django-green-medium-dark: oklch(from #2b8c67 l c h);
+	--color-django-green: oklch(from #20aa76 l c h);
+	--color-django-green-dark: oklch(from #0c4b33 l c h);
+	--color-django-white: oklch(from #f1fff7 l c h);
+	--color-django-white-dark: oklch(from #f8f8f8 l c h);
+	--color-django-code-border: oklch(from #eaeaea l c h);
+	--color-django-warning-yellow: oklch(from #fffdf1 l c h);
+	--color-django-warning-dark-yellow: oklch(from #f5f1c7 l c h);
+	--color-django-warning-icon: oklch(from #e9bd46 l c h);
+	--color-django-orange: oklch(from #ab5603 l c h);
+	--color-django-red: oklch(from #ba2121 l c h);
+	--color-django-red-medium: oklch(from #e46767 l c h);
+	--color-django-red-dark: oklch(from #6a0e0e l c h);
+	--color-django-red-dark-l10: oklch(from #971414 l c h);
+	--color-django-black: oklch(from #0e1117 l c h);
+	--color-django-black-light-5: oklch(from #181d27 l c h);
+	/* _dark-mode.scss body text */
+	--color-django-body-fg-dark: oklch(from #c1cad2 l c h);
+	/* Alert accents the site has no equivalent for. */
+	--color-django-violet: oklch(from #6d3f8f l c h);
+	--color-django-violet-dark: oklch(from #d2a8ff l c h);
+
+	/* https://github.com/django/django/blob/main/django/contrib/admin/static/admin/css/base.css */
+	--color-django-admin-primary: oklch(from #79aec8 l c h);
+	--color-django-admin-secondary: oklch(from #417690 l c h);
+	--color-django-admin-accent: oklch(from #f5dd5d l c h);
+	--color-django-admin-body-fg: oklch(from #333333 l c h);
+	--color-django-admin-body-bg: oklch(from #ffffff l c h);
+	--color-django-admin-quiet: oklch(from #666666 l c h);
+	--color-django-admin-medium: oklch(from #444444 l c h);
+	--color-django-admin-breadcrumbs-fg: oklch(from #c4dce8 l c h);
+	--color-django-admin-breadcrumbs-bg: oklch(from #264b5d l c h);
+	--color-django-admin-link: oklch(from #417893 l c h);
+	--color-django-admin-link-hover: oklch(from #003366 l c h);
+	--color-django-admin-hairline: oklch(from #e8e8e8 l c h);
+	--color-django-admin-border: oklch(from #cccccc l c h);
+	--color-django-admin-error: oklch(from #ba2121 l c h);
+	--color-django-admin-darkened-bg: oklch(from #f8f8f8 l c h);
+	--color-django-admin-selected-row: oklch(from #ffffcc l c h);
+	--color-django-admin-button-fg: oklch(from #ffffff l c h);
+	--color-django-admin-button-hover-bg: oklch(from #205067 l c h);
+	--color-django-admin-message-info: oklch(from #ccefff l c h);
+	--color-django-admin-message-success: oklch(from #ddffdd l c h);
+	--color-django-admin-message-warning: oklch(from #ffffcc l c h);
+	--color-django-admin-message-error: oklch(from #ffefef l c h);
+	/* Fills of admin/img/icon-{info,yes,alert,no}.svg */
+	--color-django-admin-icon-info: oklch(from #3f8cc1 l c h);
+	--color-django-admin-icon-yes: oklch(from #649c35 l c h);
+	--color-django-admin-icon-alert: oklch(from #b78b02 l c h);
+	--color-django-admin-icon-no: oklch(from #c63d3d l c h);
+	/* https://github.com/django/django/blob/main/django/contrib/admin/static/admin/css/dark_mode.css */
+	--color-django-admin-dark-primary: oklch(from #264b5d l c h);
+	--color-django-admin-dark-primary-fg: oklch(from #f7f7f7 l c h);
+	--color-django-admin-dark-body-fg: oklch(from #eeeeee l c h);
+	--color-django-admin-dark-body-bg: oklch(from #121212 l c h);
+	--color-django-admin-dark-quiet: oklch(from #d0d0d0 l c h);
+	--color-django-admin-dark-medium: oklch(from #e0e0e0 l c h);
+	--color-django-admin-dark-link: oklch(from #81d4fa l c h);
+	--color-django-admin-dark-link-hover: oklch(from #4ac1f7 l c h);
+	--color-django-admin-dark-hairline: oklch(from #272727 l c h);
+	--color-django-admin-dark-border: oklch(from #353535 l c h);
+	--color-django-admin-dark-error: oklch(from #e35f5f l c h);
+	--color-django-admin-dark-darkened-bg: oklch(from #212121 l c h);
+	--color-django-admin-dark-selected-row: oklch(from #00363a l c h);
+	--color-django-admin-dark-message-info: oklch(from #265895 l c h);
+	--color-django-admin-dark-message-success: oklch(from #006b1b l c h);
+	--color-django-admin-dark-message-warning: oklch(from #583305 l c h);
+	--color-django-admin-dark-message-error: oklch(from #570808 l c h);
+	--color-django-admin-dark-icon-info: oklch(from #63b4eb l c h);
+	--color-django-admin-dark-icon-yes: oklch(from #73c12f l c h);
+	--color-django-admin-dark-icon-alert: oklch(from #efb80b l c h);
+	--color-django-admin-dark-icon-no: oklch(from #f15f5f l c h);
+
+	/* https://djangonaut.space/ — Tailwind classes read from the live site */
+	--color-djangonaut-space: oklch(from #090010 l c h);
+	--color-djangonaut-orbit: oklch(from #1a1025 l c h);
+	--color-djangonaut-hull: oklch(from #120a1c l c h);
+	--color-djangonaut-purple: oklch(from #5c0287 l c h);
+	--color-djangonaut-purple-500: oklch(from #a855f7 l c h);
+	--color-djangonaut-purple-400: oklch(from #c084fc l c h);
+	--color-djangonaut-lavender: oklch(from #ede2f0 l c h);
+	--color-djangonaut-white: oklch(from #ffffff l c h);
+	--color-djangonaut-ink: oklch(from #202020 l c h);
+	--color-djangonaut-gray-100: oklch(from #f3f4f6 l c h);
+	--color-djangonaut-gray-300: oklch(from #d1d5db l c h);
+	--color-djangonaut-gray-600: oklch(from #4b5563 l c h);
+	/* Alert accents, from the same Tailwind palette. */
+	--color-djangonaut-red: oklch(from #b91c1c l c h);
+	--color-djangonaut-yellow: oklch(from #854d0e l c h);
+	--color-djangonaut-green: oklch(from #166534 l c h);
+	--color-djangonaut-blue: oklch(from #1d4ed8 l c h);
+	--color-djangonaut-fuchsia: oklch(from #7e22ce l c h);
+	--color-djangonaut-red-dark: oklch(from #f87171 l c h);
+	--color-djangonaut-yellow-dark: oklch(from #facc15 l c h);
+	--color-djangonaut-green-dark: oklch(from #4ade80 l c h);
+	--color-djangonaut-blue-dark: oklch(from #60a5fa l c h);
+	--color-djangonaut-fuchsia-dark: oklch(from #e879f9 l c h);
 }

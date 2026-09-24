@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import avatar from '@/lib/assets/me.png';
 import Meta from '@/components/Meta.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
+import Constellation from '@/components/Constellation.astro';
 import favicon from '@/lib/assets/favicon.svg';
 import { themeBootstrap } from '@/lib/theme';
 import instrumentSansItalic from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-italic.woff2?url';
@@ -78,6 +79,7 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		<slot name="head" />
 	</head>
 	<body>
+		<Constellation />
 		<a class="fixed top-3 left-3 z-20 -translate-y-[200%] bg-paper px-3 py-2 focus:translate-y-0" href="#skip">Skip to content</a>
 		<ThemeToggle />
 		<div class="page">

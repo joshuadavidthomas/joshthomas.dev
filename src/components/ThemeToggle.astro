@@ -1,14 +1,20 @@
 ---
-import { Palette, RotateCcw } from '@lucide/astro';
+import { Monitor, Moon, Palette, RotateCcw, Sun } from '@lucide/astro';
 
-const choices = [
-	{ name: 'Parchment', mode: 'light', theme: 'default', colors: ['--light-accent', '--light-paper', '--light-ink', '--light-muted'] },
-	{ name: 'Ember', mode: 'dark', theme: 'default', colors: ['--dark-accent', '--dark-paper', '--dark-ink', '--dark-muted'] },
-	{ name: 'Tokyo Night Day', mode: 'light', theme: 'tokyo-night', colors: ['--color-tokyonight-day-blue', '--color-tokyonight-day-bg', '--color-tokyonight-day-fg', '--color-tokyonight-day-fg-dark'] },
-	{ name: 'Tokyo Night Moon', mode: 'dark', theme: 'tokyo-night', colors: ['--color-tokyonight-moon-blue', '--color-tokyonight-moon-bg', '--color-tokyonight-moon-fg', '--color-tokyonight-moon-fg-dark'] },
-	{ name: 'Catppuccin Latte', mode: 'light', theme: 'catppuccin', colors: ['--color-catppuccin-latte-mauve', '--color-catppuccin-latte-base', '--color-catppuccin-latte-text', '--color-catppuccin-latte-subtext-0'] },
-	{ name: 'Catppuccin Mocha', mode: 'dark', theme: 'catppuccin', colors: ['--color-catppuccin-mocha-mauve', '--color-catppuccin-mocha-surface-0', '--color-catppuccin-mocha-text', '--color-catppuccin-mocha-subtext-0'] },
-	{ name: 'Dracula', mode: 'dark', theme: 'dracula', colors: ['--color-dracula-purple', '--color-dracula-bglight', '--color-dracula-fg', '--color-dracula-selection'] }
+const modes = [
+	{ mode: 'system', label: 'System', Icon: Monitor },
+	{ mode: 'light', label: 'Light', Icon: Sun },
+	{ mode: 'dark', label: 'Dark', Icon: Moon }
+];
+
+const themes = [
+	{ name: 'Terracotta', theme: 'default', light: ['--light-accent', '--light-paper', '--light-ink', '--light-muted'], dark: ['--dark-accent', '--dark-paper', '--dark-ink', '--dark-muted'] },
+	{ name: 'Tokyo Night', theme: 'tokyo-night', light: ['--color-tokyonight-day-blue', '--color-tokyonight-day-bg', '--color-tokyonight-day-fg', '--color-tokyonight-day-fg-dark'], dark: ['--color-tokyonight-moon-blue', '--color-tokyonight-moon-bg', '--color-tokyonight-moon-fg', '--color-tokyonight-moon-fg-dark'] },
+	{ name: 'Catppuccin', theme: 'catppuccin', light: ['--color-catppuccin-latte-mauve', '--color-catppuccin-latte-base', '--color-catppuccin-latte-text', '--color-catppuccin-latte-subtext-0'], dark: ['--color-catppuccin-mocha-mauve', '--color-catppuccin-mocha-surface-0', '--color-catppuccin-mocha-text', '--color-catppuccin-mocha-subtext-0'] },
+	{ name: 'Dracula', theme: 'dracula', light: ['--color-alucard-purple', '--color-alucard-floating', '--color-alucard-fg', '--color-alucard-selection'], dark: ['--color-dracula-purple', '--color-dracula-bglight', '--color-dracula-fg', '--color-dracula-selection'] },
+	{ name: 'Django', theme: 'django', light: ['--color-django-green-dark', '--color-white', '--color-django-green-medium', '--color-django-text'], dark: ['--color-django-green-dark', '--color-django-black', '--color-django-green-medium', '--color-django-body-fg-dark'] },
+	{ name: 'Django Admin', theme: 'django-admin', light: ['--color-django-admin-secondary', '--color-django-admin-accent', '--color-django-admin-primary', '--color-django-admin-body-bg'], dark: ['--color-django-admin-dark-link', '--color-django-admin-dark-body-bg', '--color-django-admin-dark-primary', '--color-django-admin-accent'] },
+	{ name: 'Djangonaut Space', theme: 'djangonaut-space', light: ['--color-djangonaut-purple', '--color-djangonaut-lavender', '--color-djangonaut-ink', '--color-djangonaut-white'], dark: ['--color-djangonaut-purple', '--color-djangonaut-space', '--color-djangonaut-gray-100', '--color-djangonaut-purple-400'] }
 ];
 ---
 
@@ -16,27 +22,42 @@ const choices = [
 	<Palette class="size-4" aria-hidden="true" />
 </button>
 
-<div id="theme-menu" popover class="fixed top-[68px] right-5 bottom-auto left-auto m-0 max-h-[calc(100dvh-88px)] w-48 max-w-[calc(100vw-40px)] grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden rounded-lg border border-rule bg-menu-background p-1.5 text-sm text-ink [&:popover-open]:grid" role="group" aria-label="Appearance">
-	<button type="button" data-theme-preference="system" class="theme-option"><RotateCcw class="size-4" aria-hidden="true" /> Reset to default</button>
-	<hr class="my-1.5 border-rule" />
-	<div class="min-h-0 overflow-y-auto">
-		{choices.map(({ name, mode, theme, colors }) => (
-			<button type="button" data-theme-preference={mode} data-theme-name={theme} class="theme-option theme-choice">
-				<span class="swatches" aria-hidden="true">
-					{colors.map((color, index) => <span class="swatch" style={`background: var(${color}); z-index: ${4 - index}`} />)}
-				</span>
+<div id="theme-menu" popover class="fixed top-[68px] right-5 bottom-auto left-auto m-0 max-h-[calc(100dvh-88px)] w-56 max-w-[calc(100vw-40px)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-rule bg-menu-background p-1.5 text-sm text-ink [&:popover-open]:grid" aria-label="Appearance">
+	<div class="modes" role="group" aria-label="Mode">
+		{modes.map(({ mode, label, Icon }) => (
+			<button type="button" data-mode-choice={mode} class="mode-option">
+				<Icon class="size-4" aria-hidden="true" />
+				<span>{label}</span>
+			</button>
+		))}
+	</div>
+	<div class="min-h-0 overflow-y-auto border-y border-rule py-1.5 my-1.5" role="group" aria-label="Theme">
+		{themes.map(({ name, theme, light, dark }) => (
+			<button type="button" data-theme-choice={theme} class="theme-option theme-choice">
+				{[['light', light], ['dark', dark]].map(([mode, colors]) => (
+					<span class={`swatches swatches-${mode}`} aria-hidden="true">
+						{(colors as string[]).map((color, index) => <span class="swatch" style={`background: var(${color}); z-index: ${4 - index}`} />)}
+					</span>
+				))}
 				<span>{name}</span>
 			</button>
 		))}
 	</div>
+	<button type="button" data-theme-reset class="theme-option"><RotateCcw class="size-4" aria-hidden="true" /> Reset to default</button>
 </div>
 
 <style>
+	.modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+	.mode-option { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+	.mode-option:hover { background: var(--tag-background); }
+	.mode-option[aria-pressed='true'] { background: var(--tag-background); color: var(--accent); font-weight: 600; }
 	.theme-option { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 4px; cursor: pointer; text-align: left; }
 	.theme-option:hover { background: var(--tag-background); }
 	.theme-option[aria-pressed='true'] { color: var(--accent); font-weight: 600; }
 	.theme-choice { flex-direction: column; align-items: flex-start; gap: 6px; }
 	.swatches { display: flex; isolation: isolate; }
+	:global([data-theme='light']) .swatches-dark,
+	:global([data-theme='dark']) .swatches-light { display: none; }
 	.swatch { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--rule); }
 	.swatch + .swatch { margin-left: -7px; }
 </style>

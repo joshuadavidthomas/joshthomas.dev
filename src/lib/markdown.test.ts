@@ -111,17 +111,27 @@ describe('content rendering', () => {
 		const html = await renderMarkdown('```typescript\nconst answer = 42;\n```');
 		expect(html).toContain('shiki-themes warm-light warm-dark');
 		expect(html).toContain('--shiki-dark');
-		expect(html).toMatch(/color:#8B4933;--shiki-dark:#DCA58B[^>]*>const</);
-		expect(html).toMatch(/color:#806032;--shiki-dark:#D4B381[^>]*>\s*42</);
-		expect(html).toMatch(/--shiki-tokyo-day:#7847BD;--shiki-tokyo-moon:#FCA7EA[^>]*>const</);
-		expect(html).toMatch(/--shiki-tokyo-day:#B15C00;--shiki-tokyo-moon:#FF966C[^>]*>\s*42</);
+		expect(html).toMatch(/color:#8B4933;[^>]*--shiki-dark:#DCA58B[^>]*>const</);
+		expect(html).toMatch(/color:#806032;[^>]*--shiki-dark:#D4B381[^>]*>\s*42</);
+		expect(html).toMatch(/--shiki-tokyo-day:#7847BD;[^>]*--shiki-tokyo-moon:#FCA7EA[^>]*>const</);
+		expect(html).toMatch(/--shiki-tokyo-day:#B15C00;[^>]*--shiki-tokyo-moon:#FF966C[^>]*>\s*42</);
 		expect(html).toContain('--shiki-tokyo-moon-bg:#1e2030');
 		expect(html).toContain('--shiki-latte-bg:#eff1f5');
 		expect(html).toContain('--shiki-mocha-bg:#1e1e2e');
 		expect(html).toMatch(/--shiki-dracula-bg:#282a36/i);
 		expect(html).toMatch(
-			/--shiki-latte:#FE640B;--shiki-mocha:#FAB387;--shiki-dracula:#BD93F9[^>]*>\s*42</
+			/--shiki-latte:#FE640B;[^>]*--shiki-mocha:#FAB387;[^>]*--shiki-dracula:#BD93F9[^>]*>\s*42</
 		);
+		expect(html).toContain('--shiki-django-bg:#f8f8f8');
+		expect(html).toContain('--shiki-django-dark-bg:#181d27');
+		expect(html).toContain('--shiki-admin-bg:#f8f8f8');
+		expect(html).toContain('--shiki-admin-dark-bg:#212121');
+		expect(html).toContain('--shiki-djangonaut-bg:#ffffff');
+		expect(html).toContain('--shiki-alucard-bg:#fffbeb');
+		expect(html).toMatch(/--shiki-alucard:#A3144D[^>]*>const</);
+		expect(html).toContain('--shiki-djangonaut-dark-bg:#1a1025');
+		expect(html).toMatch(/--shiki-djangonaut:#5C0287[^>]*>const</);
+		expect(html).toMatch(/--shiki-django:#008000;--shiki-django-font-weight:bold[^>]*>const</);
 		expect(html).toContain('<svg class="code-icon"');
 	});
 

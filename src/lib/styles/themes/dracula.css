@@ -1,40 +1,71 @@
-/* Palette: https://github.com/dracula/vim/blob/master/autoload/dracula.vim */
+/* Palettes: https://draculatheme.com/spec (Alucard light, Dracula dark) */
 @layer base {
 	:root[data-theme-name='dracula'] {
-		--paper: var(--color-dracula-bglight);
-		--ink: var(--color-dracula-fg);
-		--heading: var(--color-dracula-purple);
-		/* Comment is too dim for prose; use the palette's readable foreground. */
-		--muted: var(--color-dracula-fg);
-		--accent: var(--color-dracula-purple);
-		--rule: var(--color-dracula-selection);
-		--underline: var(--color-dracula-comment);
-		--menu-background: var(--color-dracula-bgdark);
-		--tag-background: var(--color-dracula-selection);
-		--selection-background: var(--color-dracula-selection);
+		--paper: var(--color-alucard-floating);
+		--ink: var(--color-alucard-fg);
+		--heading: var(--color-alucard-purple);
+		--muted: var(--color-alucard-comment);
+		--accent: var(--color-alucard-purple);
+		--rule: var(--color-alucard-selection);
+		--underline: var(--color-alucard-comment);
+		--menu-background: var(--color-alucard-bg);
+		--tag-background: var(--color-alucard-selection);
+		--selection-background: var(--color-alucard-selection);
 		--selection-text: var(--ink);
-		--code-background-color: var(--color-dracula-bg);
+		--code-background-color: var(--color-alucard-bg);
 		--inline-code-background: var(--tag-background);
 		--inline-code-text: var(--ink);
-		--checkbox-mixed: var(--color-dracula-orange);
+		--checkbox-mixed: var(--color-alucard-orange);
 		--anchor-color: var(--muted);
 		--anchor-placeholder: var(--heading);
-		--stat-star: var(--color-dracula-yellow);
-		--stat-fork: var(--color-dracula-orange);
+		--stat-star: var(--color-alucard-yellow);
+		--stat-fork: var(--color-alucard-orange);
 		--stat-icon: var(--muted);
 		--stat-icon-strong: var(--muted);
 		--stat-number: var(--ink);
 		--section-rule: var(--rule);
-		--color-caution: var(--color-dracula-red);
-		--color-documentation: var(--color-dracula-green);
-		--color-important: var(--color-dracula-pink);
-		--color-note: var(--color-dracula-cyan);
-		--color-tip: var(--color-dracula-green);
-		--color-warning: var(--color-dracula-orange);
+		--color-caution: var(--color-alucard-red);
+		--color-documentation: var(--color-alucard-green);
+		--color-important: var(--color-alucard-pink);
+		--color-note: var(--color-alucard-cyan);
+		--color-tip: var(--color-alucard-green);
+		--color-warning: var(--color-alucard-orange);
+
+		@variant dark {
+			--paper: var(--color-dracula-bglight);
+			--ink: var(--color-dracula-fg);
+			--heading: var(--color-dracula-purple);
+			/* Comment is too dim for prose; use the palette's readable foreground. */
+			--muted: var(--color-dracula-fg);
+			--accent: var(--color-dracula-purple);
+			--rule: var(--color-dracula-selection);
+			--underline: var(--color-dracula-comment);
+			--menu-background: var(--color-dracula-bgdark);
+			--tag-background: var(--color-dracula-selection);
+			--selection-background: var(--color-dracula-selection);
+			--code-background-color: var(--color-dracula-bg);
+			--checkbox-mixed: var(--color-dracula-orange);
+			--stat-star: var(--color-dracula-yellow);
+			--stat-fork: var(--color-dracula-orange);
+			--color-caution: var(--color-dracula-red);
+			--color-documentation: var(--color-dracula-green);
+			--color-important: var(--color-dracula-pink);
+			--color-note: var(--color-dracula-cyan);
+			--color-tip: var(--color-dracula-green);
+			--color-warning: var(--color-dracula-orange);
+		}
 	}
 }
 
-:root[data-theme-name='dracula'] :is(.shiki, .shiki span) {
+:root[data-theme-name='dracula'][data-theme='light'] :is(.shiki, .shiki span) {
+	color: var(--shiki-alucard) !important;
+	background-color: var(--shiki-alucard-bg) !important;
+	font-style: var(--shiki-alucard-font-style) !important;
+	font-weight: var(--shiki-alucard-font-weight) !important;
+	text-decoration: var(--shiki-alucard-text-decoration) !important;
+}
+
+:root[data-theme-name='dracula'][data-theme='dark'] :is(.shiki, .shiki span) {
 	color: var(--shiki-dracula) !important;
 	background-color: var(--shiki-dracula-bg) !important;
 	font-style: var(--shiki-dracula-font-style) !important;
