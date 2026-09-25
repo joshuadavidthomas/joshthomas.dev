@@ -4,7 +4,8 @@
 
 @layer base {
 	html {
-		scrollbar-gutter: auto;
+		/* Reserve the scrollbar gutter so content doesn't shift when navigating between pages that scroll and ones that don't. */
+		scrollbar-gutter: stable;
 	}
 
 	[id] {
