@@ -26,6 +26,8 @@ export const collections = {
 				'contact'
 			]),
 			subtitle: z.string().optional(),
+			/** A closing Markdown paragraph, after the section's list. */
+			note: z.string().optional(),
 			items: z
 				.array(
 					z.object({

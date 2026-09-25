@@ -5,6 +5,7 @@ import avatar from '@/lib/assets/me.png';
 import Meta from '@/components/Meta.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import Constellation from '@/components/Constellation.astro';
+import AdminChrome from '@/components/admin/Chrome.astro';
 import favicon from '@/lib/assets/favicon.svg';
 import { themeBootstrap } from '@/lib/theme';
 import instrumentSansItalic from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-italic.woff2?url';
@@ -33,6 +34,25 @@ const sourceExceptions: Record<string, string> = {
 	'/projects': 'src/pages/projects/index.astro'
 };
 const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.routePattern}.astro`;
+
+// The django.contrib.admin theme presents each page as the admin view it most resembles.
+const blogPage = pathname.match(/^\/blog\/(?:(\d+)\/)?$/);
+const entryKind = type === 'article' ? (pathname.startsWith('/til/') ? 'TIL' : 'post') : undefined;
+const adminView = pathname === '/' ? 'index' : blogPage || pathname === '/projects/' ? 'changelist' : entryKind ? 'change' : undefined;
+const adminTitle =
+	pathname === '/' ? 'Site administration'
+	: blogPage ? 'Select entry to change'
+	: entryKind ? `View ${entryKind}`
+	: pathname === '/projects/' ? 'Select project to change'
+	: undefined;
+const crumbs =
+	pathname === '/'
+		? []
+		: [
+				{ label: 'Home', href: '/' },
+				...(isWriting && !(blogPage && !blogPage[1]) ? [{ label: 'Writing', href: '/blog/' }] : []),
+				{ label: blogPage?.[1] ? `Page ${blogPage[1]}` : (title ?? '').split(' — ')[0].replaceAll('`', '') }
+			];
 ---
 
 <!doctype html>
@@ -82,8 +102,11 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		<Constellation />
 		<a class="fixed top-3 left-3 z-20 -translate-y-[200%] bg-paper px-3 py-2 focus:translate-y-0" href="#skip">Skip to content</a>
 		<ThemeToggle />
+		<AdminChrome {crumbs} />
 		<div class="page">
-			<aside class="sidebar" aria-label="Identity and navigation" transition:name="site-sidebar">
+			<button type="button" id="toggle-nav-sidebar" class="admin-only" aria-label="Toggle navigation" aria-controls="site-sidebar"></button>
+			<aside id="site-sidebar" class="sidebar" aria-label="Identity and navigation" transition:name="site-sidebar">
+				<input type="search" id="nav-filter" class="admin-only" placeholder="Start typing to filter…" aria-label="Filter navigation items" />
 				<a href="/" aria-label="Back to home"><Image src={avatar} width={64} height={64} alt="" class="block size-14 rounded-portrait" /></a>
 				<Name class="mt-4 font-heading text-[21px]/[1.2] font-[650] tracking-[-0.7px] text-heading compact:mt-0"><a class="no-underline hover:no-underline" href="/">{intro?.data.title}</a></Name>
 				<nav class="section-nav mt-8 flex flex-col gap-2 text-[14px] compact:col-span-2 compact:mt-6 compact:flex-row compact:flex-wrap compact:gap-x-4" aria-label="Main navigation">
@@ -91,7 +114,17 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 					{navigation.map((entry) => <a class={navLink} href={entry.data.kind === 'writing' && pathname !== '/' ? '/blog/' : homeAnchor(entry.id)} aria-current={entry.data.kind === 'writing' && isWriting ? 'location' : undefined}>{entry.data.title}</a>)}
 				</nav>
 			</aside>
-			<main id="skip" class="col-start-2 min-w-0 wrap-anywhere compact:col-start-1" tabindex="-1"><slot /></main>
+			<ul class="admin-only admin-messagelist" aria-live="polite"></ul>
+			<main id="skip" data-admin-view={adminView} class="col-start-2 min-w-0 wrap-anywhere compact:col-start-1" tabindex="-1">
+				{adminTitle && (
+					<p class="admin-only admin-title">
+						{entryKind ? <span class="admin-view-only">{adminTitle}</span> : adminTitle}
+						{entryKind && <span class="admin-change-only">Change {entryKind}</span>}
+						{entryKind && <span class="admin-delete-only">Are you sure?</span>}
+					</p>
+				)}
+				<slot />
+			</main>
 			<footer class="col-start-2 mt-13 flex flex-wrap gap-x-5 gap-y-2 border-t border-rule pt-5 text-[12px] text-muted compact:col-start-1" transition:name="site-footer">
 				<a href="/design-system/">Design system</a>
 				<span>Built with <a href="https://astro.build/">Astro</a></span>
@@ -112,10 +145,17 @@ const sourcePath = sourceExceptions[Astro.routePattern] ?? `src/pages${Astro.rou
 		let frame = 0;
 		function update() {
 			frame = 0;
-			// Keep a long section active until the next heading reaches the reading area.
+			// Keep a long section active until the next heading reaches the reading area. Compare positions
+			// of whole sections rather than document order: the django.contrib.admin theme moves Writing into a
+			// side column level with About.
 			let active: (typeof sections)[number] | undefined;
+			let activeTop = -Infinity;
 			for (const section of sections) {
-				if (section.target!.getBoundingClientRect().top <= innerHeight * 0.25) active = section;
+				const top = (section.target!.closest('section') ?? section.target!).getBoundingClientRect().top;
+				if (top <= innerHeight * 0.25 && top > activeTop + 1) {
+					active = section;
+					activeTop = top;
+				}
 			}
 			// Short final sections cannot always reach the top quarter of the viewport.
 			if (scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) {

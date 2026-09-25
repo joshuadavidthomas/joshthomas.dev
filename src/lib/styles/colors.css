@@ -378,6 +378,10 @@
 	--color-django-admin-message-success: oklch(from #ddffdd l c h);
 	--color-django-admin-message-warning: oklch(from #ffffcc l c h);
 	--color-django-admin-message-error: oklch(from #ffefef l c h);
+	--color-django-admin-close-button: oklch(from #747474 l c h);
+	--color-django-admin-selected-bg: oklch(from #e4e4e4 l c h);
+	--color-django-admin-close-button-hover: oklch(from #333333 l c h);
+	--color-django-admin-delete-button-hover: oklch(from #a41515 l c h);
 	/* Fills of admin/img/icon-{info,yes,alert,no}.svg */
 	--color-django-admin-icon-info: oklch(from #3f8cc1 l c h);
 	--color-django-admin-icon-yes: oklch(from #649c35 l c h);
@@ -392,6 +396,7 @@
 	--color-django-admin-dark-medium: oklch(from #e0e0e0 l c h);
 	--color-django-admin-dark-link: oklch(from #81d4fa l c h);
 	--color-django-admin-dark-link-hover: oklch(from #4ac1f7 l c h);
+	--color-django-admin-dark-link-selected: oklch(from #6f94c6 l c h);
 	--color-django-admin-dark-hairline: oklch(from #272727 l c h);
 	--color-django-admin-dark-border: oklch(from #353535 l c h);
 	--color-django-admin-dark-error: oklch(from #e35f5f l c h);
@@ -401,6 +406,9 @@
 	--color-django-admin-dark-message-success: oklch(from #006b1b l c h);
 	--color-django-admin-dark-message-warning: oklch(from #583305 l c h);
 	--color-django-admin-dark-message-error: oklch(from #570808 l c h);
+	--color-django-admin-dark-close-button: oklch(from #333333 l c h);
+	--color-django-admin-dark-selected-bg: oklch(from #1b1b1b l c h);
+	--color-django-admin-dark-close-button-hover: oklch(from #666666 l c h);
 	--color-django-admin-dark-icon-info: oklch(from #63b4eb l c h);
 	--color-django-admin-dark-icon-yes: oklch(from #73c12f l c h);
 	--color-django-admin-dark-icon-alert: oklch(from #efb80b l c h);

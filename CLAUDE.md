@@ -63,7 +63,11 @@ This site uses Astro content collections and Astro components. Astro prerenders 
 
 ### Content
 
-Astro's deferred glob loaders read and validate the Markdown collections without rendering bodies. `src/lib/markdown.ts` renders bodies only for articles, the design system, and the full-content Atom feed while preserving heading anchors, attributes, footnotes, GitHub alerts, table captions, linkification, and paired light/dark syntax highlighting. Astro's `paginate()` owns blog list paths, slices, and navigation.
+Astro's deferred glob loaders read and validate the Markdown collections without rendering bodies. `src/lib/markdown.ts` renders bodies only for articles, the design system, and the full-content Atom feed while preserving heading anchors, attributes, footnotes, GitHub alerts, table captions, linkification, and paired light/dark syntax highlighting. The home page's Work, Projects, and Community Markdown renders as a tree of heading sections (`renderMarkdownSections`), so the page wraps each company, category, and item in its own markup. Astro's `paginate()` owns blog list paths, slices, and navigation.
+
+### Themes
+
+`src/lib/theme.ts` restores the chosen theme and mode before paint. Themes are CSS in `src/lib/styles/themes/`, keyed on `data-theme-name`. The `django.contrib.admin` theme also rebuilds the layout as the Django admin (`django-admin-layout.css`): the home page becomes the index dashboard, the archive and projects pages changelists, and articles read-only views, with the change form at `?change` and the delete confirmation at `?delete`. Markup with the `admin-only` class, like the components in `src/components/admin/`, is hidden in every other theme.
 
 ### Projects
 

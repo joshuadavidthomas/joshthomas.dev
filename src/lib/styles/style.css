@@ -14,6 +14,7 @@
 @import './themes/dracula.css';
 @import './themes/django.css';
 @import './themes/django-admin.css';
+@import './themes/django-admin-layout.css';
 @import './themes/djangonaut-space.css';
 
 .prose {

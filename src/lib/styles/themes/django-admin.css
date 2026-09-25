@@ -54,6 +54,19 @@
 		--admin-message-success: var(--color-django-admin-message-success);
 		--admin-message-warning: var(--color-django-admin-message-warning);
 		--admin-message-error: var(--color-django-admin-message-error);
+		--admin-header-color: var(--color-django-admin-selected-row);
+		--admin-border: var(--color-django-admin-border);
+		--admin-breadcrumbs-bg: var(--color-django-admin-breadcrumbs-bg);
+		--admin-breadcrumbs-fg: var(--color-django-admin-breadcrumbs-fg);
+		--admin-breadcrumbs-link: var(--color-django-admin-body-bg);
+		--admin-link-selected: var(--color-django-admin-secondary);
+		--admin-button-bg: var(--color-django-admin-secondary);
+		--admin-default-button-bg: var(--color-django-admin-button-hover-bg);
+		--admin-close-button-bg: var(--color-django-admin-close-button);
+		--admin-selected-bg: var(--color-django-admin-selected-bg);
+		--admin-close-button-hover-bg: var(--color-django-admin-close-button-hover);
+		--admin-delete-button-bg: var(--color-django-admin-error);
+		--admin-delete-button-hover-bg: var(--color-django-admin-delete-button-hover);
 
 		@variant dark {
 			--paper: var(--color-django-admin-dark-body-bg);
@@ -83,6 +96,13 @@
 			--admin-message-success: var(--color-django-admin-dark-message-success);
 			--admin-message-warning: var(--color-django-admin-dark-message-warning);
 			--admin-message-error: var(--color-django-admin-dark-message-error);
+			--admin-border: var(--color-django-admin-dark-border);
+			--admin-breadcrumbs-bg: var(--color-django-admin-dark-primary);
+			--admin-breadcrumbs-link: var(--color-django-admin-dark-medium);
+			--admin-link-selected: var(--color-django-admin-dark-link-selected);
+			--admin-close-button-bg: var(--color-django-admin-dark-close-button);
+			--admin-selected-bg: var(--color-django-admin-dark-selected-bg);
+			--admin-close-button-hover-bg: var(--color-django-admin-dark-close-button-hover);
 		}
 	}
 }
@@ -96,70 +116,6 @@
 		&:is(:hover, :focus) {
 			color: var(--accent);
 			text-decoration-line: none;
-		}
-	}
-
-	/* #nav-sidebar rows. No negative margins: the sidebar scrolls, so any bleed adds a scrollbar. */
-	.section-nav a {
-		padding: 2px 6px;
-		color: var(--admin-link);
-
-		&:hover {
-			color: var(--accent);
-			text-decoration-line: none;
-		}
-
-		&[aria-current] {
-			background: var(--selection-background);
-			color: var(--admin-link);
-		}
-	}
-
-	/* The striped, hairline-ruled module; the compact layout wraps links into a row instead. */
-	@media not (max-width: 600px) {
-		/* The name is the module caption: white on blue, underlined on hover. */
-		.sidebar > :is(h1, p) {
-			padding: 8px 6px;
-			background: var(--admin-header-bg);
-			color: var(--admin-header-fg);
-			font-size: 0.8125rem;
-			font-weight: 400;
-			letter-spacing: 0.5px;
-			text-transform: uppercase;
-
-			a:hover {
-				color: inherit;
-				text-decoration: underline currentColor;
-			}
-		}
-
-		.section-nav {
-			gap: 0;
-			margin-top: 0;
-			border-inline: 1px solid var(--rule);
-
-			a {
-				padding: 8px 6px;
-				border-bottom: 1px solid var(--rule);
-
-				&:nth-child(even) {
-					background: var(--code-background-color);
-				}
-
-				&[aria-current] {
-					background: var(--selection-background);
-				}
-			}
-		}
-	}
-
-	#theme-toggle {
-		border: 0;
-		background: var(--admin-header-bg);
-		color: var(--admin-header-fg);
-
-		&:hover {
-			background: var(--admin-button-hover-bg);
 		}
 	}
 
