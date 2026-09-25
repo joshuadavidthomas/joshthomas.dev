@@ -479,17 +479,18 @@
 
 	/* index.html: app modules, with recent actions in #content-related. */
 	main[data-admin-view='index'] {
-		display: grid;
-		grid-template-columns: minmax(0, 600px) 260px;
-		align-items: start;
-		column-gap: 40px;
+		container-type: inline-size;
 
-		> * {
-			grid-column: 1;
-		}
+		/* The grid lives in a wrapper so the container query below can restyle it. */
+		> .home {
+			display: grid;
+			grid-template-columns: minmax(0, 600px) 260px;
+			align-items: start;
+			column-gap: 40px;
 
-		> .admin-title {
-			grid-column: 1 / -1;
+			> * {
+				grid-column: 1;
+			}
 		}
 
 		section[data-kind] {
@@ -578,13 +579,13 @@
 			}
 		}
 
-		> footer {
+		> .home > footer {
 			margin-top: 0;
 			font-size: 0.8125rem;
 		}
 
 		/* #recent-actions-module */
-		> section[data-kind='writing'] {
+		> .home > section[data-kind='writing'] {
 			grid-column: 2;
 			grid-row: 2 / span 30;
 			margin: 0;
@@ -1595,16 +1596,6 @@
 			margin-inline: 20px;
 		}
 
-		main[data-admin-view='index'] {
-			grid-template-columns: minmax(0, 1fr);
-
-			> section[data-kind='writing'] {
-				grid-column: 1;
-				grid-row: auto;
-				margin-bottom: 30px;
-			}
-		}
-
 		main[data-admin-view='changelist'] .archive {
 			grid-template-columns: minmax(0, 1fr) 200px;
 		}
@@ -1769,6 +1760,20 @@
 				grid-column: 1;
 				grid-row: auto;
 				margin-top: 30px;
+			}
+		}
+	}
+
+	/* Too narrow for the 600px column, gap, and 260px recent-actions aside, like a tablet with the
+	   sidebar open: the Writing section follows the modules. */
+	@container (max-width: 56.25rem) {
+		main[data-admin-view='index'] > .home {
+			grid-template-columns: minmax(0, 1fr);
+
+			> section[data-kind='writing'] {
+				grid-column: 1;
+				grid-row: auto;
+				margin-bottom: 30px;
 			}
 		}
 	}

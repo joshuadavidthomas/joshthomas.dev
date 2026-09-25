@@ -24,6 +24,7 @@ const sections = await Promise.all(
 ---
 
 <BaseLayout description="The personal website of Josh Thomas, a web developer living in Alabama.">
+	<div class="home">
 			{sections.map(({ id, data, html, tree }) => data.kind === 'intro' ? (
 				<header class="intro" id="about">
 					{data.subtitle && <p class="location">{data.subtitle}</p>}
@@ -98,6 +99,7 @@ const sections = await Promise.all(
 					{data.kind !== 'writing' && data.link && <p class="more"><a href={data.link.href}>{data.link.label} <ArrowUpRight size={14} class="inline-icon" aria-hidden="true" /></a></p>}
 				</section>
 			))}
+	</div>
 </BaseLayout>
 
 <style>
