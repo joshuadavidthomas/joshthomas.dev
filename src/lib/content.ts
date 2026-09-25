@@ -11,6 +11,8 @@ export type Entry = {
 	slug: string;
 	category?: string;
 	url: string;
+	/** Repository-relative Markdown path. */
+	source?: string;
 	body: string;
 };
 
@@ -32,6 +34,7 @@ export async function entries(): Promise<Entry[]> {
 				date,
 				slug,
 				url: `/blog/${date.slice(0, 4)}/${slug}/`,
+				source: entry.filePath,
 				body: entry.body ?? ''
 			};
 		}),
@@ -51,6 +54,7 @@ export async function entries(): Promise<Entry[]> {
 				slug,
 				category,
 				url: `/til/${category}/${slug}/`,
+				source: entry.filePath,
 				body: entry.body ?? ''
 			};
 		})

@@ -1,0 +1,7 @@
+---
+// django.contrib.admin theme: a tabular inline row's Delete? checkbox, refused when ticked.
+type Props = { noun: string; label: string };
+const { noun, label } = Astro.props;
+---
+
+<span class="admin-only admin-delete-cell"><input type="checkbox" class="admin-inline-delete" data-noun={`this ${noun}`} aria-label={`Delete ${label}`} /></span>

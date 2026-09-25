@@ -399,7 +399,7 @@ export function renderInline(content: string) {
 	return markdown.renderInline(content);
 }
 
-export async function renderMarkdown(content: string, headingOffset = 0) {
+async function parseMarkdown(content: string, headingOffset: number) {
 	await initializeHighlighter();
 	const tokens = markdown.parse(normalizeCustomAlerts(content), {});
 	if (headingOffset) {
@@ -412,7 +412,77 @@ export async function renderMarkdown(content: string, headingOffset = 0) {
 			}
 		}
 	}
+	return tokens;
+}
+
+function renderTokens(tokens: ReturnType<typeof markdown.parse>) {
 	return decorateCustomAlertIcons(markdown.renderer.render(tokens, markdown.options, {}));
+}
+
+export async function renderMarkdown(content: string, headingOffset = 0) {
+	return renderTokens(await parseMarkdown(content, headingOffset));
+}
+
+/** A heading and everything up to the next heading of the same or a higher level. */
+export type MarkdownSection = {
+	/** The rendered heading element. */
+	heading: string;
+	/** The heading's text as inline HTML, without its anchor. */
+	title: string;
+	/** The heading's plain text. */
+	text: string;
+	/** The rendered blocks between the heading and its first subsection. */
+	blocks: string[];
+	sections: MarkdownSection[];
+};
+
+/**
+ * Renders Markdown as a tree of heading sections, so a page can lay out a document of headed items,
+ * like a list of projects, with its own markup. The root holds the blocks before the first heading.
+ */
+export async function renderMarkdownSections(content: string, headingOffset = 0) {
+	const tokens = await parseMarkdown(content, headingOffset);
+	const root: MarkdownSection & { depth: number } = {
+		heading: '',
+		title: '',
+		text: '',
+		blocks: [],
+		sections: [],
+		depth: 0
+	};
+	const open = [root];
+	for (let start = 0; start < tokens.length;) {
+		// A top-level block runs from its opening token to the matching closing token.
+		let end = start;
+		if (tokens[start].nesting === 1) {
+			while (!(tokens[end].nesting === -1 && tokens[end].level === 0)) end += 1;
+		}
+		const block = tokens.slice(start, end + 1);
+		start = end + 1;
+		if (block[0].type !== 'heading_open') {
+			open.at(-1)!.blocks.push(renderTokens(block));
+			continue;
+		}
+		const depth = Number(block[0].tag.slice(1));
+		while (open.at(-1)!.depth >= depth) open.pop();
+		const source = block[1].content;
+		const section = {
+			heading: renderTokens(block),
+			title: renderInline(source),
+			text: markdown
+				.parseInline(source, {})[0]
+				.children!.map((child) =>
+					child.type === 'text' || child.type === 'code_inline' ? child.content : ''
+				)
+				.join(''),
+			blocks: [],
+			sections: [],
+			depth
+		};
+		open.at(-1)!.sections.push(section);
+		open.push(section);
+	}
+	return root as MarkdownSection;
 }
 
 export function slugifyTitle(title: string) {

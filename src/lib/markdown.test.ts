@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { renderInline, renderMarkdown, slugifyTitle } from './markdown';
+import { renderInline, renderMarkdown, renderMarkdownSections, slugifyTitle } from './markdown';
 
 describe('content rendering', () => {
 	it('preserves the published title slugs', () => {
@@ -147,5 +147,25 @@ describe('content rendering', () => {
 		);
 		expect(html).toMatch(/--shiki-tokyo-day:#8C6C3E;[^>]*--shiki-tokyo-moon:#FFC777[^>]*>name</);
 		expect(html).toMatch(/--shiki-tokyo-day:#B15C00;--shiki-tokyo-moon:#FF966C[^>]*>\s*true</);
+	});
+});
+
+describe('markdown sections', () => {
+	it('nests each heading with its blocks under the heading above it', async () => {
+		const root = await renderMarkdownSections(
+			'Lead.\n\n# [Group](https://example.com)\n\nBlurb.\n\n## `item`\n\nFirst.\n\nSecond.\n\n# Other\n',
+			2
+		);
+		expect(root.blocks).toEqual(['<p>Lead.</p>\n']);
+		const [group, other] = root.sections;
+		expect(group.heading).toMatch(/^<h3 id="group"[^>]*>.*Group.*<\/h3>/s);
+		expect(group.title).toBe('<a href="https://example.com">Group</a>');
+		expect(group.text).toBe('Group');
+		expect(group.blocks).toEqual(['<p>Blurb.</p>\n']);
+		expect(group.sections[0].heading).toMatch(/^<h4/);
+		expect(group.sections[0].text).toBe('item');
+		expect(group.sections[0].blocks).toEqual(['<p>First.</p>\n', '<p>Second.</p>\n']);
+		expect(other.text).toBe('Other');
+		expect(other.sections).toEqual([]);
 	});
 });

@@ -1,0 +1,10 @@
+---
+// django.contrib.admin theme: a tabular inline's column headings, ending with its Delete? column.
+type Props = { columns: string[] };
+const { columns } = Astro.props;
+---
+
+<div class="admin-only admin-table-head" aria-hidden="true">
+	{columns.map((column) => <span>{column}</span>)}
+	<span class="admin-delete">Delete?</span>
+</div>

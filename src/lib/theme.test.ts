@@ -12,8 +12,14 @@ type Listener = (event?: {
 function runTheme({
 	stored = null,
 	storedName = null,
-	systemDark = false
-}: { stored?: string | null; storedName?: string | null; systemDark?: boolean } = {}) {
+	systemDark = false,
+	search = ''
+}: {
+	stored?: string | null;
+	storedName?: string | null;
+	systemDark?: boolean;
+	search?: string;
+} = {}) {
 	const documentListeners = new Map<string, Listener>();
 	const windowListeners = new Map<string, Listener>();
 	const mediaListeners: Listener[] = [];
@@ -57,6 +63,8 @@ function runTheme({
 	const chooseTheme = (name: string) =>
 		click(themeControls.find((option) => option.dataset.themeChoice === name));
 	const reset = () => click(resetControl);
+	const exit = () => click(control({ themeExit: '' }));
+	const cycle = () => click(control({ modeCycle: '' }));
 	const modeControl = (mode: string) =>
 		modeControls.find((option) => option.dataset.modeChoice === mode)!;
 	const themeControl = (name: string) =>
@@ -82,12 +90,21 @@ function runTheme({
 	const window = {
 		addEventListener: (name: string, listener: Listener) => windowListeners.set(name, listener)
 	};
+	const location = { pathname: '/blog/2026/post/', search, hash: '' };
+	const history = {
+		state: null,
+		replaceState: vi.fn((_state: unknown, _title: string, url: string) => {
+			location.search = url.slice(location.pathname.length);
+		})
+	};
 	const matchMedia = (query: string) =>
 		query.includes('reduced-motion') ? { matches: true, addEventListener: vi.fn() } : media;
 
 	runInNewContext(themeBootstrap, {
 		document,
+		history,
 		localStorage,
+		location,
 		matchMedia,
 		window,
 		getComputedStyle: () => ({
@@ -101,11 +118,15 @@ function runTheme({
 		attributes,
 		chooseMode,
 		chooseTheme,
+		exit,
+		cycle,
 		reset,
 		modeControl,
 		themeControl,
 		favicon,
 		documentListeners,
+		history,
+		location,
 		media,
 		mediaListeners,
 		root,
@@ -116,6 +137,33 @@ function runTheme({
 }
 
 describe('theme bootstrap', () => {
+	it('chooses and keeps a theme from a ?theme= link, then removes the parameter', () => {
+		const runtime = runTheme({ storedName: 'dracula', search: '?change&theme=django-admin' });
+		expect(runtime.root.dataset.themeName).toBe('django-admin');
+		expect(runtime.storage.get('theme-name')).toBe('django-admin');
+		expect(runtime.location.search).toBe('?change');
+	});
+
+	it('ignores an unknown ?theme= name but still removes it', () => {
+		const runtime = runTheme({ storedName: 'dracula', search: '?theme=nope' });
+		expect(runtime.root.dataset.themeName).toBe('dracula');
+		expect(runtime.location.search).toBe('');
+	});
+
+	it('forgets the stored theme for ?theme=default', () => {
+		const runtime = runTheme({ storedName: 'dracula', search: '?theme=default' });
+		expect(runtime.root.dataset.themeName).toBe('default');
+		expect(runtime.storage.has('theme-name')).toBe(false);
+	});
+
+	it('applies a ?theme= link after a client-side navigation', () => {
+		const runtime = runTheme();
+		runtime.location.search = '?theme=catppuccin';
+		runtime.documentListeners.get('astro:after-swap')?.();
+		expect(runtime.root.dataset.themeName).toBe('catppuccin');
+		expect(runtime.location.search).toBe('');
+	});
+
 	it.each([
 		['catppuccin', 'light'],
 		['catppuccin', 'dark'],
@@ -166,6 +214,27 @@ describe('theme bootstrap', () => {
 		expect(runtime.root.dataset.theme).toBe('light');
 		expect(runtime.storage.has('theme-name')).toBe(false);
 		expect(runtime.storage.get('theme')).toBe('light');
+	});
+
+	it('leaves a theme through an exit control without touching the mode', () => {
+		const runtime = runTheme({ storedName: 'django-admin', stored: 'dark' });
+		runtime.exit();
+		expect(runtime.root.dataset.themeName).toBe('default');
+		expect(runtime.root.dataset.theme).toBe('dark');
+		expect(runtime.storage.has('theme-name')).toBe(false);
+		expect(runtime.storage.get('theme')).toBe('dark');
+	});
+
+	it.each([
+		[false, ['dark', 'light', 'system']],
+		[true, ['light', 'dark', 'system']]
+	])('cycles modes like the Django admin toggle (system dark: %s)', (systemDark, steps) => {
+		const runtime = runTheme({ systemDark });
+		for (const step of steps) {
+			runtime.cycle();
+			expect(runtime.root.dataset.modeState).toBe(step);
+		}
+		expect(runtime.storage.has('theme')).toBe(false);
 	});
 
 	it('keeps theme identity separate from mode changes and carries it into an Astro swap', () => {

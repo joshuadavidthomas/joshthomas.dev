@@ -1,0 +1,239 @@
+---
+// The django.contrib.admin theme's header and breadcrumbs. Other themes never display them.
+type Props = { crumbs: { label: string; href?: string }[] };
+const { crumbs } = Astro.props;
+// color_theme_toggle.html and the icon symbols from admin/base.html.
+const icons = [
+	{ mode: 'system', path: 'M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2V4a8 8 0 1 0 0 16z' },
+	{ mode: 'dark', path: 'M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z' },
+	{ mode: 'light', path: 'M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z' }
+];
+---
+
+<header class="admin-only admin-header">
+	<div class="admin-site-name"><a href="/">Django administration</a></div>
+	<div class="admin-user-tools">
+		Welcome, <strong>guest</strong>.{' '}
+		<button type="button" data-theme-exit>View site</button>{' / '}
+		<a href="/design-system/">Documentation</a>{' / '}
+		<button type="button" data-theme-reset>Log out</button>
+		<button type="button" class="theme-toggle" data-mode-cycle>
+			{icons.map(({ mode, path }) => (
+				<>
+					<span class={`theme-label-when-${mode}`}>Toggle theme (current theme: {mode === 'system' ? 'auto' : mode})</span>
+					<svg class={`theme-icon-when-${mode}`} viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="currentColor" /><path d={path} /></svg>
+				</>
+			))}
+		</button>
+	</div>
+</header>
+{
+	crumbs.length > 0 && (
+		<nav class="admin-only admin-breadcrumbs" aria-label="Breadcrumbs">
+			<ol>
+				{crumbs.map(({ label, href }) => (
+					<li aria-current={href ? undefined : 'page'}>{href ? <a href={href}>{label}</a> : label}</li>
+				))}
+			</ol>
+		</nav>
+	)
+}
+
+<script is:inline>
+	// An article's view: ?change opens the change form and ?delete its delete confirmation. Set before the
+	// article paints; every theme but django.contrib.admin ignores it.
+	(() => {
+		const params = new URLSearchParams(location.search);
+		document.documentElement.dataset.adminMode = params.has('delete') ? 'delete' : params.has('change') ? 'change' : 'view';
+	})();
+</script>
+
+<script>
+	// Behavior for the admin chrome. Every control is display: none outside the theme, so these handlers
+	// only ever see events from the admin theme. Delegated listeners survive Astro page swaps.
+	const NAV_KEY = 'django.admin.navSidebarIsOpen';
+
+	function message(level: 'success' | 'warning' | 'error' | 'info', text: string) {
+		const list = document.querySelector('.admin-messagelist');
+		if (!list) return;
+		const item = document.createElement('li');
+		item.className = level;
+		item.textContent = text;
+		list.replaceChildren(item);
+		list.scrollIntoView({ block: 'nearest' });
+	}
+
+	function syncNavSidebar() {
+		const page = document.querySelector<HTMLElement>('.page');
+		const toggle = document.querySelector('#toggle-nav-sidebar');
+		let open = true;
+		try {
+			open = localStorage.getItem(NAV_KEY) !== 'false';
+		} catch {
+			// The sidebar stays open when storage is unavailable.
+		}
+		page?.toggleAttribute('data-nav-closed', !open);
+		toggle?.setAttribute('aria-expanded', String(open));
+	}
+
+	function rows() {
+		return Array.from(document.querySelectorAll<HTMLElement>('[data-admin-row]'));
+	}
+
+	function syncCounter() {
+		const counter = document.querySelector('.admin-action-counter');
+		const boxes = rows().map((row) => row.querySelector<HTMLInputElement>('.admin-action-select'));
+		const checked = boxes.filter((box) => box?.checked).length;
+		if (counter) counter.textContent = `${checked} of ${boxes.length} selected`;
+		const all = document.querySelector<HTMLInputElement>('#action-toggle');
+		if (all) {
+			all.checked = checked > 0 && checked === boxes.length;
+			all.indeterminate = checked > 0 && checked < boxes.length;
+		}
+	}
+
+	// Changelist search and list filters narrow the rows on the current page. A filter named "year" matches
+	// a row's data-year, which can list several values separated by "|".
+	function filterRows() {
+		const query = document.querySelector<HTMLInputElement>('#searchbar')?.value.trim().toLowerCase() ?? '';
+		const active = Array.from(document.querySelectorAll<HTMLElement>('[data-filter][aria-current]')).filter(
+			(option) => option.dataset.value
+		);
+		for (const row of rows()) {
+			row.hidden =
+				active.some((option) => {
+					const name = option.dataset.filter!;
+					const values = row.getAttribute(`data-${name}`)?.split('|') ?? [];
+					return !values.includes(option.dataset.value!);
+				}) || !row.textContent?.toLowerCase().includes(query);
+		}
+		// .paginator: "3 results (6 total)" while narrowed, as the admin shows after a search or filter.
+		const count = document.querySelector<HTMLElement>('[data-admin-count]');
+		if (count) {
+			// The blog's rows are one page of a longer list; its total counts every page.
+			const total = Number(count.dataset.total ?? rows().length);
+			const shown = rows().filter((row) => !row.hidden).length;
+			count.textContent =
+				shown === rows().length ? `${total} ${count.dataset.adminCount}` : `${shown} result${shown === 1 ? '' : 's'} (${total} total)`;
+		}
+	}
+
+	// Sortable changelist columns: the first click sorts ascending, then each click reverses. The header
+	// link names the element in each row that holds its value (data-sort-by) or the row's attribute (data-sort-attr).
+	function sortColumn(link: HTMLElement) {
+		const section = link.closest('section')!;
+		const ascending = !(link.classList.contains('sorted') && link.classList.contains('ascending'));
+		for (const other of section.querySelectorAll('[data-sort]')) other.classList.remove('sorted', 'ascending', 'descending');
+		link.classList.add('sorted', ascending ? 'ascending' : 'descending');
+		const value = (row: HTMLElement) =>
+			(link.dataset.sortAttr ? row.getAttribute(link.dataset.sortAttr) : row.querySelector(link.dataset.sortBy!)?.textContent)?.trim() ?? '';
+		const numeric = link.dataset.sort === 'number';
+		const sorted = Array.from(section.querySelectorAll<HTMLElement>('[data-admin-row]')).sort((a, b) => {
+			const order = numeric
+				? Number(value(a).replace(/\D/g, '')) - Number(value(b).replace(/\D/g, ''))
+				: value(a).localeCompare(value(b));
+			return ascending ? order : -order;
+		});
+		for (const row of sorted) row.parentElement!.appendChild(row);
+	}
+
+	document.addEventListener('click', (event) => {
+		const target = event.target as Element | null;
+		const control = target?.closest?.<HTMLElement>('#toggle-nav-sidebar, [data-filter], [data-sort], [data-admin-message], .admin-actions .button');
+		if (!control) return;
+		if (control.id === 'toggle-nav-sidebar') {
+			const open = document.querySelector('.page')?.hasAttribute('data-nav-closed') ?? false;
+			try {
+				localStorage.setItem(NAV_KEY, String(open));
+			} catch {
+				// Toggle for this page only.
+			}
+			syncNavSidebar();
+		} else if (control.dataset.sort) {
+			event.preventDefault();
+			sortColumn(control);
+		} else if (control.dataset.filter) {
+			event.preventDefault();
+			for (const option of document.querySelectorAll(`[data-filter="${control.dataset.filter}"]`)) {
+				option.toggleAttribute('aria-current', option === control);
+				option.closest('li')?.classList.toggle('selected', option === control);
+			}
+			filterRows();
+		} else if (control.dataset.adminMessage) {
+			// A refused save puts every field back the way it was.
+			if (control.hasAttribute('data-admin-revert')) {
+				for (const field of document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.admin-fields :is(input, textarea)')) {
+					field.value = field.defaultValue;
+				}
+				for (const option of document.querySelectorAll('.admin-fields option') as NodeListOf<HTMLOptionElement>) {
+					option.selected = option.defaultSelected;
+				}
+			}
+			message((control.dataset.level as 'success' | 'error') ?? 'success', control.dataset.adminMessage);
+		} else {
+			const checked = rows().filter((row) => row.querySelector<HTMLInputElement>('.admin-action-select')?.checked).length;
+			const actions = control.closest<HTMLElement>('.admin-actions')!;
+			const action = (actions.querySelector('select') as HTMLSelectElement | null)?.value;
+			if (checked === 0) message('warning', 'Items must be selected in order to perform actions on them. No items have been changed.');
+			else if (!action) message('warning', 'No action selected.');
+			else message('error', `403 Forbidden. You do not have permission to delete ${checked === 1 ? `this ${actions.dataset.noun}` : `these ${checked} ${actions.dataset.nouns}`}.`);
+		}
+	});
+
+	document.addEventListener('change', (event) => {
+		const target = event.target as HTMLInputElement;
+		// A tabular inline's Delete? box: refused on the spot, the way "Add another" is.
+		if (target.matches?.('.admin-inline-delete')) {
+			target.checked = false;
+			message('error', `403 Forbidden. You do not have permission to delete ${target.dataset.noun}.`);
+			return;
+		}
+		if (target.id === 'action-toggle') {
+			for (const row of rows()) {
+				const box = row.querySelector<HTMLInputElement>('.admin-action-select');
+				if (box && !row.hidden) box.checked = target.checked;
+			}
+		}
+		if (target.matches?.('#action-toggle, .admin-action-select')) syncCounter();
+	});
+
+	document.addEventListener('input', (event) => {
+		const target = event.target as HTMLInputElement;
+		if (target.id === 'searchbar') filterRows();
+		if (target.id !== 'nav-filter') return;
+		// nav_sidebar.js: hide rows whose names don't contain the filter text.
+		const query = target.value.trim().toLowerCase();
+		let matches = 0;
+		for (const link of document.querySelectorAll<HTMLElement>('.section-nav a')) {
+			const match = link.textContent?.toLowerCase().includes(query) ?? false;
+			link.hidden = !match;
+			if (match) matches++;
+		}
+		target.classList.toggle('no-results', matches === 0);
+	});
+
+	document.addEventListener('submit', (event) => {
+		if (!(event.target as Element).closest('.admin-toolbar')) return;
+		event.preventDefault();
+		filterRows();
+	});
+
+	document.addEventListener('astro:after-swap', syncNavSidebar);
+	// The inline script above sets the view on a full load; this keeps it after a client-side navigation.
+	document.addEventListener('astro:after-swap', () => {
+		const params = new URLSearchParams(location.search);
+		document.documentElement.dataset.adminMode = params.has('delete') ? 'delete' : params.has('change') ? 'change' : 'view';
+	});
+	// The change form's body field is filled from the post's raw Markdown when that view opens.
+	function fillSourceFields() {
+		for (const field of document.querySelectorAll<HTMLTextAreaElement>('textarea[data-admin-source]')) {
+			const source = document.getElementById(field.dataset.adminSource!) as HTMLTemplateElement | null;
+			// As its default value, so a refused save can restore it.
+			if (source && !field.defaultValue) field.defaultValue = source.content.textContent ?? '';
+		}
+	}
+	fillSourceFields();
+	document.addEventListener('astro:page-load', syncCounter);
+	document.addEventListener('astro:page-load', fillSourceFields);
+	syncNavSidebar();
+</script>

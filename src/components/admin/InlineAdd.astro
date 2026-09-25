@@ -1,0 +1,7 @@
+---
+// django.contrib.admin theme: a tabular inline's "Add another" row, refused when clicked.
+type Props = { noun: string; nouns: string };
+const { noun, nouns } = Astro.props;
+---
+
+<div class="admin-only admin-add-row"><button type="button" data-level="error" data-admin-message={`403 Forbidden. You do not have permission to add ${nouns}.`}>Add another {noun}</button></div>

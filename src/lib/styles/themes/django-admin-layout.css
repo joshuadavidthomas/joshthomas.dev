@@ -1,0 +1,2079 @@
+/*
+ * The django.contrib.admin theme rebuilds the page as the admin itself, CSS Zen Garden style: the
+ * sidebar becomes #nav-sidebar, the home page the index dashboard, the archive a changelist, and
+ * each article a change form. Markup marked .admin-only is the admin chrome the other themes lack.
+ * Layout and metrics: https://github.com/django/django/tree/main/django/contrib/admin/static/admin/css
+ */
+.admin-only {
+	display: none;
+}
+
+:root[data-theme-name='django-admin'] {
+	/* Icons from admin/img, drawn as masks so each mode can color them. */
+	--admin-icon-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath stroke='%23000' stroke-width='30' d='M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z'/%3E%3C/svg%3E");
+	--admin-icon-change: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1 0 32c0 8.8 7.2 16 16 16l32 0zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z'/%3E%3C/svg%3E");
+	--admin-icon-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath stroke='%23000' stroke-width='30' d='M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z'/%3E%3C/svg%3E");
+	--admin-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z'/%3E%3C/svg%3E");
+	--admin-icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l80 0 0 56-80 0 0-56zm0 104l80 0 0 64-80 0 0-64zm128 0l96 0 0 64-96 0 0-64zm144 0l80 0 0 64-80 0 0-64zm80-48l-80 0 0-56 80 0 0 56zm0 160l0 40c0 8.8-7.2 16-16 16l-64 0 0-56 80 0zm-128 0l0 56-96 0 0-56 96 0zm-144 0l0 56-64 0c-8.8 0-16-7.2-16-16l0-40 80 0zM272 248l-96 0 0-56 96 0 0 56z'/%3E%3C/svg%3E");
+	--admin-icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z'/%3E%3C/svg%3E");
+	--admin-icon-yes: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M72 512h368c0 0 72 0 72 -72V72c0 0 0 -72 -72 -72H72C72 0 0 0 0 72v368c0 0 0 72 72 72z M369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z'/%3E%3C/svg%3E");
+	--admin-icon-alert: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24l0 112c0 13.3 10.7 24 24 24s24-10.7 24-24l0-112c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z'/%3E%3C/svg%3E");
+	--admin-icon-no: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z'/%3E%3C/svg%3E");
+	--admin-icon-view: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/%3E%3C/svg%3E");
+	--admin-changelist-columns: 2.25rem minmax(0, 1fr) minmax(0, 1.25fr) 7rem 4rem;
+
+	body {
+		font-size: 0.875rem;
+	}
+
+	.admin-messagelist li::before,
+	:is(.object-tools, .more) :is(a, button)::after {
+		background-color: currentColor;
+		mask: var(--icon) center / contain no-repeat;
+	}
+
+	/* #header */
+	.admin-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 56px;
+		padding: 10px 40px;
+		background: var(--admin-header-bg);
+		color: var(--admin-header-color);
+	}
+
+	.admin-site-name {
+		margin-inline-end: 20px;
+		font-size: 1.5rem;
+		font-weight: 300;
+		line-height: 1.5;
+
+		a {
+			color: var(--color-django-admin-accent);
+			text-decoration: none;
+		}
+	}
+
+	.admin-user-tools {
+		font-size: 0.6875rem;
+		font-weight: 300;
+		letter-spacing: 0.5px;
+		text-align: right;
+		text-transform: uppercase;
+
+		strong {
+			font-weight: 700;
+		}
+
+		/* Buttons are inline blocks, so links become the same to put every underline on one line. */
+		:is(a, button:not(.theme-toggle)) {
+			display: inline-block;
+			padding: 0;
+			border-bottom: 1px solid rgb(255 255 255 / 0.25);
+			color: var(--admin-header-fg);
+			font: inherit;
+			line-height: 1.4;
+			letter-spacing: inherit;
+			text-decoration: none;
+			text-transform: inherit;
+			cursor: pointer;
+
+			&:is(:hover, :focus-visible) {
+				border-bottom-color: transparent;
+				color: var(--admin-header-fg);
+				text-decoration: none;
+			}
+		}
+	}
+
+	/* The palette menu gives way to color_theme_toggle.html at the end of #user-tools. */
+	#theme-toggle,
+	#theme-menu {
+		display: none;
+	}
+
+	.theme-toggle {
+		margin-inline-start: 5px;
+		margin-top: -1px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		vertical-align: middle;
+		cursor: pointer;
+
+		:is(span, svg) {
+			display: none;
+		}
+
+		svg {
+			width: 1.5rem;
+			height: 1.5rem;
+			fill: var(--admin-header-fg);
+			color: var(--admin-header-bg);
+			vertical-align: middle;
+		}
+	}
+
+	&[data-mode-state='system'] .theme-toggle .theme-icon-when-system,
+	&[data-mode-state='light'] .theme-toggle .theme-icon-when-light,
+	&[data-mode-state='dark'] .theme-toggle .theme-icon-when-dark {
+		display: block;
+	}
+
+	/* Only the current state's label is announced. */
+	&[data-mode-state='system'] .theme-toggle .theme-label-when-system,
+	&[data-mode-state='light'] .theme-toggle .theme-label-when-light,
+	&[data-mode-state='dark'] .theme-toggle .theme-label-when-dark {
+		position: absolute;
+		display: block;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	/* ol.breadcrumbs */
+	.admin-breadcrumbs {
+		display: block;
+
+		ol {
+			margin: 0;
+			padding: 10px 40px;
+			background: var(--admin-breadcrumbs-bg);
+			color: var(--admin-breadcrumbs-fg);
+			list-style: none;
+		}
+
+		li {
+			display: inline;
+			font-size: 0.875rem;
+
+			&:not([aria-current='page'])::after {
+				content: '\203A' / '';
+				margin-inline: 0.3em;
+			}
+		}
+
+		a {
+			color: var(--admin-breadcrumbs-link);
+			text-decoration: none;
+
+			&:is(:hover, :focus-visible) {
+				color: var(--admin-breadcrumbs-fg);
+			}
+		}
+	}
+
+	/* .main: the sidebar toggle, #nav-sidebar, and #content. */
+	.page {
+		display: grid;
+		grid-template-columns: 23px 275px minmax(0, 1fr);
+		grid-template-rows: auto 1fr auto;
+		width: auto;
+		min-height: calc(100dvh - 96px);
+		margin: 0;
+		padding: 0;
+		column-gap: 0;
+		line-height: normal;
+
+		&[data-nav-closed] {
+			grid-template-columns: 23px 0 minmax(0, 1fr);
+
+			.sidebar {
+				visibility: hidden;
+			}
+
+			#toggle-nav-sidebar::before {
+				content: '\00BB';
+			}
+		}
+	}
+
+	#toggle-nav-sidebar {
+		position: sticky;
+		top: 0;
+		z-index: 2;
+		display: flex;
+		grid-column: 1;
+		grid-row: 1 / 4;
+		align-items: center;
+		justify-content: center;
+		max-height: 100vh;
+		padding: 0;
+		border: 0;
+		border-right: 1px solid var(--rule);
+		background: var(--paper);
+		color: var(--admin-link);
+		font-size: 1.25rem;
+		cursor: pointer;
+
+		&::before {
+			content: '\00AB';
+		}
+
+		&:is(:hover, :focus-visible) {
+			background: var(--code-background-color);
+		}
+	}
+
+	/* #nav-sidebar: a filter above one app module. */
+	.sidebar {
+		position: sticky;
+		top: 0;
+		left: auto;
+		grid-column: 2;
+		grid-row: 1 / 4;
+		align-self: start;
+		width: auto;
+		max-height: 100vh;
+		overflow: auto;
+		border-right: 1px solid var(--rule);
+
+		> a:first-of-type {
+			display: none;
+		}
+
+		/* The app caption. */
+		> :is(h1, p) {
+			margin: 0;
+			padding: 8px 8px 8px 16px;
+			background: var(--admin-header-bg);
+			color: var(--admin-header-fg);
+			font-family: var(--font-sans);
+			font-size: 0.75rem;
+			font-weight: 400;
+			letter-spacing: 0.5px;
+			line-height: normal;
+			text-transform: uppercase;
+
+			/* .current-app .section: every page but the index belongs to this one app. */
+			.page:not(:has(main[data-admin-view='index'])) & {
+				color: var(--admin-header-color);
+				font-weight: 700;
+			}
+
+			a {
+				color: inherit;
+				text-decoration: none;
+
+				&:hover {
+					color: inherit;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+
+	#nav-filter {
+		display: block;
+		width: 100%;
+		margin: 5px 0;
+		padding: 2px 5px;
+		border: 1px solid var(--admin-border);
+		background: var(--code-background-color);
+		color: var(--ink);
+		font-size: 0.8125rem;
+
+		&:focus {
+			border-color: var(--muted);
+			outline: none;
+		}
+
+		&.no-results {
+			background: var(--admin-message-error);
+		}
+	}
+
+	/* Model rows, each with its "Add" link. */
+	.section-nav {
+		gap: 0;
+		margin: 0;
+		font-size: 0.8125rem;
+
+		a {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			padding: 8px 8px 8px 16px;
+			border-bottom: 1px solid var(--rule);
+			background: var(--paper);
+			color: var(--admin-link);
+			font-weight: 500;
+			line-height: 1rem;
+			text-decoration: none;
+
+			&:nth-child(even) {
+				background: var(--code-background-color);
+			}
+
+			&:hover {
+				color: var(--accent);
+				text-decoration: none;
+			}
+
+			&[aria-current] {
+				background: var(--selection-background);
+				color: var(--admin-link);
+			}
+
+			/* a.viewlink: the eye, then "View". */
+			&::after {
+				content: 'View' / '';
+				flex: none;
+				padding-left: 17px;
+				background: linear-gradient(currentColor, currentColor) 0 50% / 13px 13px no-repeat;
+				mask:
+					var(--admin-icon-view) 0 50% / 13px 13px no-repeat,
+					linear-gradient(#000, #000) 17px 0 / 100% 100% no-repeat;
+				color: var(--admin-link);
+			}
+		}
+	}
+
+	/* #content */
+	main {
+		grid-column: 3;
+		grid-row: 2;
+		position: relative;
+		padding: 20px 40px;
+	}
+
+	#footer,
+	.page > footer {
+		grid-column: 3;
+		grid-row: 3;
+		align-self: end;
+		margin: 0 40px;
+		padding-block: 10px 20px;
+		font-size: 0.75rem;
+	}
+
+	.admin-title {
+		display: block;
+		margin: 0 0 20px;
+		color: var(--ink);
+		font-size: 1.25rem;
+		font-weight: 300;
+	}
+
+	/* ul.messagelist, above #content and flush against the breadcrumbs. */
+	.admin-messagelist {
+		display: block;
+		grid-column: 3;
+		grid-row: 1;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		&:empty {
+			display: none;
+		}
+
+		li {
+			position: relative;
+			margin: 0 0 10px;
+			padding: 10px 10px 10px 65px;
+			background: var(--admin-message-info);
+			color: var(--ink);
+			font-size: 0.8125rem;
+
+			&::before {
+				--icon: var(--admin-icon-info);
+				content: '';
+				position: absolute;
+				top: 12px;
+				left: 40px;
+				width: 16px;
+				height: 16px;
+				color: var(--color-note);
+			}
+
+			&.success {
+				background: var(--admin-message-success);
+
+				&::before {
+					--icon: var(--admin-icon-yes);
+					color: var(--color-tip);
+				}
+			}
+
+			&.warning {
+				background: var(--admin-message-warning);
+
+				&::before {
+					--icon: var(--admin-icon-alert);
+					color: var(--color-warning);
+				}
+			}
+
+			&.error {
+				background: var(--admin-message-error);
+
+				&::before {
+					--icon: var(--admin-icon-no);
+					color: var(--color-caution);
+				}
+			}
+		}
+	}
+
+	/* .object-tools: grey pills at the top right of #content. */
+	.object-tools,
+	main[data-admin-view='changelist'] > .feed {
+		position: absolute;
+		top: 20px;
+		right: 40px;
+		display: flex;
+		gap: 15px;
+		margin: 0;
+		padding: 0;
+
+		li {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		:is(a, button) {
+			display: flex;
+		}
+	}
+
+	/* The pills themselves; links out of an index module wear them too. */
+	:is(.object-tools, main[data-admin-view='changelist'] > .feed) :is(a, button),
+	main[data-admin-view='index'] section[data-kind]:not([data-kind='writing']) .more a {
+		align-items: center;
+		gap: 8px;
+		padding: 3px 12px;
+		border-radius: 15px;
+		background: var(--admin-close-button-bg);
+		color: var(--color-django-admin-button-fg);
+		font-size: 0.6875rem;
+		font-weight: 400;
+		letter-spacing: 0.5px;
+		line-height: 1.4;
+		text-decoration: none;
+		text-transform: uppercase;
+		cursor: pointer;
+
+		&:is(:hover, :focus-visible) {
+			background: var(--admin-close-button-hover-bg);
+			color: var(--color-django-admin-button-fg);
+		}
+
+		/* The "View on site" chevron. */
+		&:is(.viewsitelink, .more a)::after {
+			--icon: var(--admin-icon-arrow);
+			content: '';
+			width: 8px;
+			height: 11px;
+		}
+
+		svg {
+			display: none;
+		}
+	}
+
+	/* index.html: app modules, with recent actions in #content-related. */
+	main[data-admin-view='index'] {
+		display: grid;
+		grid-template-columns: minmax(0, 600px) 260px;
+		align-items: start;
+		column-gap: 40px;
+
+		> * {
+			grid-column: 1;
+		}
+
+		> .admin-title {
+			grid-column: 1 / -1;
+		}
+
+		section[data-kind] {
+			margin: 0 0 30px;
+
+			> :not(.section-heading) {
+				padding-inline: 10px;
+			}
+		}
+
+		.section-heading {
+			margin-bottom: 10px;
+			font-size: 0.75rem;
+
+			h2 {
+				font-size: 0.8125rem;
+				letter-spacing: 0.5px;
+				text-transform: uppercase;
+			}
+		}
+
+		.markdown :is(p, li) {
+			font-size: 0.8125rem;
+			line-height: 1.4;
+		}
+
+		.markdown :is(h3, h4) {
+			color: var(--admin-medium);
+			font-family: var(--font-sans);
+		}
+
+		/* Links out of a module become .object-tools pills. */
+		section[data-kind]:not([data-kind='writing']) .more {
+			display: inline-block;
+			margin: 16px 15px 0 0;
+			padding: 0;
+
+			a {
+				display: inline-flex;
+			}
+		}
+
+		/* The intro: a message, then an "About" module. */
+		.intro {
+			margin-bottom: 30px;
+
+			.location {
+				position: relative;
+				margin: 0 0 20px;
+				padding: 10px 10px 10px 40px;
+				background: var(--admin-message-info);
+				color: var(--ink);
+				font-size: 0.8125rem;
+				letter-spacing: normal;
+				line-height: 1.4;
+
+				&::before {
+					--icon: var(--admin-icon-info);
+					content: '';
+					position: absolute;
+					top: 12px;
+					left: 14px;
+					width: 16px;
+					height: 16px;
+					background-color: var(--color-note);
+					mask: var(--icon) center / contain no-repeat;
+				}
+			}
+
+			.intro-copy {
+				&::before {
+					content: 'About';
+					display: block;
+					padding: 8px;
+					background: var(--admin-header-bg);
+					color: var(--admin-header-fg);
+					font-size: 0.8125rem;
+					letter-spacing: 0.5px;
+					text-transform: uppercase;
+				}
+
+				p {
+					margin-top: 10px;
+					padding-inline: 10px;
+				}
+			}
+		}
+
+		> footer {
+			margin-top: 0;
+			font-size: 0.8125rem;
+		}
+
+		/* #recent-actions-module */
+		> section[data-kind='writing'] {
+			grid-column: 2;
+			grid-row: 2 / span 30;
+			margin: 0;
+			background: var(--code-background-color);
+
+			> :not(.section-heading) {
+				padding-inline: 16px;
+			}
+
+			.section-heading {
+				flex-direction: column;
+				gap: 4px;
+				margin-bottom: 16px;
+				padding: 16px;
+				border-bottom: 1px solid var(--rule);
+				background: none;
+
+				> :is(a, span) {
+					color: var(--admin-link);
+				}
+
+				h2 {
+					background: none;
+					color: var(--ink);
+					font-size: 1.125rem;
+					letter-spacing: normal;
+					text-transform: none;
+				}
+			}
+
+			.writing-list {
+				&::before {
+					content: 'My actions';
+					display: block;
+					margin-bottom: 16px;
+					color: var(--muted);
+					font-size: 0.875rem;
+					font-weight: 700;
+				}
+
+				li {
+					position: relative;
+					margin-bottom: 10px;
+					padding-left: 18px;
+
+					/* li.addlink */
+					&::before {
+						content: '';
+						position: absolute;
+						top: 2px;
+						left: 0;
+						width: 11px;
+						height: 11px;
+						background-color: var(--color-tip);
+						mask: var(--admin-icon-add) center / contain no-repeat;
+					}
+				}
+			}
+
+			.dated-entry {
+				display: block;
+				padding: 0;
+
+				a {
+					font-family: var(--font-sans);
+					font-size: 0.8125rem;
+					font-weight: 400;
+					line-height: 1.2;
+				}
+
+				:is(p, time) {
+					display: inline;
+					font-size: 0.625rem;
+				}
+
+				p + time::before {
+					content: ' · ';
+				}
+			}
+
+			.more {
+				margin: 0;
+				padding-bottom: 16px;
+			}
+		}
+	}
+
+	/* change_list.html */
+	main[data-admin-view='changelist'] {
+		> .feed a {
+			&::after {
+				content: none;
+			}
+		}
+
+		container-type: inline-size;
+
+		.archive {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 240px;
+			align-items: start;
+			column-gap: 30px;
+
+			> * {
+				grid-column: 1;
+			}
+		}
+
+		/* #toolbar */
+		.admin-toolbar {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			margin-bottom: 15px;
+			padding: 8px 10px;
+			border-block: 1px solid var(--rule);
+			background: var(--code-background-color);
+
+			label {
+				display: flex;
+				color: var(--muted);
+			}
+
+			.search-icon {
+				width: 15px;
+				height: 15px;
+				background-color: currentColor;
+				mask: var(--admin-icon-search) center / contain no-repeat;
+			}
+
+			#searchbar {
+				flex: 0 1 auto;
+				min-width: 0;
+				padding: 2px 5px;
+				border: 1px solid var(--admin-border);
+				border-radius: 4px;
+				background: var(--paper);
+				color: var(--ink);
+				font-size: 0.8125rem;
+			}
+		}
+
+		:is(.admin-toolbar input[type='submit'], .admin-actions .button) {
+			padding: 4px 8px;
+			border: 1px solid var(--admin-border);
+			border-radius: 4px;
+			background: var(--paper);
+			box-shadow: 0 -15px 20px -10px rgb(0 0 0 / 0.15) inset;
+			color: var(--ink);
+			font-size: 0.8125rem;
+			line-height: 1;
+			cursor: pointer;
+
+			&:is(:hover, :focus-visible) {
+				border-color: var(--muted);
+			}
+		}
+
+		/* #changelist-filter */
+		.admin-filter {
+			display: block;
+			grid-column: 2;
+			grid-row: 1 / span 30;
+			background: var(--code-background-color);
+
+			h2 {
+				margin: 0 0 12px;
+				padding: 5px 15px;
+				background: var(--admin-header-bg);
+				color: var(--admin-header-fg);
+				font-family: var(--font-sans);
+				font-size: 0.875rem;
+				font-weight: 400;
+				letter-spacing: 0.5px;
+				line-height: 1.5;
+				text-transform: uppercase;
+			}
+
+			/* admin/filter.html: each filter is a <details> with an arrow in its summary. */
+			summary {
+				display: flex;
+				gap: 4px;
+				margin-bottom: 10px;
+				padding: 0 15px;
+				list-style: none;
+				cursor: pointer;
+
+				&::-webkit-details-marker {
+					display: none;
+				}
+
+				&::before {
+					content: '→' / '';
+					color: var(--accent);
+					font-weight: 700;
+				}
+			}
+
+			details[open] > summary::before {
+				content: '↓' / '';
+			}
+
+			h3 {
+				display: inline;
+				margin: 0;
+				color: var(--ink);
+				font-family: var(--font-sans);
+				font-size: 0.875rem;
+				font-weight: 400;
+			}
+
+			ul {
+				margin: 5px 0;
+				padding: 0 15px 15px;
+				border-bottom: 1px solid var(--rule);
+				list-style: none;
+
+				&:last-child {
+					border-bottom: 0;
+				}
+			}
+
+			li {
+				font-size: 0.8125rem;
+				line-height: 1.25rem;
+
+				&.selected {
+					margin-left: -15px;
+					padding-left: 10px;
+					border-left: 5px solid var(--rule);
+				}
+			}
+
+			li a {
+				display: block;
+				color: var(--muted);
+
+				&[aria-current] {
+					color: var(--admin-link-selected);
+				}
+
+				&:hover {
+					color: var(--accent);
+				}
+			}
+		}
+
+		/* .actions */
+		.admin-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.5em;
+			padding: 10px;
+			color: var(--muted);
+			font-size: 0.8125rem;
+			line-height: 1.5rem;
+
+			select {
+				height: 1.5rem;
+				margin-left: 10px;
+				padding: 0 0 0 4px;
+				border: 1px solid var(--admin-border);
+				border-radius: 4px;
+				background: var(--paper);
+				color: var(--ink);
+				font-size: 0.875rem;
+			}
+
+			.button {
+				height: 1.5rem;
+			}
+		}
+
+		/* #result_list */
+		.admin-results-head,
+		.archive > article {
+			display: grid;
+			grid-template-columns: var(--admin-changelist-columns);
+		}
+
+		.admin-results-head {
+			align-items: center;
+			border-block: 1px solid var(--rule);
+			background: var(--code-background-color);
+			color: var(--muted);
+			font-size: 0.6875rem;
+			text-transform: uppercase;
+
+			> span {
+				padding: 8px 10px;
+			}
+
+			input {
+				justify-self: center;
+				margin: 0;
+			}
+		}
+
+		.archive > article {
+			margin: 0;
+			border-bottom: 1px solid var(--rule);
+			font-size: 0.8125rem;
+
+			&:nth-of-type(even) {
+				background: var(--code-background-color);
+			}
+
+			&:has(.admin-action-select:checked) {
+				background: var(--selection-background);
+			}
+
+			.admin-action-select {
+				display: block;
+				grid-column: 1;
+				align-self: start;
+				justify-self: center;
+				margin: 9px 0 0;
+			}
+
+			:is(.dated-entry, .description) {
+				display: contents;
+			}
+
+			.description a {
+				grid-column: 2;
+				grid-row: 1;
+				padding: 8px 10px;
+				font-family: var(--font-sans);
+				font-size: 0.8125rem;
+				font-weight: 500;
+				line-height: 1rem;
+			}
+
+			:is(.description p, time, .summary) {
+				grid-row: 1;
+				margin: 0;
+				padding: 8px 10px;
+				color: var(--ink);
+				font-size: 0.8125rem;
+				line-height: 1rem;
+			}
+
+			.summary {
+				display: block;
+				grid-column: 3;
+			}
+
+			.description p {
+				grid-column: 4;
+			}
+
+			time {
+				grid-column: 5;
+			}
+
+			&[data-entry-type='post'] .description::after {
+				content: 'Post';
+				grid-column: 4;
+				grid-row: 1;
+				padding: 8px 10px;
+				line-height: 1rem;
+			}
+		}
+
+		/* .paginator */
+		:is(.pagination, .admin-result-count) {
+			margin: 0;
+			padding: 10px;
+			border-bottom: 1px solid var(--rule);
+			color: var(--muted);
+			font-size: 0.8125rem;
+		}
+
+		.admin-result-count {
+			display: block;
+		}
+	}
+
+	/* change_form.html */
+	/*
+	 * An article has three views, picked by query parameter: the read-only view (the default), the change
+	 * form (?change) with the raw Markdown in a textarea, and the delete confirmation (?delete).
+	 */
+	&:not([data-admin-mode='view']) .admin-view-only,
+	&:not([data-admin-mode='change']) .admin-change-only,
+	&:not([data-admin-mode='delete']) .admin-delete-only {
+		display: none !important;
+	}
+
+	&:is([data-admin-mode='change'], [data-admin-mode='delete'])
+		main[data-admin-view='change']
+		article
+		> :not(header, .submit-row),
+	&[data-admin-mode='delete'] main[data-admin-view='change'] article {
+		display: none;
+	}
+
+	&[data-admin-mode='delete'] .admin-breadcrumbs li[aria-current]::after {
+		content: '\203A  Delete' / '';
+		margin-left: 0.3em;
+	}
+
+	main[data-admin-view='change'] {
+		article {
+			padding-left: 170px;
+			font-size: 0.875rem;
+			line-height: 1.6;
+		}
+
+		article > :not(header, .submit-row) {
+			max-width: 46rem;
+		}
+
+		.article-heading {
+			margin: 0 0 0 -170px;
+			padding-right: 220px;
+
+			.page-title {
+				margin: 0 0 20px;
+				color: var(--ink);
+				font-family: var(--font-sans);
+				font-size: 1rem;
+				font-weight: 700;
+				letter-spacing: normal;
+			}
+
+			> time {
+				display: none;
+			}
+		}
+
+		.object-tools :is(a, button) {
+			font-family: var(--font-sans);
+		}
+
+		/* fieldset.module.aligned */
+		.admin-fields {
+			display: block;
+			min-width: 0;
+			margin: 0 -220px 0 0;
+			padding: 0;
+			border: 0;
+			border-top: 1px solid var(--rule);
+		}
+
+		.form-row {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: flex-start;
+			padding: 10px;
+			border-bottom: 1px solid var(--rule);
+			font-size: 0.8125rem;
+
+			:is(label, .label) {
+				flex: none;
+				width: 160px;
+				padding: 4px 10px 0 0;
+				color: var(--muted);
+
+				&.required {
+					color: var(--ink);
+					font-weight: 700;
+				}
+			}
+
+			:is(input, select, textarea) {
+				max-width: 100%;
+				padding: 5px 6px;
+				border: 1px solid var(--admin-border);
+				border-radius: 4px;
+				background: var(--paper);
+				color: var(--ink);
+				font-size: 0.8125rem;
+			}
+
+			#id_title {
+				width: 40em;
+			}
+
+			textarea {
+				width: 610px;
+				resize: vertical;
+			}
+
+			/* .vLargeTextField holds the raw Markdown. */
+			#id_body {
+				line-height: 1.4;
+			}
+
+			/* div.readonly */
+			.readonly {
+				flex: 1;
+				min-width: 0;
+				padding: 4px 0 0;
+				color: var(--ink);
+				overflow-wrap: anywhere;
+			}
+
+			select {
+				height: 1.875rem;
+				opacity: 1;
+			}
+		}
+
+		.datetimeshortcuts {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			margin-left: 5px;
+			align-self: center;
+			color: var(--admin-link);
+
+			.date-icon {
+				width: 16px;
+				height: 16px;
+				background-color: currentColor;
+				mask: var(--admin-icon-calendar) center / contain no-repeat;
+			}
+		}
+
+		/* The body field's label sits beside the rendered Markdown. */
+		.body-label {
+			height: 0;
+			padding-block: 0;
+			border-bottom: 0;
+
+			.label {
+				padding-top: 20px;
+			}
+		}
+
+		article > header + * {
+			margin-top: 20px;
+		}
+
+		/* .submit-row */
+		.submit-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin: 20px 0 20px -170px;
+			padding: 12px 14px;
+			border: 1px solid var(--rule);
+			border-radius: 4px;
+			background: var(--code-background-color);
+
+			:is(button, a) {
+				height: 2.1875rem;
+				padding: 10px 15px;
+				border-radius: 4px;
+				background: var(--admin-button-bg);
+				color: var(--color-django-admin-button-fg);
+				font-family: var(--font-sans);
+				font-size: 0.8125rem;
+				line-height: 0.9375rem;
+				text-decoration: none;
+				cursor: pointer;
+
+				&:is(:hover, :focus-visible) {
+					color: var(--color-django-admin-button-fg);
+				}
+
+				/* a.closelink */
+				&.closelink {
+					background: var(--admin-close-button-bg);
+
+					&:is(:hover, :focus-visible) {
+						background: var(--admin-close-button-hover-bg);
+					}
+				}
+
+				&:is(:hover, :focus-visible) {
+					background: var(--admin-button-hover-bg);
+				}
+
+				&.default {
+					background: var(--admin-default-button-bg);
+					text-transform: uppercase;
+
+					&:is(:hover, :focus-visible) {
+						background: var(--admin-button-bg);
+					}
+				}
+
+				&.deletelink {
+					margin-left: auto;
+					background: var(--admin-delete-button-bg);
+
+					&:is(:hover, :focus-visible) {
+						background: var(--admin-delete-button-hover-bg);
+					}
+				}
+			}
+		}
+	}
+
+	/* delete_confirmation.html */
+	main[data-admin-view='change'] .admin-delete-confirmation {
+		display: block;
+		font-size: 0.875rem;
+
+		p {
+			margin: 0 0 12px;
+		}
+
+		h2 {
+			margin: 20px 0 8px;
+			padding: 0;
+			background: none;
+			color: var(--ink);
+			font-family: var(--font-sans);
+			font-size: 1rem;
+			font-weight: 700;
+		}
+
+		ul {
+			margin: 0 0 12px 1.5em;
+			padding: 0;
+		}
+
+		li {
+			font-size: 0.8125rem;
+			line-height: 1.25rem;
+			list-style: square;
+		}
+
+		.delete-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 10px;
+			margin-top: 20px;
+
+			:is(button, a) {
+				padding: 10px 15px;
+				border-radius: 4px;
+				color: var(--color-django-admin-button-fg);
+				font-size: 0.8125rem;
+				line-height: 0.9375rem;
+				text-decoration: none;
+				cursor: pointer;
+			}
+
+			button {
+				background: var(--admin-delete-button-bg);
+
+				&:is(:hover, :focus-visible) {
+					background: var(--admin-delete-button-hover-bg);
+				}
+			}
+
+			a {
+				background: var(--admin-close-button-bg);
+
+				&:is(:hover, :focus-visible) {
+					background: var(--admin-close-button-hover-bg);
+					color: var(--color-django-admin-button-fg);
+				}
+			}
+		}
+	}
+
+	/*
+	 * The projects page: each project card lays itself out as a changelist row, then each contribution as
+	 * a row of a second list. The cards' own markup is unchanged; grids and display: contents do the work.
+	 */
+	main[data-admin-view='changelist']:has(
+		section[aria-labelledby='projects'],
+		section[aria-labelledby='contributions']
+	) {
+		--admin-project-columns: 2.25rem minmax(9rem, 0.8fr) minmax(10rem, 1.4fr) 5.5rem 3.5rem 3.5rem
+			minmax(8rem, 0.8fr) 5.5rem;
+		--admin-contribution-columns: minmax(0, 2fr) minmax(0, 1fr);
+
+		hr {
+			display: none;
+		}
+
+		.archive > :is(section, p[role='status']) {
+			margin: 0 0 30px;
+		}
+
+		/* The development fixtures notice, as a warning message. */
+		p[role='status'] {
+			padding: 10px;
+			background: var(--admin-message-warning);
+			color: var(--ink);
+			font-size: 0.8125rem;
+		}
+
+		/* The introduction reads as help text above the list. */
+		section > p:not(.admin-result-count) {
+			margin: 0 0 10px;
+			color: var(--muted);
+			font-size: 0.8125rem;
+			line-height: 1.4;
+		}
+
+		/* Like #changelist-form .results, the list scrolls sideways when it can't fit. */
+		section[aria-labelledby='projects'] {
+			overflow-x: auto;
+
+			> :is(.admin-results-head, .project-list) {
+				min-width: 48rem;
+			}
+		}
+
+		section[aria-labelledby='contributions'] > h2.sr-only {
+			position: static;
+			width: auto;
+			height: auto;
+			margin: 0 0 10px;
+			overflow: visible;
+			clip-path: none;
+			white-space: normal;
+			font-size: 0.8125rem;
+			letter-spacing: 0.5px;
+			text-transform: uppercase;
+		}
+
+		.admin-results-head {
+			display: grid;
+			grid-template-columns: var(--admin-project-columns);
+			align-items: center;
+			border-block: 1px solid var(--rule);
+			background: var(--code-background-color);
+			color: var(--muted);
+			font-size: 0.6875rem;
+			text-transform: uppercase;
+			white-space: nowrap;
+
+			> * {
+				padding: 8px;
+			}
+
+			> [data-sort='number'] {
+				text-align: right;
+			}
+
+			> input {
+				justify-self: center;
+				margin: 0;
+			}
+
+			a {
+				color: var(--muted);
+
+				&:is(:hover, :focus-visible) {
+					background: var(--admin-selected-bg);
+					color: var(--muted);
+				}
+
+				&.sorted {
+					background: var(--admin-selected-bg);
+
+					&::after {
+						content: ' \25B2' / '';
+						font-size: 0.5625rem;
+					}
+
+					&.descending::after {
+						content: ' \25BC' / '';
+					}
+				}
+			}
+		}
+
+		section[aria-labelledby='contributions'] .admin-results-head {
+			grid-template-columns: var(--admin-contribution-columns);
+		}
+
+		/* Rows */
+		:is(.project-list, .contribution-list) {
+			margin: 0;
+		}
+
+		article {
+			display: grid;
+			grid-template-columns: var(--admin-project-columns);
+			align-items: start;
+			margin: 0;
+			border-bottom: 1px solid var(--rule);
+			font-size: 0.8125rem;
+			line-height: 1rem;
+
+			&:nth-child(even) {
+				background: var(--code-background-color);
+			}
+
+			&:has(.admin-action-select:checked) {
+				background: var(--selection-background);
+			}
+
+			:is(p, div, dl, ul) {
+				color: var(--ink);
+			}
+
+			svg,
+			i {
+				display: none;
+			}
+
+			/* The stats wrappers and lists step aside so their values become cells. */
+			.distribution,
+			:is(.repository, .stats, .packages, .downloads, .downloads dd) {
+				display: contents;
+			}
+
+			/* Every cell but the packages spans the rows the packages stack into. */
+			> :is(.admin-action-select, h3, p, .languages),
+			:is(.stars, .forks) {
+				grid-row: 1 / span 8;
+				margin: 0;
+				padding: 8px;
+			}
+
+			> .admin-action-select {
+				display: block;
+				grid-column: 1;
+				justify-self: center;
+				padding: 0;
+				margin-top: 9px;
+			}
+
+			> h3 {
+				grid-column: 2;
+				font-family: var(--font-sans);
+				font-size: 0.8125rem;
+				font-weight: 500;
+				line-height: 1rem;
+
+				a {
+					color: var(--admin-link);
+				}
+
+				/* The card-wide link overlay: a changelist row has a link, not a link for a row. */
+				a > span:empty {
+					display: none;
+				}
+			}
+
+			> p {
+				grid-column: 3;
+				font-size: 0.8125rem;
+				line-height: 1rem;
+			}
+
+			> .languages {
+				grid-column: 4;
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 2px;
+				font-size: 0.8125rem;
+			}
+
+			:is(.stars, .forks) dd {
+				justify-content: flex-end;
+			}
+
+			:is(.stars, .forks) {
+				display: block;
+				text-align: right;
+				font-variant-numeric: tabular-nums;
+
+				a {
+					color: var(--ink);
+				}
+			}
+
+			.stars {
+				grid-column: 5;
+			}
+
+			.forks {
+				grid-column: 6;
+			}
+
+			/* The repository link repeats the name, releases have no column, and topics stay on the card. */
+			:is(.repository-link, .release-downloads, .last-day, .last-week),
+			> .topics {
+				display: none;
+			}
+
+			/* A package per line: its name, then its monthly downloads (Zed only reports a total). */
+			.packages > li {
+				display: grid;
+				grid-column: 7 / 9;
+				grid-template-columns: subgrid;
+				align-items: start;
+				padding: 8px 0 0;
+
+				& + li {
+					padding-top: 4px;
+				}
+
+				&:last-child {
+					padding-bottom: 8px;
+				}
+			}
+
+			.packages dl {
+				display: contents;
+			}
+
+			:is(.package, .last-month, .total-downloads) {
+				padding: 0 8px;
+				font-size: 0.8125rem;
+			}
+
+			.package {
+				grid-column: 1;
+				overflow-wrap: anywhere;
+			}
+
+			:is(.last-month, .total-downloads) {
+				display: block;
+				grid-column: 2;
+				color: var(--ink);
+				text-align: right;
+				white-space: nowrap;
+				font-variant-numeric: tabular-nums;
+
+				span {
+					overflow-wrap: normal;
+				}
+
+				.unit {
+					display: none;
+				}
+			}
+
+			.total-downloads::after {
+				content: 'total';
+				margin-left: 0.25em;
+				color: var(--muted);
+			}
+		}
+
+		section[aria-labelledby='contributions'] article {
+			grid-template-columns: var(--admin-contribution-columns);
+
+			> h3,
+			> dl {
+				grid-row: 1;
+				margin: 0;
+				padding: 8px;
+			}
+
+			> h3 {
+				grid-column: 1;
+				font-size: 0.8125rem;
+				font-weight: 500;
+
+				span {
+					font-size: inherit;
+				}
+			}
+
+			> dl {
+				grid-column: 2;
+				display: block;
+
+				a {
+					color: var(--admin-link);
+				}
+			}
+		}
+	}
+
+	@media (max-width: 1024px) {
+		/* The column keeps #header's centered alignment. */
+		.admin-header {
+			flex-direction: column;
+			justify-content: flex-start;
+			padding: 15px 30px;
+		}
+
+		.admin-site-name {
+			margin: 0 0 8px;
+			line-height: 1.2;
+		}
+
+		.admin-user-tools {
+			margin: 0;
+			font-weight: 400;
+			line-height: 1.85;
+			text-align: left;
+		}
+
+		.admin-breadcrumbs ol {
+			padding-inline: 30px;
+		}
+
+		main {
+			padding: 15px 20px 20px;
+		}
+
+		.object-tools,
+		main[data-admin-view='changelist'] > .feed {
+			top: 15px;
+			right: 20px;
+		}
+
+		#footer,
+		.page > footer {
+			margin-inline: 20px;
+		}
+
+		main[data-admin-view='index'] {
+			grid-template-columns: minmax(0, 1fr);
+
+			> section[data-kind='writing'] {
+				grid-column: 1;
+				grid-row: auto;
+				margin-bottom: 30px;
+			}
+		}
+
+		main[data-admin-view='changelist'] .archive {
+			grid-template-columns: minmax(0, 1fr) 200px;
+		}
+
+		/* td, th */
+		main[data-admin-view='changelist']
+			.archive
+			> article
+			:is(.description a, .description p, time, .summary) {
+			padding: 10px;
+			font-size: 0.875rem;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.admin-header,
+		main {
+			padding: 15px;
+		}
+
+		.admin-breadcrumbs ol {
+			padding: 10px 15px;
+		}
+
+		#footer,
+		.page > footer {
+			margin-inline: 15px;
+		}
+
+		.page {
+			display: block;
+			min-height: 0;
+		}
+
+		/* #nav-sidebar is hidden on phones; its caption stays for screen readers as the home page's name. */
+		#toggle-nav-sidebar,
+		.sidebar > :not(:is(h1, p)) {
+			display: none;
+		}
+
+		.sidebar {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+			white-space: nowrap;
+		}
+
+		.object-tools,
+		main[data-admin-view='changelist'] > .feed {
+			position: static;
+			margin-bottom: 15px;
+		}
+
+		main[data-admin-view='changelist'] {
+			--admin-changelist-columns: 2.25rem minmax(0, 1fr) 4rem;
+
+			.archive > .admin-results-head > span:is(:nth-of-type(2), :nth-of-type(3)),
+			.archive > article .description p,
+			.archive > article .description::after {
+				display: none;
+			}
+
+			.archive > article time {
+				grid-column: 3;
+			}
+
+			/* A phone can't fit a description column, so each description sits beneath its title. */
+			.archive > article p.summary {
+				grid-column: 2;
+				grid-row: 2;
+				margin-top: -6px;
+				padding-top: 0;
+				color: var(--muted);
+				font-size: 0.75rem;
+
+				&.admin-only {
+					display: none;
+				}
+			}
+		}
+
+		main[data-admin-view='change'] {
+			article {
+				padding-left: 0;
+			}
+
+			/* The body lines up with the field values above it. */
+			article > :not(header, .submit-row) {
+				margin-inline: 10px;
+			}
+
+			.article-heading {
+				margin-left: 0;
+				padding-right: 0;
+			}
+
+			.admin-fields {
+				margin-right: 0;
+			}
+
+			.form-row {
+				flex-direction: column;
+
+				:is(label, .label) {
+					width: auto;
+					padding: 0 0 5px;
+				}
+
+				:is(#id_title, textarea) {
+					width: 100%;
+				}
+
+				/* The value sits right under its label. */
+				.readonly {
+					padding-top: 0;
+				}
+			}
+
+			.datetimeshortcuts {
+				align-self: flex-start;
+				margin: 5px 0 0;
+			}
+
+			/* A row like the rest, its padding clear of the border above. */
+			.body-label {
+				height: auto;
+				padding-block: 10px 0;
+				border-bottom: 0;
+
+				.label {
+					padding-top: 0;
+				}
+			}
+
+			article > header + * {
+				margin-top: 10px;
+			}
+
+			.submit-row {
+				flex-direction: column;
+				margin-left: 0;
+
+				a.deletelink {
+					margin-left: 0;
+				}
+			}
+		}
+	}
+
+	/* Too narrow for the results beside the filter, like a phone or a tablet with the sidebar open: the
+	   filter follows the results. */
+	@container (max-width: 48rem) {
+		main[data-admin-view='changelist'] {
+			.archive {
+				grid-template-columns: minmax(0, 1fr);
+			}
+
+			.admin-filter {
+				order: 1;
+				grid-column: 1;
+				grid-row: auto;
+				margin-top: 30px;
+			}
+		}
+	}
+
+	/* The index borrows from other admin pages: stacked inlines for Work, tabular inlines for the lists. */
+	main[data-admin-view='index'] {
+		/* Work: a stacked inline per role (edit_inline/stacked.html), each repeating its company. */
+		section[data-kind] > .work {
+			display: block;
+			padding: 0;
+
+			:is(.company, .role, .role > header) {
+				display: block;
+			}
+
+			/* The company now appears in each role. */
+			.company > h3 {
+				display: none;
+			}
+
+			.role {
+				margin-top: 20px;
+			}
+
+			/* .inline-related h3 */
+			h4 {
+				margin: 0;
+				padding: 5px;
+				border-block: 1px solid var(--rule);
+				background: var(--code-background-color);
+				color: var(--muted);
+				font-family: var(--font-sans);
+				font-size: 0.8125rem;
+				font-weight: 700;
+				line-height: 1.4;
+			}
+
+			/* Company, dates, and description rows, each labeled like a fieldset's form-row. */
+			:is(.role-company, header > p:last-child, .role-description) {
+				position: relative;
+				display: block;
+				margin: 0;
+				padding: 8px 10px 8px 170px;
+				border-bottom: 1px solid var(--rule);
+				color: var(--ink);
+				font-size: 0.8125rem;
+				line-height: 1.4;
+				text-align: left;
+				white-space: normal;
+
+				&::before {
+					position: absolute;
+					top: 8px;
+					left: 10px;
+					color: var(--ink);
+					font-family: var(--font-sans);
+					font-weight: 700;
+				}
+			}
+
+			.role-company::before {
+				content: 'Company:';
+			}
+
+			header > p:last-child::before {
+				content: 'Dates:';
+			}
+
+			.role-description {
+				&::before {
+					content: 'Description:';
+				}
+
+				p {
+					margin: 0;
+				}
+
+				p + p {
+					margin-top: 16px;
+				}
+			}
+		}
+
+		/*
+		 * Tabular inlines (edit_inline/tabular.html): a heading row, striped rows each ending in a Delete?
+		 * checkbox, and an "Add another" row.
+		 */
+		section[data-kind]:has(.admin-table-head) > :not(.section-heading, .admin-add-row) {
+			padding-inline: 0;
+		}
+
+		.admin-table-head {
+			display: grid;
+			grid-template-columns: var(--admin-table-columns);
+			align-items: center;
+			border-block: 1px solid var(--rule);
+			background: var(--code-background-color);
+			color: var(--muted);
+			font-size: 0.6875rem;
+			line-height: normal;
+			text-transform: uppercase;
+
+			> span {
+				padding: 5px 10px;
+				white-space: nowrap;
+			}
+
+			.admin-delete {
+				text-align: center;
+			}
+		}
+
+		.admin-delete-cell {
+			display: flex;
+			align-items: flex-start;
+			justify-content: center;
+			align-self: stretch;
+			padding: 8px;
+
+			input {
+				margin: 1px 0 0;
+			}
+		}
+
+		.admin-add-row {
+			display: block;
+			margin: 0;
+			padding: 8px 10px;
+			border-bottom: 1px solid var(--rule);
+			font-size: 0.8125rem;
+
+			button {
+				display: inline-flex;
+				align-items: center;
+				gap: 5px;
+				color: var(--admin-link);
+				cursor: pointer;
+
+				&::before {
+					content: '';
+					width: 11px;
+					height: 11px;
+					background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%235fa225' stroke='%235fa225' stroke-width='30' d='M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z'/%3E%3C/svg%3E")
+						center / contain no-repeat;
+				}
+
+				&:hover {
+					color: var(--accent);
+				}
+			}
+		}
+
+		section[data-kind='dated-list'] {
+			--admin-table-columns: minmax(0, 1fr) 9rem 4.5rem 5rem;
+		}
+
+		section[data-kind='links'] {
+			--admin-table-columns: 7rem minmax(0, 1fr) 5rem;
+		}
+
+		section[data-kind='community'] {
+			--admin-table-columns: minmax(0, 1fr) minmax(0, 1fr) 5rem;
+		}
+
+		section[data-kind='projects'] {
+			--admin-table-columns: minmax(0, 13rem) minmax(0, 1fr) 5rem;
+		}
+
+		/* Rows: one grid per list item. */
+		section[data-kind]:has(.admin-table-head) ul {
+			display: block;
+			margin: 0;
+			padding: 0;
+
+			> li {
+				display: grid;
+				grid-template-columns: var(--admin-table-columns);
+				align-items: start;
+				margin: 0;
+				padding: 0;
+				border-bottom: 1px solid var(--rule);
+				font-size: 0.8125rem;
+				line-height: 1rem;
+
+				&:nth-child(even) {
+					background: var(--code-background-color);
+				}
+			}
+		}
+
+		/* Talks and Elsewhere: the dated entry's parts and each link's URL are cells. */
+		section:is([data-kind='dated-list'], [data-kind='links']) ul > li {
+			> a,
+			.description a,
+			.description p,
+			time,
+			.admin-url {
+				display: block;
+				margin: 0;
+				padding: 8px 10px;
+				color: var(--ink);
+				font-family: var(--font-sans);
+				font-size: 0.8125rem;
+				font-weight: 400;
+				line-height: 1rem;
+				overflow-wrap: anywhere;
+			}
+
+			> a,
+			.description a {
+				color: var(--admin-link);
+				font-weight: 500;
+			}
+
+			:is(.dated-entry, .description) {
+				display: contents;
+			}
+		}
+
+		/* Community and Projects: each item's heading and description are cells. */
+		:is(.community, .projects) {
+			:is(h3, h4, p) {
+				margin: 0;
+			}
+
+			> p,
+			li > :is(h3, h4, .item-description) {
+				padding: 8px 10px;
+				font-size: 0.8125rem;
+				line-height: 1.4;
+			}
+
+			li > :is(h3, h4) {
+				font-family: var(--font-sans);
+				font-weight: 500;
+				overflow-wrap: anywhere;
+			}
+
+			.item-description {
+				color: var(--ink);
+
+				p {
+					color: inherit;
+					font-size: inherit;
+					line-height: inherit;
+				}
+			}
+		}
+
+		.projects {
+			padding: 0;
+
+			> p:first-child {
+				color: inherit;
+			}
+
+			/* .inline-related h3: a grey bar per category, its blurb as help text. */
+			.category {
+				margin-top: 20px;
+
+				> h3 {
+					padding: 5px;
+					border-block: 1px solid var(--rule);
+					background: var(--code-background-color);
+					color: var(--muted);
+					font-family: var(--font-sans);
+					font-size: 0.8125rem;
+					font-weight: 700;
+					line-height: 1.4;
+				}
+
+				> h3 + p {
+					padding: 6px 10px 10px;
+					color: var(--muted);
+					font-size: 0.75rem;
+					line-height: 1.4;
+				}
+			}
+		}
+	}
+
+	/* Phones: narrower list columns, and fieldset labels above their values as in responsive.css. */
+	@media (max-width: 767px) {
+		main[data-admin-view='index'] {
+			section[data-kind='dated-list'] {
+				--admin-table-columns: minmax(0, 1fr) 6.5rem 3.5rem 4.5rem;
+			}
+
+			section[data-kind='links'] {
+				--admin-table-columns: 6.5rem minmax(0, 1fr) 4.5rem;
+			}
+
+			section:is([data-kind='community'], [data-kind='projects']) {
+				--admin-table-columns: minmax(0, 1fr) minmax(0, 1.4fr) 4.5rem;
+			}
+
+			section[data-kind] > .work :is(.role-company, header > p:last-child, .role-description) {
+				padding-left: 10px;
+
+				&::before {
+					position: static;
+					display: block;
+					margin-bottom: 4px;
+				}
+			}
+		}
+	}
+}

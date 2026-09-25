@@ -6,13 +6,50 @@ import { entryTransitionName } from '@/lib/transitions';
 
 type Props = { page: Page<Entry> };
 const { page } = Astro.props;
+const years = [...new Set(page.data.map((entry) => entry.date.slice(0, 4)))];
 ---
 
 <div class="archive">
+	<form class="admin-only admin-toolbar" role="search">
+		<label for="searchbar"><span class="search-icon" aria-hidden="true"></span><span class="sr-only">Search entries on this page</span></label>
+		<input type="text" id="searchbar" size="40" />
+		<input type="submit" value="Search" />
+	</form>
+	<nav class="admin-only admin-filter" aria-labelledby="changelist-filter-header">
+		<h2 id="changelist-filter-header">Filter</h2>
+		<details open>
+			<summary><h3>By type</h3></summary>
+			<ul>
+				<li class="selected"><a href="#" data-filter="entry-type" data-value="" aria-current="true">All</a></li>
+				<li><a href="#" data-filter="entry-type" data-value="post">Post</a></li>
+				<li><a href="#" data-filter="entry-type" data-value="til">TIL</a></li>
+			</ul>
+		</details>
+		<details open>
+			<summary><h3>By year</h3></summary>
+			<ul>
+				<li class="selected"><a href="#" data-filter="year" data-value="" aria-current="true">Any date</a></li>
+				{years.map((year) => <li><a href="#" data-filter="year" data-value={year}>{year}</a></li>)}
+			</ul>
+		</details>
+	</nav>
+	<div class="admin-only admin-actions" data-noun="entry" data-nouns="entries">
+		<label>Action: <select><option value="">---------</option><option value="delete">Delete selected entries</option></select></label>
+		<button type="button" class="button">Go</button>
+		<span class="admin-action-counter" aria-live="polite">0 of {page.data.length} selected</span>
+	</div>
+	<div class="admin-only admin-results-head">
+		<input type="checkbox" id="action-toggle" aria-label="Select all entries on this page" />
+		<span aria-hidden="true">Title</span>
+		<span aria-hidden="true">Description</span>
+		<span aria-hidden="true">Type</span>
+		<span aria-hidden="true">Year</span>
+	</div>
 	{page.data.map((entry) => (
-		<article data-entry-type={entry.type} transition:name={entryTransitionName(entry.title)}>
+		<article data-admin-row data-entry-type={entry.type} data-year={entry.date.slice(0, 4)} transition:name={entryTransitionName(entry.title)}>
+			<input type="checkbox" class="admin-only admin-action-select" aria-label={`Select ${entry.title}`} />
 			<DatedEntry title={entry.title} href={entry.url} subtitle={entry.type === 'til' ? `TIL / ${entry.category}` : undefined} date={entry.date.slice(0, 4)} datetime={entry.date.slice(0, 10)} />
-			{entry.summary && <p class="summary">{entry.summary}</p>}
+			{entry.summary ? <p class="summary">{entry.summary}</p> : <p class="admin-only summary">-</p>}
 		</article>
 	))}
 	{page.lastPage > 1 && (
@@ -24,6 +61,7 @@ const { page } = Astro.props;
 			</div>
 		</nav>
 	)}
+	<p class="admin-only admin-result-count" data-admin-count="entries" data-total={page.total}>{page.total} entries</p>
 </div>
 
 <style>

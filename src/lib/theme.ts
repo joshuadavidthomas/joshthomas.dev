@@ -1,4 +1,13 @@
 export const THEME_STORAGE_KEY = 'theme';
+export const THEME_NAMES = [
+	'default',
+	'tokyo-night',
+	'catppuccin',
+	'dracula',
+	'django',
+	'django-admin',
+	'djangonaut-space'
+];
 
 export const themeBootstrap = String.raw`
 (() => {
@@ -6,7 +15,8 @@ export const themeBootstrap = String.raw`
 	const media = matchMedia('(prefers-color-scheme: dark)');
 	const storageKey = 'theme';
 	const nameKey = 'theme-name';
-	const normalizeName = (value) => ['tokyo-night', 'catppuccin', 'dracula', 'django', 'django-admin', 'djangonaut-space'].includes(value) ? value : 'default';
+	const names = ${JSON.stringify(THEME_NAMES)};
+	const normalizeName = (value) => names.includes(value) ? value : 'default';
 	const readName = () => {
 		try { return normalizeName(localStorage.getItem(nameKey)); }
 		catch { return 'default'; }
@@ -74,19 +84,36 @@ export const themeBootstrap = String.raw`
 			// The selected theme still applies when storage is unavailable.
 		}
 	};
+	// A link can choose the theme with ?theme=<name>. The choice is kept like one made in the menu, and the
+	// parameter leaves the address so it isn't shared onward by accident. Unknown names are ignored.
+	const chooseLinked = () => {
+		const parts = location.search.slice(1).split('&').filter(Boolean);
+		const linked = parts.find((part) => part.startsWith('theme='));
+		if (!linked) return;
+		const rest = parts.filter((part) => !part.startsWith('theme='));
+		history.replaceState(history.state, '', location.pathname + (rest.length ? '?' + rest.join('&') : '') + location.hash);
+		const name = decodeURIComponent(linked.slice('theme='.length));
+		if (!names.includes(name)) return;
+		root.dataset.themeName = name;
+		store(nameKey, name, 'default');
+	};
 	const setup = () => {
 		syncControls();
 		syncFavicon();
 	};
 
 	document.addEventListener('click', (event) => {
-		const control = event.target?.closest?.('[data-mode-choice], [data-theme-choice], [data-theme-reset]');
+		const control = event.target?.closest?.('[data-mode-choice], [data-mode-cycle], [data-theme-choice], [data-theme-exit], [data-theme-reset]');
 		if (!control) return;
-		if (control.dataset.modeChoice) {
-			const preference = normalize(control.dataset.modeChoice);
+		if (control.dataset.modeChoice || control.dataset.modeCycle !== undefined) {
+			// A cycle control steps like Django admin's theme toggle: system, then the opposite mode, then the other.
+			const opposite = media.matches ? 'light' : 'dark';
+			const cycle = { system: opposite, [opposite]: resolved('system'), [resolved('system')]: 'system' };
+			const preference = normalize(control.dataset.modeChoice ?? cycle[current()]);
 			store(storageKey, preference, 'system');
 			apply(preference);
-		} else if (control.dataset.themeChoice) {
+		} else if (control.dataset.themeChoice || control.dataset.themeExit !== undefined) {
+			// An exit control, like the admin's "View site", returns to the default theme and keeps the mode.
 			root.dataset.themeName = normalizeName(control.dataset.themeChoice);
 			store(nameKey, root.dataset.themeName, 'default');
 			apply(current());
@@ -98,6 +125,7 @@ export const themeBootstrap = String.raw`
 		}
 	});
 	root.dataset.themeName = readName();
+	chooseLinked();
 	apply(read());
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', setup, { once: true });
@@ -108,7 +136,10 @@ export const themeBootstrap = String.raw`
 	document.addEventListener('astro:before-swap', (event) => {
 		event.newDocument.documentElement.dataset.themeName = root.dataset.themeName;
 	});
-	document.addEventListener('astro:after-swap', () => apply(read()));
+	document.addEventListener('astro:after-swap', () => {
+		chooseLinked();
+		apply(read());
+	});
 	media.addEventListener('change', () => {
 		if (current() === 'system') apply('system');
 	});

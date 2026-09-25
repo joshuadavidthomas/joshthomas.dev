@@ -4,19 +4,89 @@ import { renderMarkdown } from '@/lib/markdown';
 import { entryTransitionName } from '@/lib/transitions';
 const { entry } = Astro.props as { entry: Entry };
 const html = await renderMarkdown(entry.body, entry.type === 'post' ? 1 : 0);
+const date = entry.date.slice(0, 10);
+const kind = entry.type === 'til' ? 'TIL' : 'post';
+const refused = `403 Forbidden. You do not have permission to change this ${kind}. No changes were saved.`;
+// Django's DATE_FORMAT, "N j, Y": AP-style month abbreviations, like "Aug. 31, 2026".
+const apMonths = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+const djangoDate = (() => {
+	const value = new Date(entry.date);
+	return `${apMonths[value.getUTCMonth()]} ${value.getUTCDate()}, ${value.getUTCFullYear()}`;
+})();
 ---
 
 <article class="prose reading">
 	<header class="not-prose article-heading" transition:name={entryTransitionName(entry.title)}>
+		<ul class="admin-only object-tools">
+			{entry.source && <li><a href={`https://github.com/joshuadavidthomas/joshthomas.dev/commits/main/${entry.source}`} class="historylink">History</a></li>}
+			<li><button type="button" class="viewsitelink" data-theme-exit>View on site</button></li>
+		</ul>
 		<h1 class="page-title">
 			<Fragment set:html={entry.titleHtml} />
 		</h1>
-		<time datetime={entry.date.slice(0, 10)}>
+		<time datetime={date}>
 			{new Date(entry.date).toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })}
 		</time>
+		<fieldset class="admin-only admin-fields">
+			<div class="form-row">
+				<label class="required" for="id_title">Title:</label>
+				<div class="readonly admin-view-only">{entry.title}</div>
+				<input id="id_title" class="admin-change-only" type="text" value={entry.title} />
+			</div>
+			{entry.category && (
+				<div class="form-row">
+					<label class="required" for="id_category">Category:</label>
+					<div class="readonly admin-view-only">{entry.category}</div>
+					<select id="id_category" class="admin-change-only"><option>{entry.category}</option></select>
+				</div>
+			)}
+			<div class="form-row">
+				<label class="required" for="id_date">Date:</label>
+				<div class="readonly admin-view-only">{djangoDate}</div>
+				<input id="id_date" class="admin-change-only" type="text" value={date} size="10" />
+				<span class="datetimeshortcuts admin-change-only">Today | <span class="date-icon" aria-hidden="true"></span></span>
+			</div>
+			{entry.summary && (
+				<div class="form-row">
+					<label class="required" for="id_summary">Summary:</label>
+					<div class="readonly admin-view-only">{entry.summary}</div>
+					<textarea id="id_summary" class="admin-change-only" rows="2">{entry.summary}</textarea>
+				</div>
+			)}
+			<div class="form-row body-label admin-view-only" aria-hidden="true"><span class="label required">Body:</span></div>
+			<div class="form-row admin-change-only">
+				<label class="required" for="id_body">Body:</label>
+				<textarea id="id_body" class="vLargeTextField" rows="24" cols="40" data-admin-source="admin-body-source"></textarea>
+			</div>
+		</fieldset>
 	</header>
 	<Fragment set:html={html} />
+	<div class="admin-only not-prose submit-row">
+		<a href="?change" class="default admin-view-only">Edit</a>
+		<a href="/blog/" class="closelink admin-view-only">Close</a>
+		<button type="button" class="default admin-change-only" data-level="error" data-admin-message={refused} data-admin-revert>Save</button>
+		<button type="button" class="admin-change-only" data-level="error" data-admin-message={refused} data-admin-revert>Save and continue editing</button>
+		<a href={Astro.url.pathname} class="closelink admin-change-only">Close</a>
+		<a href="?delete" class="deletelink admin-change-only">Delete</a>
+	</div>
 </article>
+{/* django.contrib.admin theme: the raw Markdown for the change view's body field; inert in every theme. */}
+<template id="admin-body-source">{entry.body}</template>
+<section class="admin-only admin-delete-only admin-delete-confirmation" aria-label="Delete confirmation">
+	<p>Are you sure you want to delete the {kind} “{entry.title}”? All of the following related items will be deleted:</p>
+	<h2>Summary</h2>
+	<ul>
+		<li>{kind === 'TIL' ? 'TILs' : 'Posts'}: 1</li>
+	</ul>
+	<h2>Objects</h2>
+	<ul>
+		<li>{kind === 'TIL' ? 'TIL' : 'Post'}: <a href="?change">{entry.title}</a></li>
+	</ul>
+	<div class="delete-actions">
+		<button type="button" data-level="error" data-admin-message={`403 Forbidden. You do not have permission to delete this ${kind}.`}>Yes, I’m sure</button>
+		<a href="?change" class="cancel-link">No, take me back</a>
+	</div>
+</section>
 
 <style>
 	.article-heading { margin-bottom: 32px; }
