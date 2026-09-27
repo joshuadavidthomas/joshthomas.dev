@@ -587,7 +587,7 @@
 		/* #recent-actions-module */
 		> .home > section[data-kind='writing'] {
 			grid-column: 2;
-			grid-row: 2 / span 30;
+			grid-row: 1 / span 30;
 			margin: 0;
 			background: var(--code-background-color);
 
