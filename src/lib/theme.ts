@@ -94,8 +94,24 @@ export const themeBootstrap = String.raw`
 		history.replaceState(history.state, '', location.pathname + (rest.length ? '?' + rest.join('&') : '') + location.hash);
 		const name = decodeURIComponent(linked.slice('theme='.length));
 		if (!names.includes(name)) return;
+		track('theme-link/' + name, 'Theme link: ' + name);
 		root.dataset.themeName = name;
 		store(nameKey, name, 'default');
+	};
+	// GoatCounter events: no cookies or identifiers, just a count per path. count.js loads async, so events
+	// wait until it's ready (a ?theme= link fires before then). In development it never loads.
+	const pending = [];
+	const flush = () => {
+		const count = window.goatcounter?.count;
+		if (!count) return;
+		for (const event of pending.splice(0)) {
+			try { count(event); }
+			catch { /* Analytics never gets in the way of choosing a theme. */ }
+		}
+	};
+	const track = (path, title) => {
+		pending.push({ path, title, event: true });
+		flush();
 	};
 	const setup = () => {
 		syncControls();
@@ -110,20 +126,29 @@ export const themeBootstrap = String.raw`
 			const opposite = media.matches ? 'light' : 'dark';
 			const cycle = { system: opposite, [opposite]: resolved('system'), [resolved('system')]: 'system' };
 			const preference = normalize(control.dataset.modeChoice ?? cycle[current()]);
+			if (preference !== current()) track('theme-mode/' + preference, 'Mode: ' + preference);
 			store(storageKey, preference, 'system');
 			apply(preference);
 		} else if (control.dataset.themeChoice || control.dataset.themeExit !== undefined) {
 			// An exit control, like the admin's "View site", returns to the default theme and keeps the mode.
-			root.dataset.themeName = normalizeName(control.dataset.themeChoice);
+			const name = normalizeName(control.dataset.themeChoice);
+			if (name !== root.dataset.themeName) track('theme/' + name, 'Theme: ' + name);
+			root.dataset.themeName = name;
 			store(nameKey, root.dataset.themeName, 'default');
 			apply(current());
 		} else {
+			track('theme-reset', 'Theme: reset');
 			root.dataset.themeName = 'default';
 			store(nameKey, 'default', 'default');
 			store(storageKey, 'system', 'system');
 			apply('system');
 		}
 	});
+	// Popover toggle events don't bubble, so listen in the capture phase.
+	document.addEventListener('toggle', (event) => {
+		if (event.target?.id === 'theme-menu' && event.newState === 'open') track('theme-menu', 'Theme menu opened');
+	}, true);
+	window.addEventListener('load', flush);
 	root.dataset.themeName = readName();
 	chooseLinked();
 	apply(read());

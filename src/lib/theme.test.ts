@@ -6,19 +6,22 @@ type Listener = (event?: {
 	key?: string | null;
 	newValue?: string | null;
 	newDocument?: { documentElement: { dataset: { themeName: string } } };
-	target?: { closest: (selector: string) => unknown };
+	target?: { closest?: (selector: string) => unknown; id?: string };
+	newState?: string;
 }) => void;
 
 function runTheme({
 	stored = null,
 	storedName = null,
 	systemDark = false,
-	search = ''
+	search = '',
+	counterLoaded = true
 }: {
 	stored?: string | null;
 	storedName?: string | null;
 	systemDark?: boolean;
 	search?: string;
+	counterLoaded?: boolean;
 } = {}) {
 	const documentListeners = new Map<string, Listener>();
 	const windowListeners = new Map<string, Listener>();
@@ -87,7 +90,9 @@ function runTheme({
 		setItem: (key: string, value: string) => storage.set(key, value),
 		removeItem: (key: string) => storage.delete(key)
 	};
-	const window = {
+	const count = vi.fn();
+	const window: { goatcounter?: { count: typeof count }; addEventListener: unknown } = {
+		goatcounter: counterLoaded ? { count } : undefined,
 		addEventListener: (name: string, listener: Listener) => windowListeners.set(name, listener)
 	};
 	const location = { pathname: '/blog/2026/post/', search, hash: '' };
@@ -114,8 +119,16 @@ function runTheme({
 	});
 	documentListeners.get('DOMContentLoaded')?.();
 
+	const tracked = () => count.mock.calls.map(([event]) => event.path);
+	const loadCounter = () => {
+		window.goatcounter = { count };
+		windowListeners.get('load')?.();
+	};
+
 	return {
 		attributes,
+		tracked,
+		loadCounter,
 		chooseMode,
 		chooseTheme,
 		exit,
@@ -137,6 +150,30 @@ function runTheme({
 }
 
 describe('theme bootstrap', () => {
+	it('counts menu opens and changed choices as GoatCounter events', () => {
+		const runtime = runTheme();
+		runtime.documentListeners.get('toggle')?.({ target: { id: 'theme-menu' }, newState: 'open' });
+		runtime.documentListeners.get('toggle')?.({ target: { id: 'theme-menu' }, newState: 'closed' });
+		runtime.chooseTheme('dracula');
+		runtime.chooseTheme('dracula');
+		runtime.chooseMode('dark');
+		runtime.chooseMode('dark');
+		runtime.reset();
+		expect(runtime.tracked()).toEqual([
+			'theme-menu',
+			'theme/dracula',
+			'theme-mode/dark',
+			'theme-reset'
+		]);
+	});
+
+	it('holds a ?theme= link event until count.js loads', () => {
+		const runtime = runTheme({ search: '?theme=catppuccin', counterLoaded: false });
+		expect(runtime.tracked()).toEqual([]);
+		runtime.loadCounter();
+		expect(runtime.tracked()).toEqual(['theme-link/catppuccin']);
+	});
+
 	it('chooses and keeps a theme from a ?theme= link, then removes the parameter', () => {
 		const runtime = runTheme({ storedName: 'dracula', search: '?change&theme=django-admin' });
 		expect(runtime.root.dataset.themeName).toBe('django-admin');

@@ -81,6 +81,7 @@ const crumbs =
 			import.meta.env.PROD && (
 				<>
 					<script is:inline>
+						// ClientRouter fires the first astro:page-load on window load, which waits for the async count.js.
 						window.goatcounter = { no_onload: true };
 						document.addEventListener('astro:page-load', () => window.goatcounter?.count?.());
 					</script>
