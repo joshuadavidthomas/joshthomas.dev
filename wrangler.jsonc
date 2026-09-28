@@ -3,6 +3,17 @@
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-07-21",
 	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": true,
+			"head_sampling_rate": 1
+		}
+	},
 	"triggers": {
 		"crons": ["17 4 * * *"]
 	},

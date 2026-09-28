@@ -3,28 +3,14 @@ import { env } from 'cloudflare:workers';
 import { Download, GitFork, Package, Star } from '@lucide/astro';
 import GitHubIcon from '@/components/GitHubIcon.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import getProjects from '@/lib/server/projects';
+import { loadProjects } from '@/lib/server/projects-snapshot';
 import { THEME_NAMES } from '@/lib/theme';
-import { developmentProjectData } from '@/lib/server/projects-dev';
 
 export const prerender = false;
 // Only a theme link (?theme=<name>, which the theme script then removes) is allowed to skip the canonical redirect.
 const themeLink = [...Astro.url.searchParams.keys()].join() === 'theme' && THEME_NAMES.includes(Astro.url.searchParams.get('theme')!);
 if (Astro.url.search && !themeLink) return Astro.redirect('/projects/', 308);
-let githubRateLimited = false;
-let data;
-try {
-	data = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS, import.meta.env.DEV);
-} catch (error) {
-	const rateLimitError =
-		error instanceof Error &&
-		(error.message.includes('rate limit exceeded for https://api.github.com/') ||
-			error.message.startsWith('403 '));
-	if (!import.meta.env.DEV || !rateLimitError) throw error;
-	console.warn('GitHub project data is unavailable in development because the API rate limit was reached.');
-	githubRateLimited = true;
-	data = developmentProjectData;
-}
+const { data, fixtures: githubRateLimited } = await loadProjects(env, import.meta.env.DEV);
 const { projects, contributions } = data;
 if (Astro.cache.enabled) Astro.cache.set({ maxAge: 86400, swr: 604800 });
 const number = new Intl.NumberFormat('en-US');

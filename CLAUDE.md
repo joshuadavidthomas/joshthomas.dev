@@ -40,6 +40,7 @@ This site uses Astro content collections and Astro components. Astro prerenders 
 - `src/lib/server/projects.ts` — runtime project and contribution data
 - `src/lib/server/project-packages.ts` — repository-to-registry package declarations
 - `src/lib/server/pypi-stats.ts` — daily PyPI snapshot refresh and KV reads
+- `src/lib/server/projects-snapshot.ts` — daily projects snapshot refresh and the projects pages' loader
 - `src/worker.ts` — Astro fetch handler and scheduled Worker entrypoint
 - `src/lib/styles/` — global layout, theme, prose, and code styles
 - `src/pages/` — pages, feed, and sitemap
@@ -71,8 +72,8 @@ Astro's deferred glob loaders read and validate the Markdown collections without
 
 ### Projects
 
-`/projects/` aggregates GitHub repositories, contributions, package statistics, release downloads, languages, and topics at request time. Repository-to-registry package names live in `src/lib/server/project-packages.ts`. A daily scheduled Worker refreshes PyPI statistics sequentially and stores the last successful values in the `PACKAGE_STATS` KV binding; request handling reads that snapshot and never calls PyPI Stats directly. Required repository facts and declared package statistics reject when unavailable; languages, release downloads, and contributions may degrade. Astro caches complete canonical responses in Cloudflare for 24 hours and can serve them stale for seven more days while revalidating. `GITHUB_TOKEN` is an optional Cloudflare secret.
+`/projects/` shows GitHub repositories, contributions, package statistics, release downloads, languages, and topics from a KV snapshot. Repository-to-registry package names live in `src/lib/server/project-packages.ts`. A daily scheduled Worker first refreshes PyPI statistics sequentially (`src/lib/server/pypi-stats.ts`), then loads the full project data from GitHub and the registries and stores it as one snapshot (`src/lib/server/projects-snapshot.ts`). Both snapshots live in the `PACKAGE_STATS` KV binding and keep their last successful values when a refresh fails. Request handling only reads the snapshot and never calls GitHub or a registry; in development, pages load live data instead. Required repository facts and declared package statistics reject a refresh when unavailable; languages, release downloads, and contributions may degrade. Astro caches complete canonical responses in Cloudflare for 24 hours and can serve them stale for seven more days while revalidating. `GITHUB_TOKEN` is an optional Cloudflare secret.
 
 ### Deployment
 
-Wrangler deploys the Cloudflare Worker and its `dist/client/` static assets. Keep `public/_redirects` and `public/_headers` intact. Worker environments, the `PACKAGE_STATS` KV binding, and the production cron trigger live in `wrangler.jsonc`; Astro writes the deployable config to `dist/server/wrangler.json`. Staging has its own KV binding and no automatic cron.
+Wrangler deploys the Cloudflare Worker and its `dist/client/` static assets. Keep `public/_redirects` and `public/_headers` intact. Worker environments, the `PACKAGE_STATS` KV binding, and the production cron trigger, and Workers Logs and traces (`observability`) live in `wrangler.jsonc`; Astro writes the deployable config to `dist/server/wrangler.json`. Staging has its own KV binding and no automatic cron.

@@ -2,20 +2,10 @@
 import { env } from 'cloudflare:workers';
 import { Download, GitFork, GitBranch, Star } from '@lucide/astro';
 import OpenGraph from '@/layouts/OpenGraph.astro';
-import getProjects from '@/lib/server/projects';
-import { developmentProjectData } from '@/lib/server/projects-dev';
+import { loadProjects } from '@/lib/server/projects-snapshot';
 
 export const prerender = false;
-let data;
-let fixtures = false;
-try {
-	data = await getProjects(env.GITHUB_TOKEN, env.PACKAGE_STATS, import.meta.env.DEV);
-} catch (error) {
-	const rateLimited = error instanceof Error && (error.message.includes('rate limit exceeded for https://api.github.com/') || error.message.startsWith('403 '));
-	if (!import.meta.env.DEV || !rateLimited) throw error;
-	data = developmentProjectData;
-	fixtures = true;
-}
+const { data, fixtures } = await loadProjects(env, import.meta.env.DEV);
 if (Astro.cache.enabled) Astro.cache.set({ maxAge: 86400, swr: 604800 });
 const totals = data.projects.reduce((sum, project) => ({
 	stars: sum.stars + project.stars,
